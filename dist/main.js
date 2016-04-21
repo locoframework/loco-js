@@ -1,3 +1,60 @@
+window.App = {
+  Loco: null,
+  IdentityMap: null,
+  Wire: null,
+  Env: {
+    loco: null,
+    namespaceController: null,
+    controller: null,
+    action: null,
+    scope: null
+  },
+  Mix: null,
+  Mixins: {},
+  UI: {},
+  Controllers: {},
+  Models: {},
+  Views: {},
+  Services: {},
+  Helpers: {},
+  Presenters: {},
+  Validators: {},
+  I18n: {},
+  Utils: {}
+};
+
+//# sourceMappingURL=../maps/base/objects.js.map
+
+var slice = [].slice,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Mix = function() {
+  var Mixed, base, i, method, mixin, mixins, name, ref;
+  base = arguments[0], mixins = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+  Mixed = (function(superClass) {
+    extend(Mixed, superClass);
+
+    function Mixed() {
+      return Mixed.__super__.constructor.apply(this, arguments);
+    }
+
+    return Mixed;
+
+  })(base);
+  for (i = mixins.length - 1; i >= 0; i += -1) {
+    mixin = mixins[i];
+    ref = mixin.prototype;
+    for (name in ref) {
+      method = ref[name];
+      Mixed.prototype[name] = method;
+    }
+  }
+  return Mixed;
+};
+
+//# sourceMappingURL=../maps/base/mix.js.map
+
 App.IdentityMap = (function() {
   function IdentityMap() {}
 
@@ -85,204 +142,6 @@ App.IdentityMap = (function() {
 })();
 
 //# sourceMappingURL=../maps/base/identity_map.js.map
-
-App.Loco = (function() {
-  function Loco(opts) {
-    var initWireConditions, ref;
-    if (opts == null) {
-      opts = {};
-    }
-    this.wire = null;
-    this.locale = null;
-    this.initTurbolinks = (opts.turbolinks != null) && opts.turbolinks ? true : false;
-    initWireConditions = (opts.notifications != null) && (opts.notifications.enable != null) && opts.notifications.enable;
-    this.initWire = initWireConditions ? true : false;
-    this.notificationsParams = opts.notifications;
-    this.postInit = opts.postInit;
-    this.setLocale((ref = opts.locale) != null ? ref : 'en');
-  }
-
-  Loco.prototype.getWire = function() {
-    return this.wire;
-  };
-
-  Loco.prototype.getLocale = function() {
-    return this.locale;
-  };
-
-  Loco.prototype.setLocale = function(locale) {
-    return this.locale = locale;
-  };
-
-  Loco.prototype.init = function() {
-    App.Env.loco = this;
-    if (this.initWire) {
-      this.wire = new App.Wire(this.notificationsParams);
-      this.wire.connect();
-    }
-    if (this.initTurbolinks) {
-      return jQuery(document).on("page:change", (function(_this) {
-        return function() {
-          _this.flow();
-          if (_this.postInit != null) {
-            return _this.postInit();
-          }
-        };
-      })(this));
-    } else {
-      return jQuery((function(_this) {
-        return function() {
-          _this.flow();
-          if (_this.postInit != null) {
-            return _this.postInit();
-          }
-        };
-      })(this));
-    }
-  };
-
-  Loco.prototype.flow = function() {
-    var action_name, controller_name, namespace_name;
-    App.IdentityMap.clear();
-    namespace_name = $('body').data('namespace');
-    controller_name = $('body').data('controller');
-    action_name = $('body').data('action');
-    App.Env.action = action_name;
-    if (App.Controllers[namespace_name] != null) {
-      App.Env.namespaceController = new App.Controllers[namespace_name];
-      if (App.Controllers[namespace_name][controller_name] != null) {
-        App.Env.controller = new App.Controllers[namespace_name][controller_name];
-      }
-      if (App.Env.namespaceController.initialize != null) {
-        App.Env.namespaceController.initialize();
-      }
-      if (App.Env.controller != null) {
-        App.Env.namespaceController.setSubController(App.Env.controller);
-        App.Env.controller.setSuperController(App.Env.namespaceController);
-        if (App.Env.controller.initialize != null) {
-          App.Env.controller.initialize();
-        }
-        if (App.Env.controller[action_name] != null) {
-          App.Env.controller[action_name]();
-        }
-      }
-    } else if (App.Controllers[controller_name]) {
-      App.Env.controller = new App.Controllers[controller_name];
-      if (App.Env.controller.initialize != null) {
-        App.Env.controller.initialize();
-      }
-      if (App.Env.controller[action_name] != null) {
-        App.Env.controller[action_name]();
-      }
-    }
-    if (this.wire != null) {
-      this.wire.resetSyncTime();
-      return this.wire._check();
-    }
-  };
-
-  Loco.prototype.getModels = function() {
-    var _, func, innerFunc, models, ref, ref1, regExp;
-    models = [];
-    regExp = /^[A-Z]/;
-    ref = App.Models;
-    for (func in ref) {
-      _ = ref[func];
-      if (!regExp.exec(func) || func === "Base") {
-        continue;
-      }
-      models.push(func);
-      ref1 = App.Models[func];
-      for (innerFunc in ref1) {
-        _ = ref1[innerFunc];
-        if (regExp.exec(innerFunc)) {
-          models.push(func + "." + innerFunc);
-        }
-      }
-    }
-    return models;
-  };
-
-  Loco.prototype.getModelForRemoteName = function(remoteName) {
-    var i, len, model, parts, ref;
-    ref = this.getModels();
-    for (i = 0, len = ref.length; i < len; i++) {
-      model = ref[i];
-      parts = model.split(".");
-      if (parts.length === 1) {
-        if (App.Models[parts[0]].getRemoteName() === remoteName) {
-          return App.Models[parts[0]];
-        }
-      } else if (parts.length === 2) {
-        if (App.Models[parts[0]][parts[1]].getRemoteName() === remoteName) {
-          return App.Models[parts[0]][parts[1]];
-        }
-      }
-    }
-  };
-
-  return Loco;
-
-})();
-
-//# sourceMappingURL=../maps/base/loco.js.map
-
-var slice = [].slice,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Mix = function() {
-  var Mixed, base, i, method, mixin, mixins, name, ref;
-  base = arguments[0], mixins = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-  Mixed = (function(superClass) {
-    extend(Mixed, superClass);
-
-    function Mixed() {
-      return Mixed.__super__.constructor.apply(this, arguments);
-    }
-
-    return Mixed;
-
-  })(base);
-  for (i = mixins.length - 1; i >= 0; i += -1) {
-    mixin = mixins[i];
-    ref = mixin.prototype;
-    for (name in ref) {
-      method = ref[name];
-      Mixed.prototype[name] = method;
-    }
-  }
-  return Mixed;
-};
-
-//# sourceMappingURL=../maps/base/mix.js.map
-
-window.App = {
-  Loco: null,
-  IdentityMap: null,
-  Wire: null,
-  Env: {
-    loco: null,
-    namespaceController: null,
-    controller: null,
-    action: null,
-    scope: null
-  },
-  Mix: null,
-  Mixins: {},
-  UI: {},
-  Controllers: {},
-  Models: {},
-  Views: {},
-  Services: {},
-  Helpers: {},
-  Presenters: {},
-  Validators: {},
-  I18n: {},
-  Utils: {}
-};
-
-//# sourceMappingURL=../maps/base/objects.js.map
 
 App.Wire = (function() {
   function Wire(opts) {
@@ -491,176 +350,736 @@ App.Wire = (function() {
 
 //# sourceMappingURL=../maps/base/wire.js.map
 
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Controllers.Base = (function(superClass) {
-  extend(Base, superClass);
-
-  function Base() {
-    this.views = {};
-    this.receivers = {};
-    this.subController = null;
-    this.superController = null;
-    this.params = this.__fetchParams();
+App.Loco = (function() {
+  function Loco(opts) {
+    var initWireConditions, ref;
+    if (opts == null) {
+      opts = {};
+    }
+    this.wire = null;
+    this.locale = null;
+    this.initTurbolinks = (opts.turbolinks != null) && opts.turbolinks ? true : false;
+    initWireConditions = (opts.notifications != null) && (opts.notifications.enable != null) && opts.notifications.enable;
+    this.initWire = initWireConditions ? true : false;
+    this.notificationsParams = opts.notifications;
+    this.postInit = opts.postInit;
+    this.setLocale((ref = opts.locale) != null ? ref : 'en');
   }
 
-  Base.prototype.setView = function(key, view) {
-    return this.views[key] = view;
+  Loco.prototype.getWire = function() {
+    return this.wire;
   };
 
-  Base.prototype.getView = function(key) {
-    return this.views[key];
+  Loco.prototype.getLocale = function() {
+    return this.locale;
   };
 
-  Base.prototype.getViews = function() {
-    return this.views;
+  Loco.prototype.setLocale = function(locale) {
+    return this.locale = locale;
   };
 
-  Base.prototype.setSubController = function(cntrlr) {
-    return this.subController = cntrlr;
-  };
-
-  Base.prototype.getSubController = function() {
-    return this.subController;
-  };
-
-  Base.prototype.setSuperController = function(cntrlr) {
-    return this.superController = cntrlr;
-  };
-
-  Base.prototype.getSuperController = function() {
-    return this.superController;
-  };
-
-  Base.prototype.setResource = function(name) {
-    return this.setScope(name);
-  };
-
-  Base.prototype.setScope = function(name) {
-    return App.Env.scope = name;
-  };
-
-  Base.prototype.__fetchParams = function() {
-    var arr, i, id, key, len, match, params, paramsArray, paramsString, splitUrl, val;
-    params = {};
-    match = /https?:\/\/.+\/\w+\/(\d+)/.exec(window.location.href);
-    id = match != null ? match[1] : null;
-    if (id != null) {
-      params["id"] = parseInt(id);
+  Loco.prototype.init = function() {
+    App.Env.loco = this;
+    if (this.initWire) {
+      this.wire = new App.Wire(this.notificationsParams);
+      this.wire.connect();
     }
-    splitUrl = window.location.href.split('?');
-    if (splitUrl.length === 1) {
-      return params;
+    if (this.initTurbolinks) {
+      return jQuery(document).on("page:change", (function(_this) {
+        return function() {
+          _this.flow();
+          if (_this.postInit != null) {
+            return _this.postInit();
+          }
+        };
+      })(this));
+    } else {
+      return jQuery((function(_this) {
+        return function() {
+          _this.flow();
+          if (_this.postInit != null) {
+            return _this.postInit();
+          }
+        };
+      })(this));
     }
-    paramsString = splitUrl[splitUrl.length - 1];
-    paramsArray = App.Utils.Array.map(paramsString.split('&'), function(s) {
-      return s.split('=');
-    });
-    for (i = 0, len = paramsArray.length; i < len; i++) {
-      arr = paramsArray[i];
-      key = decodeURIComponent(arr[0]);
-      val = decodeURIComponent(arr[1]);
-      if (val != null) {
-        val = val.replace(/\+/g, " ");
+  };
+
+  Loco.prototype.flow = function() {
+    var action_name, controller_name, namespace_name;
+    App.IdentityMap.clear();
+    namespace_name = $('body').data('namespace');
+    controller_name = $('body').data('controller');
+    action_name = $('body').data('action');
+    App.Env.action = action_name;
+    if (App.Controllers[namespace_name] != null) {
+      App.Env.namespaceController = new App.Controllers[namespace_name];
+      if (App.Controllers[namespace_name][controller_name] != null) {
+        App.Env.controller = new App.Controllers[namespace_name][controller_name];
       }
-      params[key] = val;
+      if (App.Env.namespaceController.initialize != null) {
+        App.Env.namespaceController.initialize();
+      }
+      if (App.Env.controller != null) {
+        App.Env.namespaceController.setSubController(App.Env.controller);
+        App.Env.controller.setSuperController(App.Env.namespaceController);
+        if (App.Env.controller.initialize != null) {
+          App.Env.controller.initialize();
+        }
+        if (App.Env.controller[action_name] != null) {
+          App.Env.controller[action_name]();
+        }
+      }
+    } else if (App.Controllers[controller_name]) {
+      App.Env.controller = new App.Controllers[controller_name];
+      if (App.Env.controller.initialize != null) {
+        App.Env.controller.initialize();
+      }
+      if (App.Env.controller[action_name] != null) {
+        App.Env.controller[action_name]();
+      }
     }
-    return params;
+    if (this.wire != null) {
+      this.wire.resetSyncTime();
+      return this.wire._check();
+    }
+  };
+
+  Loco.prototype.getModels = function() {
+    var _, func, innerFunc, models, ref, ref1, regExp;
+    models = [];
+    regExp = /^[A-Z]/;
+    ref = App.Models;
+    for (func in ref) {
+      _ = ref[func];
+      if (!regExp.exec(func) || func === "Base") {
+        continue;
+      }
+      models.push(func);
+      ref1 = App.Models[func];
+      for (innerFunc in ref1) {
+        _ = ref1[innerFunc];
+        if (regExp.exec(innerFunc)) {
+          models.push(func + "." + innerFunc);
+        }
+      }
+    }
+    return models;
+  };
+
+  Loco.prototype.getModelForRemoteName = function(remoteName) {
+    var i, len, model, parts, ref;
+    ref = this.getModels();
+    for (i = 0, len = ref.length; i < len; i++) {
+      model = ref[i];
+      parts = model.split(".");
+      if (parts.length === 1) {
+        if (App.Models[parts[0]].getRemoteName() === remoteName) {
+          return App.Models[parts[0]];
+        }
+      } else if (parts.length === 2) {
+        if (App.Models[parts[0]][parts[1]].getRemoteName() === remoteName) {
+          return App.Models[parts[0]][parts[1]];
+        }
+      }
+    }
+  };
+
+  return Loco;
+
+})();
+
+//# sourceMappingURL=../maps/base/loco.js.map
+
+App.Mixins.Connectivity = (function() {
+  function Connectivity() {}
+
+  Connectivity.prototype.connectWith = function(data, opts) {
+    var i, identity, len, ref;
+    if (opts == null) {
+      opts = {};
+    }
+    if (data == null) {
+      return null;
+    }
+    if (data.constructor.name === "Array") {
+      ref = App.Utils.Array.uniq(App.Utils.Array.map(data, function(obj) {
+        return obj.getIdentity();
+      }));
+      for (i = 0, len = ref.length; i < len; i++) {
+        identity = ref[i];
+        App.IdentityMap.addCollection(identity, {
+          to: this
+        });
+        if (opts.receiver != null) {
+          this.receivers[identity] = opts.receiver;
+        }
+      }
+      return;
+    }
+    if (opts.receiver != null) {
+      this.receivers[data.toKey()] = opts.receiver;
+    }
+    return App.IdentityMap.connect(this, {
+      "with": data
+    });
+  };
+
+  Connectivity.prototype.receiverFor = function(data) {
+    if (data.constructor.name === "String") {
+      if (this.receivers[data] != null) {
+        return this.receivers[data];
+      } else {
+        return null;
+      }
+    }
+    if (this.receivers[data.toKey()] != null) {
+      return this.receivers[data.toKey()];
+    }
+    return null;
+  };
+
+  return Connectivity;
+
+})();
+
+//# sourceMappingURL=../../maps/base/mixins/connectivity.js.map
+
+App.Utils.Array = (function() {
+  function Array() {}
+
+  Array.map = function(arr, func) {
+    var i, len, newArr, o;
+    newArr = [];
+    for (i = 0, len = arr.length; i < len; i++) {
+      o = arr[i];
+      newArr.push(func(o));
+    }
+    return newArr;
+  };
+
+  Array.uniq = function(arr, func) {
+    var i, len, newArr, o;
+    newArr = [];
+    for (i = 0, len = arr.length; i < len; i++) {
+      o = arr[i];
+      if (newArr.indexOf(o) === -1) {
+        newArr.push(o);
+      }
+    }
+    return newArr;
+  };
+
+  return Array;
+
+})();
+
+//# sourceMappingURL=../maps/utils/array.js.map
+
+App.Utils.Collection = (function() {
+  function Collection() {}
+
+  Collection.find = function(collection, func) {
+    var o;
+    if ((function() {
+      var i, len, results;
+      results = [];
+      for (i = 0, len = collection.length; i < len; i++) {
+        o = collection[i];
+        results.push(func(o) === true);
+      }
+      return results;
+    })()) {
+      return o;
+    }
+  };
+
+  return Collection;
+
+})();
+
+//# sourceMappingURL=../maps/utils/collection.js.map
+
+App.Utils.String = (function() {
+  function String() {}
+
+  String.last = function(s) {
+    return s[s.length - 1];
+  };
+
+  return String;
+
+})();
+
+//# sourceMappingURL=../maps/utils/string.js.map
+
+App.Validators.Base = (function() {
+  Base.sharedInstances = {};
+
+  Base.instance = function(obj, attr, opts) {
+    var sharedInstance, validatorName;
+    validatorName = this.name;
+    if (this.sharedInstances[validatorName] == null) {
+      this.sharedInstances[validatorName] = new App.Validators[validatorName];
+    }
+    sharedInstance = this.sharedInstances[validatorName];
+    sharedInstance.assignAttribs(obj, attr, opts);
+    return sharedInstance;
+  };
+
+  function Base() {
+    this.obj = null;
+    this.attr = null;
+    this.val = null;
+    this.opts = null;
+  }
+
+  Base.prototype.assignAttribs = function(obj, attr, opts) {
+    this.obj = obj;
+    this.attr = attr;
+    this.val = this.obj[this.attr];
+    return this.opts = opts;
   };
 
   return Base;
 
-})(App.Mix(App.Mixins.Connectivity));
-
-//# sourceMappingURL=../maps/controllers/base.js.map
-
-App.Helpers.Text = (function() {
-  function Text(opts) {
-    if (opts == null) {
-      opts = {};
-    }
-  }
-
-  Text.prototype.simpleFormat = function(str) {
-    str = str.replace(/\r\n?/, "\n");
-    str = $.trim(str);
-    if (str.length > 0) {
-      str = str.replace(/\n\n+/g, '</p><p>');
-      str = str.replace(/\n/g, '<br>');
-      str = '<p>' + str + '</p>';
-    }
-    return str;
-  };
-
-  return Text;
-
 })();
 
-//# sourceMappingURL=../maps/helpers/text.js.map
+//# sourceMappingURL=../maps/validators/_base.js.map
 
-App.I18n.en = {
-  variants: {},
-  models: {},
-  attributes: {},
-  ui: {
-    form: {
-      sending: "Sending...",
-      success: "Success",
-      errors: {
-        connection: "Connection Error",
-        invalid_data: "Invalid data"
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Absence = (function(superClass) {
+  extend(Absence, superClass);
+
+  function Absence() {
+    Absence.__super__.constructor.apply(this, arguments);
+  }
+
+  Absence.prototype.validate = function() {
+    switch (typeof this.val) {
+      case 'string':
+        if ((this.val != null) && this.val.length === 0) {
+          return;
+        }
+        break;
+      default:
+        if (this.val == null) {
+          return;
+        }
+    }
+    return this._addErrorMessage();
+  };
+
+  Absence.prototype._addErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.present;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Absence;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/absence.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Confirmation = (function(superClass) {
+  extend(Confirmation, superClass);
+
+  function Confirmation() {
+    Confirmation.__super__.constructor.apply(this, arguments);
+  }
+
+  Confirmation.prototype.validate = function() {
+    var properVal;
+    properVal = this.obj[this._properAttr()];
+    if ((this.val != null) && (properVal != null) && this.val === properVal) {
+      return;
+    }
+    return this._addErrorMessage();
+  };
+
+  Confirmation.prototype._addErrorMessage = function() {
+    var attrName, attrNames, defaultAttrName, message;
+    defaultAttrName = this.attr.charAt(0).toUpperCase() + this.attr.slice(1);
+    attrNames = App.I18n[App.Env.loco.getLocale()].attributes[this.obj.getIdentity()];
+    attrName = (attrNames && attrNames[this.attr]) || defaultAttrName;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.confirmation;
+    message = message.replace('%{attribute}', attrName);
+    return this.obj.addErrorMessage(message, {
+      "for": this._properAttr()
+    });
+  };
+
+  Confirmation.prototype._properAttr = function() {
+    return this.attr + "Confirmation";
+  };
+
+  return Confirmation;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/confirmation.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Exclusion = (function(superClass) {
+  extend(Exclusion, superClass);
+
+  function Exclusion() {
+    Exclusion.__super__.constructor.apply(this, arguments);
+  }
+
+  Exclusion.prototype.validate = function() {
+    var set;
+    set = this.opts["in"] || this.opts.within || [];
+    if (set.indexOf(this.val) === -1) {
+      return;
+    }
+    return this._addErrorMessage();
+  };
+
+  Exclusion.prototype._addErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.exclusion;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Exclusion;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/exclusion.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Format = (function(superClass) {
+  extend(Format, superClass);
+
+  function Format() {
+    Format.__super__.constructor.apply(this, arguments);
+  }
+
+  Format.prototype.validate = function() {
+    var match;
+    match = this.opts["with"].exec(this.val);
+    if (match != null) {
+      return;
+    }
+    return this._addErrorMessage();
+  };
+
+  Format.prototype._addErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.invalid;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Format;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/format.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Inclusion = (function(superClass) {
+  extend(Inclusion, superClass);
+
+  function Inclusion() {
+    Inclusion.__super__.constructor.apply(this, arguments);
+  }
+
+  Inclusion.prototype.validate = function() {
+    var set;
+    set = this.opts["in"] || this.opts.within || [];
+    if (set.indexOf(this.val) !== -1) {
+      return;
+    }
+    return this._addErrorMessage();
+  };
+
+  Inclusion.prototype._addErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.inclusion;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Inclusion;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/inclusion.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Length = (function(superClass) {
+  extend(Length, superClass);
+
+  function Length() {
+    Length.__super__.constructor.apply(this, arguments);
+  }
+
+  Length.prototype.validate = function() {
+    var message;
+    if (this.val == null) {
+      return;
+    }
+    message = (this._range()[0] != null) && (this._range()[1] != null) && this._range()[0] === this._range()[1] && this.val.length !== this._range()[0] ? this._selectErrorMessage('wrong_length', this._range()[0]) : (this._range()[0] != null) && this.val.length < this._range()[0] ? this._selectErrorMessage('too_short', this._range()[0]) : (this._range()[1] != null) && this.val.length > this._range()[1] ? this._selectErrorMessage('too_long', this._range()[1]) : null;
+    if (message === null) {
+      return;
+    }
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Length.prototype._range = function() {
+    var from, to;
+    from = this.opts.minimum || this.opts.is || ((this.opts.within != null) && this.opts.within[0]) || null;
+    to = this.opts.maximum || this.opts.is || ((this.opts.within != null) && this.opts.within[1]) || null;
+    return [from, to];
+  };
+
+  Length.prototype._selectErrorMessage = function(msg, val) {
+    var i, len, message, ref, variant;
+    if (val === 1) {
+      return App.I18n[App.Env.loco.getLocale()].errors.messages[msg].one;
+    }
+    message = null;
+    ref = ['few', 'many'];
+    for (i = 0, len = ref.length; i < len; i++) {
+      variant = ref[i];
+      if (this._checkVariant(variant, val)) {
+        message = App.I18n[App.Env.loco.getLocale()].errors.messages[msg][variant];
+        break;
       }
     }
-  },
-  date: {
-    formats: {
-      "default": "%Y-%m-%d",
-      short: "%b %d",
-      long: "%B %d, %Y"
-    },
-    day_names: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    abbr_day_names: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    abbr_month_names: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  },
-  errors: {
-    messages: {
-      accepted: "must be accepted",
-      blank: "can't be blank",
-      confirmation: "doesn't match %{attribute}",
-      empty: "can't be empty",
-      equal_to: "must be equal to %{count}",
-      even: "must be even",
-      exclusion: "is reserved",
-      greater_than: "must be greater than %{count}",
-      greater_than_or_equal_to: "must be greater than or equal to %{count}",
-      inclusion: "is not included in the list",
-      invalid: "is invalid",
-      less_than: "must be less than %{count}",
-      less_than_or_equal_to: "must be less than or equal to %{count}",
-      not_a_number: "is not a number",
-      not_an_integer: "must be an integer",
-      odd: "must be odd",
-      present: "must be blank",
-      too_long: {
-        one: "is too long (maximum is 1 character)",
-        other: "is too long (maximum is %{count} characters)"
-      },
-      too_short: {
-        one: "is too short (minimum is 1 character)",
-        other: "is too short (minimum is %{count} characters)"
-      },
-      wrong_length: {
-        one: "is the wrong length (should be 1 character)",
-        other: "is the wrong length (should be %{count} characters)"
-      },
-      other_than: "must be other than %{count}"
+    if (message == null) {
+      message = App.I18n[App.Env.loco.getLocale()].errors.messages[msg].other;
     }
-  }
-};
+    if (this.opts.message != null) {
+      message = this.opts.message;
+    }
+    if (/%{count}/.exec(message)) {
+      message = message.replace('%{count}', val);
+    }
+    return message;
+  };
 
-//# sourceMappingURL=../maps/locales/en.js.map
+  Length.prototype._checkVariant = function(variant, val) {
+    if (App.I18n[App.Env.loco.getLocale()].variants[variant] == null) {
+      return;
+    }
+    return App.I18n[App.Env.loco.getLocale()].variants[variant](val);
+  };
+
+  return Length;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/length.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Numericality = (function(superClass) {
+  extend(Numericality, superClass);
+
+  function Numericality() {
+    Numericality.__super__.constructor.apply(this, arguments);
+  }
+
+  Numericality.prototype.validate = function() {
+    if (isNaN(this.val)) {
+      return this._addNaNErrorMessage();
+    } else if ((this.opts.only_integer != null) && Number(this.val) !== parseInt(this.val)) {
+      return this._addIntErrorMessage();
+    } else if ((this.opts.greater_than != null) && Number(this.val) <= this.opts.greater_than) {
+      return this._addGreatherThanErrorMessage();
+    } else if ((this.opts.greater_than_or_equal_to != null) && Number(this.val) < this.opts.greater_than_or_equal_to) {
+      return this._addGreatherThanOrEqualToErrorMessage();
+    } else if ((this.opts.equal_to != null) && Number(this.val) !== this.opts.equal_to) {
+      return this._addEqualToErrorMessage();
+    } else if ((this.opts.less_than != null) && Number(this.val) >= this.opts.less_than) {
+      return this._addLessThanErrorMessage();
+    } else if ((this.opts.less_than_or_equal_to != null) && Number(this.val) > this.opts.less_than_or_equal_to) {
+      return this._addLessThanOrEqualToErrorMessage();
+    } else if ((this.opts.other_than != null) && Number(this.val) === this.opts.other_than) {
+      return this._addOtherThanErrorMessage();
+    } else if ((this.opts.odd != null) && Number(this.val) % 2 !== 1) {
+      return this._addOddErrorMessage();
+    } else if ((this.opts.even != null) && Number(this.val) % 2 !== 0) {
+      return this._addEvenErrorMessage();
+    }
+  };
+
+  Numericality.prototype._addNaNErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.not_a_number;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addIntErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.not_an_integer;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addGreatherThanErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.greater_than;
+    message = message.replace('%{count}', this.opts.greater_than);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addGreatherThanOrEqualToErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.greater_than_or_equal_to;
+    message = message.replace('%{count}', this.opts.greater_than_or_equal_to);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addEqualToErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.equal_to;
+    message = message.replace('%{count}', this.opts.equal_to);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addLessThanErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.less_than;
+    message = message.replace('%{count}', this.opts.less_than);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addLessThanOrEqualToErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.less_than_or_equal_to;
+    message = message.replace('%{count}', this.opts.less_than_or_equal_to);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addOtherThanErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.other_than;
+    message = message.replace('%{count}', this.opts.other_than);
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addOddErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.odd;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  Numericality.prototype._addEvenErrorMessage = function() {
+    var message;
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.even;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Numericality;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/numericality.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Presence = (function(superClass) {
+  extend(Presence, superClass);
+
+  function Presence() {
+    Presence.__super__.constructor.apply(this, arguments);
+  }
+
+  Presence.prototype.validate = function() {
+    switch (typeof this.val) {
+      case 'string':
+        if ((this.val != null) && this.val.length > 0) {
+          return;
+        }
+        break;
+      default:
+        if (this.val != null) {
+          return;
+        }
+    }
+    return this._addErrorMessage();
+  };
+
+  Presence.prototype._addErrorMessage = function() {
+    var message;
+    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.blank;
+    return this.obj.addErrorMessage(message, {
+      "for": this.attr
+    });
+  };
+
+  return Presence;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/presence.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Validators.Size = (function(superClass) {
+  extend(Size, superClass);
+
+  function Size() {
+    Size.__super__.constructor.apply(this, arguments);
+  }
+
+  Size.prototype.validate = function() {
+    return App.Validators.Length.instance(this.obj, this.attr, this.opts).validate();
+  };
+
+  return Size;
+
+})(App.Validators.Base);
+
+//# sourceMappingURL=../maps/validators/size.js.map
 
 App.Models.Base = (function() {
   function Base(data) {
@@ -1346,97 +1765,146 @@ App.Models.Base = (function() {
 
 //# sourceMappingURL=../maps/models/base.js.map
 
-App.Services.Date = (function() {
-  function Date(date) {
-    this.date = date;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Controllers.Base = (function(superClass) {
+  extend(Base, superClass);
+
+  function Base() {
+    this.views = {};
+    this.receivers = {};
+    this.subController = null;
+    this.superController = null;
+    this.params = this.__fetchParams();
   }
 
-  Date.prototype.toString = function(format) {
-    var skope;
-    if (format == null) {
-      format = 'default';
-    }
-    skope = App.I18n[App.Env.loco.getLocale()].date.formats;
-    switch (format) {
-      case 'default':
-        return this.strftime(skope["default"]);
-      case 'short':
-        return this.strftime(skope.short);
-      case 'long':
-        return this.strftime(skope.long);
-      default:
-        return console.log('App.Services.Date#toString: unknown format.');
-    }
+  Base.prototype.setView = function(key, view) {
+    return this.views[key] = view;
   };
 
-  Date.prototype.strftime = function(str) {
-    var skope;
-    skope = App.I18n[App.Env.loco.getLocale()];
-    str = str.replace('%Y', (function(_this) {
-      return function(x) {
-        return _this.date.getFullYear();
-      };
-    })(this));
-    str = str.replace('%y', (function(_this) {
-      return function(x) {
-        return _this.date.getFullYear().toString().slice(-2);
-      };
-    })(this));
-    str = str.replace('%m', (function(_this) {
-      return function(x) {
-        var month;
-        month = _this.date.getMonth() + 1;
-        if (month >= 10) {
-          return month;
-        } else {
-          return "0" + month;
-        }
-      };
-    })(this));
-    str = str.replace('%b', (function(_this) {
-      return function(x) {
-        return skope.date.abbr_month_names[_this.date.getMonth()];
-      };
-    })(this));
-    str = str.replace('%B', (function(_this) {
-      return function(x) {
-        return skope.date.month_names[_this.date.getMonth()];
-      };
-    })(this));
-    str = str.replace('%d', (function(_this) {
-      return function(x) {
-        if (_this.date.getDate() >= 10) {
-          return _this.date.getDate();
-        } else {
-          return "0" + (_this.date.getDate());
-        }
-      };
-    })(this));
-    str = str.replace('%H', (function(_this) {
-      return function(x) {
-        if (_this.date.getHours() >= 10) {
-          return _this.date.getHours();
-        } else {
-          return "0" + (_this.date.getHours());
-        }
-      };
-    })(this));
-    return str = str.replace('%M', (function(_this) {
-      return function(x) {
-        if (_this.date.getMinutes() >= 10) {
-          return _this.date.getMinutes();
-        } else {
-          return "0" + (_this.date.getMinutes());
-        }
-      };
-    })(this));
+  Base.prototype.getView = function(key) {
+    return this.views[key];
   };
 
-  return Date;
+  Base.prototype.getViews = function() {
+    return this.views;
+  };
 
-})();
+  Base.prototype.setSubController = function(cntrlr) {
+    return this.subController = cntrlr;
+  };
 
-//# sourceMappingURL=../maps/services/date.js.map
+  Base.prototype.getSubController = function() {
+    return this.subController;
+  };
+
+  Base.prototype.setSuperController = function(cntrlr) {
+    return this.superController = cntrlr;
+  };
+
+  Base.prototype.getSuperController = function() {
+    return this.superController;
+  };
+
+  Base.prototype.setResource = function(name) {
+    return this.setScope(name);
+  };
+
+  Base.prototype.setScope = function(name) {
+    return App.Env.scope = name;
+  };
+
+  Base.prototype.__fetchParams = function() {
+    var arr, i, id, key, len, match, params, paramsArray, paramsString, splitUrl, val;
+    params = {};
+    match = /https?:\/\/.+\/\w+\/(\d+)/.exec(window.location.href);
+    id = match != null ? match[1] : null;
+    if (id != null) {
+      params["id"] = parseInt(id);
+    }
+    splitUrl = window.location.href.split('?');
+    if (splitUrl.length === 1) {
+      return params;
+    }
+    paramsString = splitUrl[splitUrl.length - 1];
+    paramsArray = App.Utils.Array.map(paramsString.split('&'), function(s) {
+      return s.split('=');
+    });
+    for (i = 0, len = paramsArray.length; i < len; i++) {
+      arr = paramsArray[i];
+      key = decodeURIComponent(arr[0]);
+      val = decodeURIComponent(arr[1]);
+      if (val != null) {
+        val = val.replace(/\+/g, " ");
+      }
+      params[key] = val;
+    }
+    return params;
+  };
+
+  return Base;
+
+})(App.Mix(App.Mixins.Connectivity));
+
+//# sourceMappingURL=../maps/controllers/base.js.map
+
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+App.Views.Base = (function(superClass) {
+  extend(Base, superClass);
+
+  function Base(opts) {
+    if (opts == null) {
+      opts = {};
+    }
+    this.views = {};
+    this.intervals = {};
+    this.receivers = {};
+    this.controller = null;
+    this.delegator = null;
+    if (opts.controller != null) {
+      this.setController(opts.controller);
+    }
+    if (opts.delegator != null) {
+      this.setDelegator(opts.delegator);
+    }
+  }
+
+  Base.prototype.setController = function(cntr) {
+    return this.controller = cntr;
+  };
+
+  Base.prototype.getController = function() {
+    return this.controller;
+  };
+
+  Base.prototype.setView = function(key, view) {
+    return this.views[key] = view;
+  };
+
+  Base.prototype.getView = function(key) {
+    return this.views[key];
+  };
+
+  Base.prototype.getViews = function() {
+    return this.views;
+  };
+
+  Base.prototype.setDelegator = function(delegator) {
+    return this.delegator = delegator;
+  };
+
+  Base.prototype.getDelegator = function(delegator) {
+    return this.delegator;
+  };
+
+  return Base;
+
+})(App.Mix(App.Mixins.Connectivity));
+
+//# sourceMappingURL=../maps/views/base.js.map
 
 App.UI.Form = (function() {
   function Form(opts) {
@@ -1791,649 +2259,181 @@ App.UI.Tabs = (function() {
 
 //# sourceMappingURL=../maps/ui/tabs.js.map
 
-App.Utils.Array = (function() {
-  function Array() {}
-
-  Array.map = function(arr, func) {
-    var i, len, newArr, o;
-    newArr = [];
-    for (i = 0, len = arr.length; i < len; i++) {
-      o = arr[i];
-      newArr.push(func(o));
-    }
-    return newArr;
-  };
-
-  Array.uniq = function(arr, func) {
-    var i, len, newArr, o;
-    newArr = [];
-    for (i = 0, len = arr.length; i < len; i++) {
-      o = arr[i];
-      if (newArr.indexOf(o) === -1) {
-        newArr.push(o);
-      }
-    }
-    return newArr;
-  };
-
-  return Array;
-
-})();
-
-//# sourceMappingURL=../maps/utils/array.js.map
-
-App.Utils.Collection = (function() {
-  function Collection() {}
-
-  Collection.find = function(collection, func) {
-    var o;
-    if ((function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = collection.length; i < len; i++) {
-        o = collection[i];
-        results.push(func(o) === true);
-      }
-      return results;
-    })()) {
-      return o;
-    }
-  };
-
-  return Collection;
-
-})();
-
-//# sourceMappingURL=../maps/utils/collection.js.map
-
-App.Utils.String = (function() {
-  function String() {}
-
-  String.last = function(s) {
-    return s[s.length - 1];
-  };
-
-  return String;
-
-})();
-
-//# sourceMappingURL=../maps/utils/string.js.map
-
-App.Validators.Base = (function() {
-  Base.sharedInstances = {};
-
-  Base.instance = function(obj, attr, opts) {
-    var sharedInstance, validatorName;
-    validatorName = this.name;
-    if (this.sharedInstances[validatorName] == null) {
-      this.sharedInstances[validatorName] = new App.Validators[validatorName];
-    }
-    sharedInstance = this.sharedInstances[validatorName];
-    sharedInstance.assignAttribs(obj, attr, opts);
-    return sharedInstance;
-  };
-
-  function Base() {
-    this.obj = null;
-    this.attr = null;
-    this.val = null;
-    this.opts = null;
+App.Services.Date = (function() {
+  function Date(date) {
+    this.date = date;
   }
 
-  Base.prototype.assignAttribs = function(obj, attr, opts) {
-    this.obj = obj;
-    this.attr = attr;
-    this.val = this.obj[this.attr];
-    return this.opts = opts;
-  };
-
-  return Base;
-
-})();
-
-//# sourceMappingURL=../maps/validators/_base.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Absence = (function(superClass) {
-  extend(Absence, superClass);
-
-  function Absence() {
-    Absence.__super__.constructor.apply(this, arguments);
-  }
-
-  Absence.prototype.validate = function() {
-    switch (typeof this.val) {
-      case 'string':
-        if ((this.val != null) && this.val.length === 0) {
-          return;
-        }
-        break;
+  Date.prototype.toString = function(format) {
+    var skope;
+    if (format == null) {
+      format = 'default';
+    }
+    skope = App.I18n[App.Env.loco.getLocale()].date.formats;
+    switch (format) {
+      case 'default':
+        return this.strftime(skope["default"]);
+      case 'short':
+        return this.strftime(skope.short);
+      case 'long':
+        return this.strftime(skope.long);
       default:
-        if (this.val == null) {
-          return;
+        return console.log('App.Services.Date#toString: unknown format.');
+    }
+  };
+
+  Date.prototype.strftime = function(str) {
+    var skope;
+    skope = App.I18n[App.Env.loco.getLocale()];
+    str = str.replace('%Y', (function(_this) {
+      return function(x) {
+        return _this.date.getFullYear();
+      };
+    })(this));
+    str = str.replace('%y', (function(_this) {
+      return function(x) {
+        return _this.date.getFullYear().toString().slice(-2);
+      };
+    })(this));
+    str = str.replace('%m', (function(_this) {
+      return function(x) {
+        var month;
+        month = _this.date.getMonth() + 1;
+        if (month >= 10) {
+          return month;
+        } else {
+          return "0" + month;
         }
-    }
-    return this._addErrorMessage();
-  };
-
-  Absence.prototype._addErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.present;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  return Absence;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/absence.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Confirmation = (function(superClass) {
-  extend(Confirmation, superClass);
-
-  function Confirmation() {
-    Confirmation.__super__.constructor.apply(this, arguments);
-  }
-
-  Confirmation.prototype.validate = function() {
-    var properVal;
-    properVal = this.obj[this._properAttr()];
-    if ((this.val != null) && (properVal != null) && this.val === properVal) {
-      return;
-    }
-    return this._addErrorMessage();
-  };
-
-  Confirmation.prototype._addErrorMessage = function() {
-    var attrName, attrNames, defaultAttrName, message;
-    defaultAttrName = this.attr.charAt(0).toUpperCase() + this.attr.slice(1);
-    attrNames = App.I18n[App.Env.loco.getLocale()].attributes[this.obj.getIdentity()];
-    attrName = (attrNames && attrNames[this.attr]) || defaultAttrName;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.confirmation;
-    message = message.replace('%{attribute}', attrName);
-    return this.obj.addErrorMessage(message, {
-      "for": this._properAttr()
-    });
-  };
-
-  Confirmation.prototype._properAttr = function() {
-    return this.attr + "Confirmation";
-  };
-
-  return Confirmation;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/confirmation.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Exclusion = (function(superClass) {
-  extend(Exclusion, superClass);
-
-  function Exclusion() {
-    Exclusion.__super__.constructor.apply(this, arguments);
-  }
-
-  Exclusion.prototype.validate = function() {
-    var set;
-    set = this.opts["in"] || this.opts.within || [];
-    if (set.indexOf(this.val) === -1) {
-      return;
-    }
-    return this._addErrorMessage();
-  };
-
-  Exclusion.prototype._addErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.exclusion;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  return Exclusion;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/exclusion.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Format = (function(superClass) {
-  extend(Format, superClass);
-
-  function Format() {
-    Format.__super__.constructor.apply(this, arguments);
-  }
-
-  Format.prototype.validate = function() {
-    var match;
-    match = this.opts["with"].exec(this.val);
-    if (match != null) {
-      return;
-    }
-    return this._addErrorMessage();
-  };
-
-  Format.prototype._addErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.invalid;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  return Format;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/format.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Inclusion = (function(superClass) {
-  extend(Inclusion, superClass);
-
-  function Inclusion() {
-    Inclusion.__super__.constructor.apply(this, arguments);
-  }
-
-  Inclusion.prototype.validate = function() {
-    var set;
-    set = this.opts["in"] || this.opts.within || [];
-    if (set.indexOf(this.val) !== -1) {
-      return;
-    }
-    return this._addErrorMessage();
-  };
-
-  Inclusion.prototype._addErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.inclusion;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  return Inclusion;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/inclusion.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Length = (function(superClass) {
-  extend(Length, superClass);
-
-  function Length() {
-    Length.__super__.constructor.apply(this, arguments);
-  }
-
-  Length.prototype.validate = function() {
-    var message;
-    if (this.val == null) {
-      return;
-    }
-    message = (this._range()[0] != null) && (this._range()[1] != null) && this._range()[0] === this._range()[1] && this.val.length !== this._range()[0] ? this._selectErrorMessage('wrong_length', this._range()[0]) : (this._range()[0] != null) && this.val.length < this._range()[0] ? this._selectErrorMessage('too_short', this._range()[0]) : (this._range()[1] != null) && this.val.length > this._range()[1] ? this._selectErrorMessage('too_long', this._range()[1]) : null;
-    if (message === null) {
-      return;
-    }
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Length.prototype._range = function() {
-    var from, to;
-    from = this.opts.minimum || this.opts.is || ((this.opts.within != null) && this.opts.within[0]) || null;
-    to = this.opts.maximum || this.opts.is || ((this.opts.within != null) && this.opts.within[1]) || null;
-    return [from, to];
-  };
-
-  Length.prototype._selectErrorMessage = function(msg, val) {
-    var i, len, message, ref, variant;
-    if (val === 1) {
-      return App.I18n[App.Env.loco.getLocale()].errors.messages[msg].one;
-    }
-    message = null;
-    ref = ['few', 'many'];
-    for (i = 0, len = ref.length; i < len; i++) {
-      variant = ref[i];
-      if (this._checkVariant(variant, val)) {
-        message = App.I18n[App.Env.loco.getLocale()].errors.messages[msg][variant];
-        break;
-      }
-    }
-    if (message == null) {
-      message = App.I18n[App.Env.loco.getLocale()].errors.messages[msg].other;
-    }
-    if (this.opts.message != null) {
-      message = this.opts.message;
-    }
-    if (/%{count}/.exec(message)) {
-      message = message.replace('%{count}', val);
-    }
-    return message;
-  };
-
-  Length.prototype._checkVariant = function(variant, val) {
-    if (App.I18n[App.Env.loco.getLocale()].variants[variant] == null) {
-      return;
-    }
-    return App.I18n[App.Env.loco.getLocale()].variants[variant](val);
-  };
-
-  return Length;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/length.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Numericality = (function(superClass) {
-  extend(Numericality, superClass);
-
-  function Numericality() {
-    Numericality.__super__.constructor.apply(this, arguments);
-  }
-
-  Numericality.prototype.validate = function() {
-    if (isNaN(this.val)) {
-      return this._addNaNErrorMessage();
-    } else if ((this.opts.only_integer != null) && Number(this.val) !== parseInt(this.val)) {
-      return this._addIntErrorMessage();
-    } else if ((this.opts.greater_than != null) && Number(this.val) <= this.opts.greater_than) {
-      return this._addGreatherThanErrorMessage();
-    } else if ((this.opts.greater_than_or_equal_to != null) && Number(this.val) < this.opts.greater_than_or_equal_to) {
-      return this._addGreatherThanOrEqualToErrorMessage();
-    } else if ((this.opts.equal_to != null) && Number(this.val) !== this.opts.equal_to) {
-      return this._addEqualToErrorMessage();
-    } else if ((this.opts.less_than != null) && Number(this.val) >= this.opts.less_than) {
-      return this._addLessThanErrorMessage();
-    } else if ((this.opts.less_than_or_equal_to != null) && Number(this.val) > this.opts.less_than_or_equal_to) {
-      return this._addLessThanOrEqualToErrorMessage();
-    } else if ((this.opts.other_than != null) && Number(this.val) === this.opts.other_than) {
-      return this._addOtherThanErrorMessage();
-    } else if ((this.opts.odd != null) && Number(this.val) % 2 !== 1) {
-      return this._addOddErrorMessage();
-    } else if ((this.opts.even != null) && Number(this.val) % 2 !== 0) {
-      return this._addEvenErrorMessage();
-    }
-  };
-
-  Numericality.prototype._addNaNErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.not_a_number;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addIntErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.not_an_integer;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addGreatherThanErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.greater_than;
-    message = message.replace('%{count}', this.opts.greater_than);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addGreatherThanOrEqualToErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.greater_than_or_equal_to;
-    message = message.replace('%{count}', this.opts.greater_than_or_equal_to);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addEqualToErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.equal_to;
-    message = message.replace('%{count}', this.opts.equal_to);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addLessThanErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.less_than;
-    message = message.replace('%{count}', this.opts.less_than);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addLessThanOrEqualToErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.less_than_or_equal_to;
-    message = message.replace('%{count}', this.opts.less_than_or_equal_to);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addOtherThanErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.other_than;
-    message = message.replace('%{count}', this.opts.other_than);
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addOddErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.odd;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  Numericality.prototype._addEvenErrorMessage = function() {
-    var message;
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.even;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
-
-  return Numericality;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/numericality.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Presence = (function(superClass) {
-  extend(Presence, superClass);
-
-  function Presence() {
-    Presence.__super__.constructor.apply(this, arguments);
-  }
-
-  Presence.prototype.validate = function() {
-    switch (typeof this.val) {
-      case 'string':
-        if ((this.val != null) && this.val.length > 0) {
-          return;
+      };
+    })(this));
+    str = str.replace('%b', (function(_this) {
+      return function(x) {
+        return skope.date.abbr_month_names[_this.date.getMonth()];
+      };
+    })(this));
+    str = str.replace('%B', (function(_this) {
+      return function(x) {
+        return skope.date.month_names[_this.date.getMonth()];
+      };
+    })(this));
+    str = str.replace('%d', (function(_this) {
+      return function(x) {
+        if (_this.date.getDate() >= 10) {
+          return _this.date.getDate();
+        } else {
+          return "0" + (_this.date.getDate());
         }
-        break;
-      default:
-        if (this.val != null) {
-          return;
+      };
+    })(this));
+    str = str.replace('%H', (function(_this) {
+      return function(x) {
+        if (_this.date.getHours() >= 10) {
+          return _this.date.getHours();
+        } else {
+          return "0" + (_this.date.getHours());
         }
-    }
-    return this._addErrorMessage();
+      };
+    })(this));
+    return str = str.replace('%M', (function(_this) {
+      return function(x) {
+        if (_this.date.getMinutes() >= 10) {
+          return _this.date.getMinutes();
+        } else {
+          return "0" + (_this.date.getMinutes());
+        }
+      };
+    })(this));
   };
 
-  Presence.prototype._addErrorMessage = function() {
-    var message;
-    message = this.opts.message != null ? this.opts.message : App.I18n[App.Env.loco.getLocale()].errors.messages.blank;
-    return this.obj.addErrorMessage(message, {
-      "for": this.attr
-    });
-  };
+  return Date;
 
-  return Presence;
+})();
 
-})(App.Validators.Base);
+//# sourceMappingURL=../maps/services/date.js.map
 
-//# sourceMappingURL=../maps/validators/presence.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Validators.Size = (function(superClass) {
-  extend(Size, superClass);
-
-  function Size() {
-    Size.__super__.constructor.apply(this, arguments);
-  }
-
-  Size.prototype.validate = function() {
-    return App.Validators.Length.instance(this.obj, this.attr, this.opts).validate();
-  };
-
-  return Size;
-
-})(App.Validators.Base);
-
-//# sourceMappingURL=../maps/validators/size.js.map
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-App.Views.Base = (function(superClass) {
-  extend(Base, superClass);
-
-  function Base(opts) {
+App.Helpers.Text = (function() {
+  function Text(opts) {
     if (opts == null) {
       opts = {};
     }
-    this.views = {};
-    this.intervals = {};
-    this.receivers = {};
-    this.controller = null;
-    this.delegator = null;
-    if (opts.controller != null) {
-      this.setController(opts.controller);
-    }
-    if (opts.delegator != null) {
-      this.setDelegator(opts.delegator);
-    }
   }
 
-  Base.prototype.setController = function(cntr) {
-    return this.controller = cntr;
-  };
-
-  Base.prototype.getController = function() {
-    return this.controller;
-  };
-
-  Base.prototype.setView = function(key, view) {
-    return this.views[key] = view;
-  };
-
-  Base.prototype.getView = function(key) {
-    return this.views[key];
-  };
-
-  Base.prototype.getViews = function() {
-    return this.views;
-  };
-
-  Base.prototype.setDelegator = function(delegator) {
-    return this.delegator = delegator;
-  };
-
-  Base.prototype.getDelegator = function(delegator) {
-    return this.delegator;
-  };
-
-  return Base;
-
-})(App.Mix(App.Mixins.Connectivity));
-
-//# sourceMappingURL=../maps/views/base.js.map
-
-App.Mixins.Connectivity = (function() {
-  function Connectivity() {}
-
-  Connectivity.prototype.connectWith = function(data, opts) {
-    var i, identity, len, ref;
-    if (opts == null) {
-      opts = {};
+  Text.prototype.simpleFormat = function(str) {
+    str = str.replace(/\r\n?/, "\n");
+    str = $.trim(str);
+    if (str.length > 0) {
+      str = str.replace(/\n\n+/g, '</p><p>');
+      str = str.replace(/\n/g, '<br>');
+      str = '<p>' + str + '</p>';
     }
-    if (data == null) {
-      return null;
-    }
-    if (data.constructor.name === "Array") {
-      ref = App.Utils.Array.uniq(App.Utils.Array.map(data, function(obj) {
-        return obj.getIdentity();
-      }));
-      for (i = 0, len = ref.length; i < len; i++) {
-        identity = ref[i];
-        App.IdentityMap.addCollection(identity, {
-          to: this
-        });
-        if (opts.receiver != null) {
-          this.receivers[identity] = opts.receiver;
-        }
-      }
-      return;
-    }
-    if (opts.receiver != null) {
-      this.receivers[data.toKey()] = opts.receiver;
-    }
-    return App.IdentityMap.connect(this, {
-      "with": data
-    });
+    return str;
   };
 
-  Connectivity.prototype.receiverFor = function(data) {
-    if (data.constructor.name === "String") {
-      if (this.receivers[data] != null) {
-        return this.receivers[data];
-      } else {
-        return null;
-      }
-    }
-    if (this.receivers[data.toKey()] != null) {
-      return this.receivers[data.toKey()];
-    }
-    return null;
-  };
-
-  return Connectivity;
+  return Text;
 
 })();
 
-//# sourceMappingURL=../../maps/base/mixins/connectivity.js.map
+//# sourceMappingURL=../maps/helpers/text.js.map
+
+App.I18n.en = {
+  variants: {},
+  models: {},
+  attributes: {},
+  ui: {
+    form: {
+      sending: "Sending...",
+      success: "Success",
+      errors: {
+        connection: "Connection Error",
+        invalid_data: "Invalid data"
+      }
+    }
+  },
+  date: {
+    formats: {
+      "default": "%Y-%m-%d",
+      short: "%b %d",
+      long: "%B %d, %Y"
+    },
+    day_names: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    abbr_day_names: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    abbr_month_names: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  errors: {
+    messages: {
+      accepted: "must be accepted",
+      blank: "can't be blank",
+      confirmation: "doesn't match %{attribute}",
+      empty: "can't be empty",
+      equal_to: "must be equal to %{count}",
+      even: "must be even",
+      exclusion: "is reserved",
+      greater_than: "must be greater than %{count}",
+      greater_than_or_equal_to: "must be greater than or equal to %{count}",
+      inclusion: "is not included in the list",
+      invalid: "is invalid",
+      less_than: "must be less than %{count}",
+      less_than_or_equal_to: "must be less than or equal to %{count}",
+      not_a_number: "is not a number",
+      not_an_integer: "must be an integer",
+      odd: "must be odd",
+      present: "must be blank",
+      too_long: {
+        one: "is too long (maximum is 1 character)",
+        other: "is too long (maximum is %{count} characters)"
+      },
+      too_short: {
+        one: "is too short (minimum is 1 character)",
+        other: "is too short (minimum is %{count} characters)"
+      },
+      wrong_length: {
+        one: "is the wrong length (should be 1 character)",
+        other: "is the wrong length (should be %{count} characters)"
+      },
+      other_than: "must be other than %{count}"
+    }
+  }
+};
+
+//# sourceMappingURL=../maps/locales/en.js.map

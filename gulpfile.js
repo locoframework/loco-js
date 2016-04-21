@@ -35,7 +35,25 @@ gulp.task('coffee', function() {
 
 // Scripts
 gulp.task('scripts', ['coffee'], function() {
-  return gulp.src('src/**/*.js')
+  var manifest = [
+    './src/base/objects.js',
+    './src/base/mix.js',
+    './src/base/identity_map.js',
+    './src/base/wire.js',
+    './src/base/loco.js',
+    './src/base/mixins/**/*.js',
+    './src/utils/**/*.js',
+    './src/validators/**/*.js',
+    './src/models/**/*.js',
+    './src/controllers/**/*.js',
+    './src/views/**/*.js',
+    './src/ui/**/*.js',
+    './src/services/**/*.js',
+    './src/helpers/**/*.js',
+    './src/locales/**/*.js'
+  ]
+
+  return gulp.src(manifest)
     .pipe(concat('main.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(rename({ suffix: '.min' }))
