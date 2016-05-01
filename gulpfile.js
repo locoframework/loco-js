@@ -1,18 +1,19 @@
 /*!
  * gulp
- * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del --save-dev
+ * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del gulp-jasmine-browser --save-dev
  */
 
 // Load plugins
 var gulp = require('gulp'),
+    gutil = require('gulp-util'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
     del = require('del'),
     coffee = require('gulp-coffee'),
-    gutil = require('gulp-util'),
-    sourcemaps = require('gulp-sourcemaps');
+    sourcemaps = require('gulp-sourcemaps'),
+    jasmineBrowser = require('gulp-jasmine-browser');
 
 // Default task
 gulp.task('default', ['clean'], function() {
@@ -54,10 +55,54 @@ gulp.task('scripts', ['coffee'], function() {
   ]
 
   return gulp.src(manifest)
-    .pipe(concat('main.js'))
+    .pipe(concat('loco.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
     .pipe(notify({ message: 'Scripts task complete' }));
+});
+
+// Spec
+
+// Clean spec
+gulp.task('clean_spec', function() {
+  return del(['spec/*']);
+});
+
+// Coffee spec
+gulp.task('coffee_spec', ['clean_spec'], function() {
+  return gulp.src('./spec_coffee/**/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./spec/'));
+});
+
+// Copy spec helpers
+gulp.task('copy_spec_helpers', ['coffee_spec'], function() {
+  return gulp.src('./spec_coffee/**/*.js')
+    .pipe(gulp.dest('./spec/'));
+});
+
+// Concat dummy app
+gulp.task('concat_dummy_app', ['copy_spec_helpers'], function() {
+  var manifest = [
+    './spec/dummy/locales/base/**/*.js',
+    './spec/dummy/locales/models/**/*.js',
+    './spec/dummy/locales/validators/**/*.js',
+    './spec/dummy/initializers/**/*.js',
+    './spec/dummy/controllers/**/*.js',
+    './spec/dummy/models/**/*.js',
+    './spec/dummy/views/**/*.js',
+    './spec/dummy/templates/**/*.js',
+    './spec/dummy/validators/**/*.js'
+  ]
+  return gulp.src(manifest)
+    .pipe(concat('application.js'))
+    .pipe(gulp.dest('./spec/dummy/'));
+});
+
+gulp.task('jasmine', ['concat_dummy_app'], function() {
+  return gulp.src(['bower_components/jquery/dist/jquery.js', 'dist/loco.js', 'spec/dummy/application.js', 'spec/helpers/**/*.js', 'spec/loco/**/*.js'])
+    .pipe(jasmineBrowser.specRunner())
+    .pipe(jasmineBrowser.server({port: 8888}));
 });

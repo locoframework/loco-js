@@ -2,13 +2,21 @@
   "name": "loco",
   "version": "1.0.0",
   "description": "MVC framework for building web apps with ease.",
-  "main": "gulpfile.js",
-  "dependencies": {},
+  "author": "himn1 <zbigniew.humeniuk@gmail.com>",
+  "main": "dist/loco.js",
+  "keywords": ["mvc", "framework", "rails"],
+  "license": "MIT",
+  "homepage": "http://loco-rails.org",
+  "private": true,
+  "dependencies": {
+    "jquery": "^1.12.3"
+  },
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-coffee": "^2.3.2",
     "gulp-concat": "^2.6.0",
+    "gulp-jasmine-browser": "^1.3.0",
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.0.0-alpha",
@@ -16,13 +24,6 @@
     "gulp-util": "^3.0.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "mvc",
-    "framework",
-    "rails"
-  ],
-  "author": "himn1",
-  "license": "MIT"
+    "test": "gulp jasmine"
+  }
 }

@@ -1,23 +1,20 @@
 {
   "name": "loco",
-  "authors": [
-    "himn1 <zbigniew.humeniuk@gmail.com>"
-  ],
   "description": "MVC framework for building web apps with ease.",
-  "main": "",
-  "keywords": [
-    "mvc",
-    "framework",
-    "rails"
-  ],
+  "authors": ["himn1 <zbigniew.humeniuk@gmail.com>"],
+  "main": "dist/loco.js",
+  "keywords": ["mvc", "framework", "rails"],
   "license": "MIT",
   "homepage": "http://loco-rails.org",
   "private": true,
+  "dependencies": {
+    "jquery": "^1.12.3"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "spec",
+    "spec_coffee"
   ]
 }
