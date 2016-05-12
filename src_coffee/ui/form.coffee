@@ -35,9 +35,15 @@ class App.UI.Form
       if formEl.length is 1
         formEl.val @obj[name]
         continue
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
+        radioEl = App.Utils.Collection.find formEl, (e) => $(e).val() is String(@obj[name])
+        if radioEl?
+          $(radioEl).prop 'checked', true
+          continue
       if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
         continue
-      formEl.last().prop 'checked', !formEl.last().is(":checked")
+      formEl.last().prop 'checked', Boolean(@obj[name])
 
   _findForm: ->
     return $("##{@formId}") if @formId?
@@ -137,6 +143,12 @@ class App.UI.Form
       if formEl.length is 1
         @obj[name] = formEl.val()
         continue
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
+        radioEl = App.Utils.Collection.find formEl, (e) => $(e).is ':checked'
+        if radioEl?
+          @obj[name] = $(radioEl).val()
+          continue
       if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
         continue
       if formEl.last().is ":checked"

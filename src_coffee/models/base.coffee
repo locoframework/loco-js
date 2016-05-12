@@ -225,7 +225,6 @@ class App.Models.Base
     @errors[opts.for].push message
 
   save: ->
-    return false if not this.isValid()
     jqxhr = $.ajax
       dataType: 'json',
       method: if @id? then "PUT" else "POST",
@@ -236,17 +235,36 @@ class App.Models.Base
       jqxhr.done (data) =>
         if data.success
           resolve data
-          return true
+          return
         this.__assignRemoteErrorMessages(data.errors) if data.errors?
         resolve data
-        return false
 
-  serialize: ->
+  updateAttribute: (attr) ->
+    jqxhr = $.ajax
+      dataType: 'json'
+      method: 'PUT'
+      url: this.__getResourceUrl()
+      data: this.serialize attr
+    return new Promise (resolve, reject) =>
+      jqxhr.fail (xhr) -> reject xhr
+      jqxhr.done (data) =>
+        if data.success
+          resolve data
+          return
+        this.__assignRemoteErrorMessages(data.errors) if data.errors?
+        resolve data
+
+  serialize: (attr = null) ->
     return {} if not this.constructor.attributes?
     hash = {}
     mainKey = this.constructor.getRemoteName().toLowerCase()
     hash[mainKey] = {}
-    for attr, _ of this.constructor.attributes
+    attribs = {}
+    if attr?
+      attribs[attr] = null
+    else
+      attribs = this.constructor.attributes
+    for attr, _ of attribs
       remoteName = this.getRemoteName attr
       hash[mainKey][remoteName] = this[attr]
     hash

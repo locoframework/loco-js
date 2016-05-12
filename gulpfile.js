@@ -3,6 +3,12 @@
  * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del gulp-jasmine-browser --save-dev
  */
 
+/*
+  $ gulp watch   - watch .coffee files for changes
+  $ gulp         - build
+  $ gulp jasmine - run jasmine server
+*/
+
 // Load plugins
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
@@ -15,8 +21,12 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     jasmineBrowser = require('gulp-jasmine-browser');
 
+gulp.task('watch', function() {
+  gulp.watch('./src_coffee/**/*.coffee', ['scripts']);
+});
+
 // Default task
-gulp.task('default', ['clean'], function() {
+gulp.task('default', function() {
   gulp.start('scripts');
 });
 
@@ -26,7 +36,7 @@ gulp.task('clean', function() {
 });
 
 // Coffee
-gulp.task('coffee', function() {
+gulp.task('coffee', ['clean'], function() {
   return gulp.src('./src_coffee/**/*.coffee')
     .pipe(sourcemaps.init())
     .pipe(coffee({bare: true}).on('error', gutil.log))

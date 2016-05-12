@@ -5,7 +5,7 @@ class App.Utils.Array
       newArr.push func(o)
     newArr
 
-  @uniq: (arr, func) ->
+  @uniq: (arr) ->
     newArr = []
     for o in arr
       newArr.push(o) if newArr.indexOf(o) is -1

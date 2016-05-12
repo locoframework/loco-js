@@ -1,2 +1,4 @@
 class App.Utils.Collection
-  @find: (collection, func) -> return o if func(o) is true for o in collection
+  @find: (collection, func) ->
+    for o in collection
+      return o if func(o) is true
