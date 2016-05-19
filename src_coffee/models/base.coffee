@@ -186,6 +186,17 @@ class App.Models.Base
     return null if not this.constructor.attributes[attrName]?
     this.constructor.attributes[attrName].type
 
+  assignAttr: (attrName, val) ->
+    attrType = this.getAttrType attrName
+    if not val?
+      @[attrName] = null
+      return
+    switch attrType
+      when "Date" then val = new Date Date.parse val
+      when "Int" then val = parseInt val
+      when "Boolean" then val = Boolean parseInt val
+    @[attrName] = val
+
   attributes: ->
     attribs = {id: this.id}
     return attribs if not this.constructor.attributes?
@@ -309,14 +320,7 @@ class App.Models.Base
   __assignAttributes: (data) ->
     for key, val of data
       attrName = this.getAttrName key
-      attrType = this.getAttrType attrName
-      if not val?
-        @[attrName] = null
-        continue
-      switch attrType
-        when "Date" then val = new Date Date.parse val
-        when "Int" then val = parseInt val
-      @[attrName] = val
+      this.assignAttr attrName, val
 
   __initAttributes: ->
     for name, config of this.constructor.attributes

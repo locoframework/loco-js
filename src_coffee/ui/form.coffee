@@ -141,20 +141,20 @@ class App.UI.Form
       remoteName = @obj.getAttrRemoteName name
       formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
       if formEl.length is 1
-        @obj[name] = formEl.val()
+        @obj.assignAttr name, formEl.val()
         continue
       uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
         radioEl = App.Utils.Collection.find formEl, (e) => $(e).is ':checked'
         if radioEl?
-          @obj[name] = $(radioEl).val()
+          @obj.assignAttr name, $(radioEl).val()
           continue
       if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
         continue
       if formEl.last().is ":checked"
-        @obj[name] = formEl.last().val()
+        @obj.assignAttr name, formEl.last().val()
       else
-        @obj[name] = formEl.first().val()
+        @obj.assignAttr name, formEl.first().val()
 
   _hideErrors: ->
     @form.find('.errors').each (index, e) =>
