@@ -8,6 +8,8 @@ class App.Wire
     @ssl = opts.ssl
     @location = opts.location ? 'notification-center'
     @size = opts.size ? 100
+    @allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
+    @disconnectedSinceTime = null
 
   setToken: (token) -> @token = token
 
@@ -31,6 +33,9 @@ class App.Wire
   getSize: -> @size
   setSize: (val) -> @size = val
 
+  getAllowedDisconnectionTime: -> @allowedDisconnectionTime
+  setAllowedDisconnectionTime: (val) -> @allowedDisconnectionTime = val
+
   connect: ->
     @pollingInterval = setInterval =>
       this._check()
@@ -42,8 +47,10 @@ class App.Wire
     return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
     jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
     jqxhr.always ->
-    jqxhr.fail ->
+    jqxhr.fail =>
+      this._handleDisconnection()
     jqxhr.done (data) =>
+      @disconnectedSinceTime = null
       @syncTime = data[1]
       notifications = data[0]
       return if notifications.length is 0
@@ -93,3 +100,11 @@ class App.Wire
     if @ssl?
       protocol = if @ssl then 'https:' else "http:"
     "#{protocol}//#{host}/#{@location}"
+
+  _handleDisconnection: ->
+    if not @disconnectedSinceTime?
+      @disconnectedSinceTime = new Date()
+    diffInSec = (new Date() - @disconnectedSinceTime) / 1000
+    ctrl = App.Env.namespaceController ? App.Env.controller
+    if diffInSec > @allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
+      ctrl.disconnectedForTooLong @disconnectedSinceTime

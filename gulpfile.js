@@ -40,7 +40,6 @@ gulp.task('coffee', ['clean'], function() {
   return gulp.src('./src_coffee/**/*.coffee')
     .pipe(sourcemaps.init())
     .pipe(coffee({bare: true}).on('error', gutil.log))
-    .pipe(sourcemaps.write())
     .pipe(gulp.dest('./src/'));
 });
 
