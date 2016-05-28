@@ -12,3 +12,6 @@ beforeEach ->
         val = val.replace /\+/g, " "
       params[key] = val
     params
+
+afterEach ->
+  App.Env.loco.setProtocolWithHost null

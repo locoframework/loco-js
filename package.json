@@ -21,7 +21,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.0.0-alpha",
     "gulp-uglify": "^1.5.3",
-    "gulp-util": "^3.0.7"
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.6"
   },
   "scripts": {
     "test": "gulp jasmine"

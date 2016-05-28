@@ -151,6 +151,7 @@ App.Wire = (function() {
     this.ssl = opts.ssl;
     this.location = (ref1 = opts.location) != null ? ref1 : 'notification-center';
     this.size = (ref2 = opts.size) != null ? ref2 : 100;
+    this.protocolWithHost = opts.protocolWithHost;
     this.allowedDisconnectionTime = (ref3 = opts.allowedDisconnectionTime) != null ? ref3 : 10;
     this.disconnectedSinceTime = null;
   }
@@ -345,8 +346,11 @@ App.Wire = (function() {
   };
 
   Wire.prototype._getURL = function() {
-    var _, host, protocol, ref;
+    var _, host, protocol, ref, ref1;
     ref = window.location.href.split('/'), protocol = ref[0], _ = ref[1], host = ref[2];
+    if (this.protocolWithHost != null) {
+      ref1 = this.protocolWithHost.split('//'), protocol = ref1[0], host = ref1[1];
+    }
     if (this.ssl != null) {
       protocol = this.ssl ? 'https:' : "http:";
     }
@@ -371,7 +375,7 @@ App.Wire = (function() {
 
 App.Loco = (function() {
   function Loco(opts) {
-    var initWireConditions, ref;
+    var initWireConditions, notificationsParams, ref, ref1;
     if (opts == null) {
       opts = {};
     }
@@ -380,9 +384,12 @@ App.Loco = (function() {
     this.initTurbolinks = (opts.turbolinks != null) && opts.turbolinks ? true : false;
     initWireConditions = (opts.notifications != null) && (opts.notifications.enable != null) && opts.notifications.enable;
     this.initWire = initWireConditions ? true : false;
-    this.notificationsParams = opts.notifications;
     this.postInit = opts.postInit;
     this.setLocale((ref = opts.locale) != null ? ref : 'en');
+    this.setProtocolWithHost(opts.protocolWithHost);
+    notificationsParams = (ref1 = opts.notifications) != null ? ref1 : {};
+    notificationsParams.protocolWithHost = this.protocolWithHost;
+    this.notificationsParams = notificationsParams;
   }
 
   Loco.prototype.getWire = function() {
@@ -395,6 +402,21 @@ App.Loco = (function() {
 
   Loco.prototype.setLocale = function(locale) {
     return this.locale = locale;
+  };
+
+  Loco.prototype.getProtocolWithHost = function() {
+    return this.protocolWithHost;
+  };
+
+  Loco.prototype.setProtocolWithHost = function(val) {
+    if (val == null) {
+      this.protocolWithHost = null;
+      return;
+    }
+    if (val[val.length - 1] === '/') {
+      val = val.slice(0, +(val.length - 2) + 1 || 9e9);
+    }
+    return this.protocolWithHost = val;
   };
 
   Loco.prototype.init = function() {
@@ -1194,6 +1216,9 @@ App.Models.Base = (function() {
       opts = {};
     }
     resourcesUrl = this.resources == null ? "/" + (this.getIdentity().toLowerCase()) + "s" : opts.resource ? this.resources[opts.resource].url : (App.Env.scope != null) && (this.resources[App.Env.scope] != null) ? this.resources[App.Env.scope].url : this.resources.url;
+    if (App.Env.loco.protocolWithHost != null) {
+      resourcesUrl = "" + App.Env.loco.protocolWithHost + resourcesUrl;
+    }
     match = /:(\w+)\/?/.exec(resourcesUrl);
     if (match == null) {
       return resourcesUrl;

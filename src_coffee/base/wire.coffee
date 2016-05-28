@@ -8,6 +8,7 @@ class App.Wire
     @ssl = opts.ssl
     @location = opts.location ? 'notification-center'
     @size = opts.size ? 100
+    @protocolWithHost = opts.protocolWithHost
     @allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
     @disconnectedSinceTime = null
 
@@ -97,6 +98,8 @@ class App.Wire
 
   _getURL: ->
     [protocol, _, host] = window.location.href.split '/'
+    if @protocolWithHost?
+      [protocol, host] = @protocolWithHost.split '//'
     if @ssl?
       protocol = if @ssl then 'https:' else "http:"
     "#{protocol}//#{host}/#{@location}"

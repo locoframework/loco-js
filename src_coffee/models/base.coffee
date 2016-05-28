@@ -77,6 +77,8 @@ class App.Models.Base
       @resources[App.Env.scope].url
     else
       @resources.url
+    if App.Env.loco.protocolWithHost?
+      resourcesUrl = "#{App.Env.loco.protocolWithHost}#{resourcesUrl}"
     match = /:(\w+)\/?/.exec resourcesUrl
     return resourcesUrl if not match?
     if opts[match[1]]?

@@ -5,14 +5,26 @@ class App.Loco
     @initTurbolinks = if opts.turbolinks? and opts.turbolinks then true else false
     initWireConditions = opts.notifications? and opts.notifications.enable? and opts.notifications.enable
     @initWire = if initWireConditions then true else false
-    @notificationsParams = opts.notifications
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
+    this.setProtocolWithHost opts.protocolWithHost
+    notificationsParams = opts.notifications ? {}
+    notificationsParams.protocolWithHost = @protocolWithHost
+    @notificationsParams = notificationsParams
 
   getWire: -> @wire
 
   getLocale: -> @locale
   setLocale: (locale) -> @locale = locale
+
+  getProtocolWithHost: -> @protocolWithHost
+  setProtocolWithHost: (val) ->
+    if not val?
+      @protocolWithHost = null
+      return
+    if val[val.length - 1] is '/'
+      val = val[0..val.length - 2]
+    @protocolWithHost = val
 
   init: ->
     App.Env.loco = this

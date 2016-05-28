@@ -1,11 +1,12 @@
 /*!
  * gulp
- * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del gulp-jasmine-browser --save-dev
+ * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del gulp-jasmine-browser gulp-watch --save-dev
  */
 
 /*
+  $ gulp         - start jasmine & watch tasks
   $ gulp watch   - watch .coffee files for changes
-  $ gulp         - build
+  $ gulp build   - build
   $ gulp jasmine - run jasmine server
 */
 
@@ -19,15 +20,24 @@ var gulp = require('gulp'),
     del = require('del'),
     coffee = require('gulp-coffee'),
     sourcemaps = require('gulp-sourcemaps'),
-    jasmineBrowser = require('gulp-jasmine-browser');
-
-gulp.task('watch', function() {
-  gulp.watch('./src_coffee/**/*.coffee', ['scripts']);
-});
+    jasmineBrowser = require('gulp-jasmine-browser'),
+    watch = require('gulp-watch');
 
 // Default task
 gulp.task('default', function() {
+  gulp.start('watch');
+  gulp.start('jasmine');
+});
+
+// Build task
+gulp.task('build', function() {
   gulp.start('scripts');
+});
+
+// Watch
+gulp.task('watch', function() {
+  gulp.watch(['./src_coffee/**/*.coffee'], ['scripts']);
+  gulp.watch(['./spec_coffee/**/*.coffee'], ['concat_dummy_app']);
 });
 
 // Clean
@@ -104,14 +114,24 @@ gulp.task('concat_dummy_app', ['copy_spec_helpers'], function() {
     './spec/dummy/views/**/*.js',
     './spec/dummy/templates/**/*.js',
     './spec/dummy/validators/**/*.js'
-  ]
+  ];
   return gulp.src(manifest)
     .pipe(concat('application.js'))
-    .pipe(gulp.dest('./spec/dummy/'));
+    .pipe(gulp.dest('./spec/dummy/'))
+    .pipe(notify({ message: 'Specs are prepared' }));
 });
 
-gulp.task('jasmine', ['concat_dummy_app'], function() {
-  return gulp.src(['bower_components/jquery/dist/jquery.js', 'dist/loco.js', 'spec/dummy/application.js', 'spec/helpers/**/*.js', 'spec/loco/**/*.js'])
+// ['concat_dummy_app'],
+gulp.task('jasmine', function() {
+  var filesForTest = [
+    'spec/helpers/**/*.js',
+    'bower_components/jquery/dist/jquery.js',
+    'spec/loco/**/*.js',
+    'dist/loco.js',
+    'spec/dummy/application.js'
+  ];
+  return gulp.src(filesForTest)
+    .pipe(watch(filesForTest))
     .pipe(jasmineBrowser.specRunner())
     .pipe(jasmineBrowser.server({port: 8888}));
 });
