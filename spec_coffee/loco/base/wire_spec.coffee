@@ -1,6 +1,9 @@
 describe "App.Wire", ->
   beforeEach ->
-    @wire = App.Env.loco.getWire()
+    @wire = new App.Wire {}
+
+  afterEach ->
+    @wire.disableNotifications()
 
   it "sets token correctly", ->
     @wire.setToken "123qweasdzxc"

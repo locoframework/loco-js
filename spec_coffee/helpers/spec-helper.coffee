@@ -1,6 +1,4 @@
 beforeEach ->
-  App.Env.loco.getWire().disableNotifications()
-
   this.paramsStrToHash = (str) ->
     params = {}
     paramsArray = str.split('&')

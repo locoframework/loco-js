@@ -12,7 +12,7 @@ App.Views.Shared = {}
 loco = new App.Loco
   turbolinks: false                  # false by default
   notifications:
-    enable: true                     # false by default
+    enable: false                    # false by default
     pollingTime: 3000                # 3000 ms by default
     log: true                        # false by default
     ssl: false                       # your current protocol by default
@@ -20,7 +20,5 @@ loco = new App.Loco
     size: 10                         # 100 by default
   locale: 'en'                       # 'en' by default
   postInit: ->
-    time = if $('body').data('rails-env') is 'test' then 1000 else 3000
-    App.Env.loco.getWire().setPollingTime time
 
 loco.init()
