@@ -37,7 +37,7 @@ gulp.task('build', function() {
 // Watch
 gulp.task('watch', function() {
   gulp.watch(['./src_coffee/**/*.coffee'], ['scripts']);
-  gulp.watch(['./spec_coffee/**/*.coffee'], ['concat_dummy_app']);
+  gulp.watch(['./spec_coffee/loco/**/*.coffee'], ['build_specs']);
 });
 
 // Clean
@@ -84,26 +84,37 @@ gulp.task('scripts', ['coffee'], function() {
 
 // Spec
 
+gulp.task('clean_specs', function() {
+  return del(['spec/loco/*']);
+});
+
+gulp.task('build_specs', ['clean_specs'], function() {
+  return gulp.src('./spec_coffee/loco/**/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./spec/loco/'))
+    .pipe(notify({ message: 'Specs are prepared' }));
+});
+
 // Clean spec
-gulp.task('clean_spec', function() {
+gulp.task('clean_spec_dir', function() {
   return del(['spec/*']);
 });
 
 // Coffee spec
-gulp.task('coffee_spec', ['clean_spec'], function() {
+gulp.task('coffee_spec', ['clean_spec_dir'], function() {
   return gulp.src('./spec_coffee/**/*.coffee')
     .pipe(coffee({bare: true}).on('error', gutil.log))
     .pipe(gulp.dest('./spec/'));
 });
 
-// Copy spec helpers
-gulp.task('copy_spec_helpers', ['coffee_spec'], function() {
+// Copy JS spec files
+gulp.task('copy_js_spec_files', ['coffee_spec'], function() {
   return gulp.src('./spec_coffee/**/*.js')
     .pipe(gulp.dest('./spec/'));
 });
 
 // Concat dummy app
-gulp.task('concat_dummy_app', ['copy_spec_helpers'], function() {
+gulp.task('concat_dummy_app', ['copy_js_spec_files'], function() {
   var manifest = [
     './spec/dummy/locales/base/**/*.js',
     './spec/dummy/locales/models/**/*.js',
@@ -117,12 +128,10 @@ gulp.task('concat_dummy_app', ['copy_spec_helpers'], function() {
   ];
   return gulp.src(manifest)
     .pipe(concat('application.js'))
-    .pipe(gulp.dest('./spec/dummy/'))
-    .pipe(notify({ message: 'Specs are prepared' }));
+    .pipe(gulp.dest('./spec/dummy/'));
 });
 
-// ['concat_dummy_app'],
-gulp.task('jasmine', function() {
+gulp.task('jasmine', ['concat_dummy_app'], function() {
   var filesForTest = [
     'spec/helpers/**/*.js',
     'bower_components/jquery/dist/jquery.js',
