@@ -195,8 +195,11 @@ class App.Models.Base
       return
     switch attrType
       when "Date" then val = new Date Date.parse val
-      when "Int" then val = parseInt val
-      when "Boolean" then val = Boolean parseInt val
+      when "Integer", "Int" then val = parseInt val
+      when "Float" then val = parseFloat val
+      when "Boolean", "Bool" then val = Boolean parseInt val
+      when "Number" then val = Number val
+      when "String" then val = String val
     @[attrName] = val
 
   attributes: ->

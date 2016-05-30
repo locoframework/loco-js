@@ -71,8 +71,7 @@ gulp.task('scripts', ['coffee'], function() {
     './src/services/**/*.js',
     './src/helpers/**/*.js',
     './src/locales/**/*.js'
-  ]
-
+  ];
   return gulp.src(manifest)
     .pipe(concat('loco.js'))
     .pipe(gulp.dest('./dist/'))

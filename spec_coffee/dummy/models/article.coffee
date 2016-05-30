@@ -10,6 +10,7 @@ class App.Models.Article extends App.Models.Base
       validations:
         presence: true
         length: {within: [3, 255]}
+      type: "String"
     content:
       validations:
         presence: true
@@ -27,6 +28,10 @@ class App.Models.Article extends App.Models.Base
     publishedAt:
       type: "Date"
       remoteName: "published_at"
+    adminRate:
+      type: "Float"
+    adminReviewStartedAt:
+      type: 'Number'
 
   @receivedSignal: (signal, data) ->
 

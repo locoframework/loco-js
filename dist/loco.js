@@ -1458,11 +1458,22 @@ App.Models.Base = (function() {
       case "Date":
         val = new Date(Date.parse(val));
         break;
+      case "Integer":
       case "Int":
         val = parseInt(val);
         break;
+      case "Float":
+        val = parseFloat(val);
+        break;
       case "Boolean":
+      case "Bool":
         val = Boolean(parseInt(val));
+        break;
+      case "Number":
+        val = Number(val);
+        break;
+      case "String":
+        val = String(val);
     }
     return this[attrName] = val;
   };
