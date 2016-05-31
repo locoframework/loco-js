@@ -1,6 +1,6 @@
 /*!
  * gulp
- * $ npm install gulp-coffee gulp-sourcemaps gulp-concat gulp-uglify gulp-notify gulp-rename del gulp-jasmine-browser gulp-watch --save-dev
+ * $ npm install gulp-coffee gulp-concat gulp-notify del gulp-jasmine-browser gulp-watch --save-dev
  */
 
 /*
@@ -13,13 +13,10 @@
 // Load plugins
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
     del = require('del'),
     coffee = require('gulp-coffee'),
-    sourcemaps = require('gulp-sourcemaps'),
     jasmineBrowser = require('gulp-jasmine-browser'),
     watch = require('gulp-watch');
 
@@ -48,7 +45,6 @@ gulp.task('clean', function() {
 // Coffee
 gulp.task('coffee', ['clean'], function() {
   return gulp.src('./src_coffee/**/*.coffee')
-    .pipe(sourcemaps.init())
     .pipe(coffee({bare: true}).on('error', gutil.log))
     .pipe(gulp.dest('./src/'));
 });
@@ -74,9 +70,6 @@ gulp.task('scripts', ['coffee'], function() {
   ];
   return gulp.src(manifest)
     .pipe(concat('loco.js'))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
     .pipe(notify({ message: 'Scripts task complete' }));
 });
