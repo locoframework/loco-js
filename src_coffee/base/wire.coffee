@@ -20,7 +20,7 @@ class App.Wire
   getPollingTime: -> @pollingTime
   setPollingTime: (val) ->
     @pollingTime = val
-    this.disableNotifications()
+    this.disconnect()
     this.connect()
 
   getPollingInterval: -> @pollingInterval
@@ -42,23 +42,14 @@ class App.Wire
       this._check()
     , @pollingTime
 
-  disableNotifications: -> window.clearInterval @pollingInterval
+  disconnect: ->
+    window.clearInterval @pollingInterval
 
-  _check: ->
-    return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
-    jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
-    jqxhr.always ->
-    jqxhr.fail =>
-      this._handleDisconnection()
-    jqxhr.done (data) =>
-      @disconnectedSinceTime = null
-      @syncTime = data[1]
-      notifications = data[0]
-      return if notifications.length is 0
-      this._processNotification notification for notification in notifications
-      this._check() if notifications.length is @size
+  disableNotifications: ->
+    console.log 'App.Wire#disableNotifications - DEPRECATED'
+    this.disconnect()
 
-  _processNotification: (notification) ->
+  processNotification: (notification) ->
     console.log notification if @log
     [className, id, signal, payload] = notification
     model = App.Env.loco.getModelForRemoteName className
@@ -74,6 +65,22 @@ class App.Wire
     return if not App.IdentityMap.imap[identity]["collection"]?
     return if App.IdentityMap.imap[identity]["collection"].length is 0
     this._emitSignalToCollection signal, payload, identity
+
+  processSignal: (notification) -> this.processNotification notification
+
+  _check: ->
+    return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
+    jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
+    jqxhr.always ->
+    jqxhr.fail =>
+      this._handleDisconnection()
+    jqxhr.done (data) =>
+      @disconnectedSinceTime = null
+      @syncTime = data[1]
+      notifications = data[0]
+      return if notifications.length is 0
+      this.processNotification notification for notification in notifications
+      this._check() if notifications.length is @size
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?

@@ -3,7 +3,7 @@ describe "App.Wire", ->
     @wire = new App.Wire {}
 
   afterEach ->
-    @wire.disableNotifications()
+    @wire.disconnect()
 
   it "sets token correctly", ->
     @wire.setToken "123qweasdzxc"
@@ -17,9 +17,9 @@ describe "App.Wire", ->
       expect(@wire.getPollingTime()).toEqual 10000
       expect(@wire.getPollingInterval()).not.toEqual pollingInterval
 
-  describe "#_processNotification", ->
+  describe "#processNotification", ->
     it "returns if imap is empty", ->
-      result = @wire._processNotification ["Article", 1, "created", {id: 1}]
+      result = @wire.processNotification ["Article", 1, "created", {id: 1}]
       expect(result).toBe undefined
 
   describe "#_getURL", ->

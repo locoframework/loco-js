@@ -24,7 +24,7 @@ var gulp = require('gulp'),
     watch = require('gulp-watch');
 
 // Default task
-gulp.task('default', function() {
+gulp.task('default', ['build'], function() {
   gulp.start('watch');
   gulp.start('jasmine');
 });

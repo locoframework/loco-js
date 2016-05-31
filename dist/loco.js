@@ -174,7 +174,7 @@ App.Wire = (function() {
 
   Wire.prototype.setPollingTime = function(val) {
     this.pollingTime = val;
-    this.disableNotifications();
+    this.disconnect();
     return this.connect();
   };
 
@@ -222,8 +222,47 @@ App.Wire = (function() {
     })(this), this.pollingTime);
   };
 
-  Wire.prototype.disableNotifications = function() {
+  Wire.prototype.disconnect = function() {
     return window.clearInterval(this.pollingInterval);
+  };
+
+  Wire.prototype.disableNotifications = function() {
+    console.log('App.Wire#disableNotifications - DEPRECATED');
+    return this.disconnect();
+  };
+
+  Wire.prototype.processNotification = function(notification) {
+    var className, id, identity, model, obj, payload, signal;
+    if (this.log) {
+      console.log(notification);
+    }
+    className = notification[0], id = notification[1], signal = notification[2], payload = notification[3];
+    model = App.Env.loco.getModelForRemoteName(className);
+    identity = model.getIdentity();
+    if (App.IdentityMap.imap[identity] == null) {
+      return;
+    }
+    if (App.IdentityMap.imap[identity][id] != null) {
+      obj = App.IdentityMap.find(identity, id);
+      if (obj["receivedSignal"] != null) {
+        obj.receivedSignal(signal, payload);
+      }
+      this._emitSignalToMembers(id, signal, payload, model, identity);
+    }
+    if (model["receivedSignal"] != null) {
+      model.receivedSignal(signal, payload);
+    }
+    if (App.IdentityMap.imap[identity]["collection"] == null) {
+      return;
+    }
+    if (App.IdentityMap.imap[identity]["collection"].length === 0) {
+      return;
+    }
+    return this._emitSignalToCollection(signal, payload, identity);
+  };
+
+  Wire.prototype.processSignal = function(notification) {
+    return this.processNotification(notification);
   };
 
   Wire.prototype._check = function() {
@@ -253,43 +292,13 @@ App.Wire = (function() {
         }
         for (i = 0, len = notifications.length; i < len; i++) {
           notification = notifications[i];
-          _this._processNotification(notification);
+          _this.processNotification(notification);
         }
         if (notifications.length === _this.size) {
           return _this._check();
         }
       };
     })(this));
-  };
-
-  Wire.prototype._processNotification = function(notification) {
-    var className, id, identity, model, obj, payload, signal;
-    if (this.log) {
-      console.log(notification);
-    }
-    className = notification[0], id = notification[1], signal = notification[2], payload = notification[3];
-    model = App.Env.loco.getModelForRemoteName(className);
-    identity = model.getIdentity();
-    if (App.IdentityMap.imap[identity] == null) {
-      return;
-    }
-    if (App.IdentityMap.imap[identity][id] != null) {
-      obj = App.IdentityMap.find(identity, id);
-      if (obj["receivedSignal"] != null) {
-        obj.receivedSignal(signal, payload);
-      }
-      this._emitSignalToMembers(id, signal, payload, model, identity);
-    }
-    if (model["receivedSignal"] != null) {
-      model.receivedSignal(signal, payload);
-    }
-    if (App.IdentityMap.imap[identity]["collection"] == null) {
-      return;
-    }
-    if (App.IdentityMap.imap[identity]["collection"].length === 0) {
-      return;
-    }
-    return this._emitSignalToCollection(signal, payload, identity);
   };
 
   Wire.prototype._emitSignalToMembers = function(id, signal, payload, model, identity, obj) {
