@@ -70,7 +70,7 @@ class App.Models.Base
 
   @__getResourcesUrl: (opts = {}) ->
     resourcesUrl = if not @resources?
-      "/#{@getIdentity().toLowerCase()}s"
+      "/#{@getRemoteName().toLowerCase()}s"
     else if opts.resource
       @resources[opts.resource].url
     else if App.Env.scope? and @resources[App.Env.scope]?
@@ -162,18 +162,12 @@ class App.Models.Base
 
   setResource: (name) -> @resource = name
 
-  getIdentity: ->
-    val = this.constructor.identity
-    return val if val?
-    this.constructor.name
+  getIdentity: -> this.constructor.identity
 
-  # deprecated: use getAttrRemoteName()
-  getRemoteName: (attr) ->
+  getAttrRemoteName: (attr) ->
     return null if not this.constructor.attributes?
     return null if not this.constructor.attributes[attr]?
     this.constructor.attributes[attr].remoteName or attr
-
-  getAttrRemoteName: (attr) -> this.getRemoteName attr
 
   getAttrName: (remoteName) ->
     return remoteName if not this.constructor.attributes?
@@ -281,7 +275,7 @@ class App.Models.Base
     else
       attribs = this.constructor.attributes
     for attr, _ of attribs
-      remoteName = this.getRemoteName attr
+      remoteName = this.getAttrRemoteName attr
       hash[mainKey][remoteName] = this[attr]
     hash
 
