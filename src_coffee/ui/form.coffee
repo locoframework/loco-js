@@ -68,6 +68,7 @@ class App.UI.Form
       clearForm = if @obj.id? then false else true
       @obj.save()
       .then (data) =>
+        this._alwaysAfterRequest()
         if data.success
           this._handleSuccess data, clearForm
         else
@@ -85,7 +86,9 @@ class App.UI.Form
     this._submittingForm()
     url = @form.attr('action') + '.json'
     jqxhr = $.post url, @form.serialize()
-    jqxhr.always => @submit.removeClass('active').blur()
+    jqxhr.always =>
+      this._alwaysAfterRequest()
+      @submit.blur()
     jqxhr.fail => this._connectionError()
     jqxhr.done (data) =>
       if data.success
@@ -95,7 +98,7 @@ class App.UI.Form
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
-    @submit.removeClass("active").addClass('success').val val
+    @submit.addClass('success').val val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
@@ -128,7 +131,7 @@ class App.UI.Form
           @submit.val errors[0]
     if @submit.val() is @submitVal or @submit.val() is App.I18n[@locale].ui.form.sending
       @submit.val App.I18n[@locale].ui.form.errors.invalid_data
-    @submit.removeClass("active").addClass 'failure'
+    @submit.addClass 'failure'
     this._showErrors()
     setTimeout =>
       @submit.removeClass('failure').val @submitVal
@@ -177,3 +180,6 @@ class App.UI.Form
     setTimeout =>
       @submit.removeClass('failure').val @submitVal
     , 3000
+
+  _alwaysAfterRequest: ->
+    @submit.removeAttr('disabled').removeClass("active")
