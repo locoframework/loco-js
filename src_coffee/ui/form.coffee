@@ -108,7 +108,7 @@ class App.UI.Form
         @delegator[@callbackSuccess]()
       return
     setTimeout =>
-      @submit.removeClass('success').val @submitVal
+      @submit.removeAttr('disabled').removeClass('success').val @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
         @form.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
@@ -134,7 +134,7 @@ class App.UI.Form
     @submit.addClass 'failure'
     this._showErrors()
     setTimeout =>
-      @submit.removeClass('failure').val @submitVal
+      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
       @form.find('input.invalid, textarea.invalid, select.invalid').removeClass 'invalid'
     , 1000
 
@@ -178,8 +178,8 @@ class App.UI.Form
   _connectionError: ->
     @submit.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
     setTimeout =>
-      @submit.removeClass('failure').val @submitVal
+      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
     , 3000
 
   _alwaysAfterRequest: ->
-    @submit.removeAttr('disabled').removeClass("active")
+    @submit.removeClass("active")
