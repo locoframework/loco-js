@@ -1,12 +1,23 @@
 {
-  "name": "loco",
+  "name": "loco-js",
   "version": "1.0.0",
   "description": "MVC framework for building web apps with ease.",
   "author": "himn1 <zbigniew.humeniuk@gmail.com>",
   "main": "dist/loco.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "test": "gulp jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/locoframework/loco-js.git"
+  },
   "keywords": ["mvc", "framework", "rails"],
   "license": "MIT",
-  "homepage": "http://loco-rails.org",
+  "homepage": "https://github.com/locoframework/loco-js#readme",
   "private": true,
   "dependencies": {
     "jquery": "^2.2.4"
@@ -20,8 +31,5 @@
     "gulp-notify": "^2.2.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.6"
-  },
-  "scripts": {
-    "test": "gulp jasmine"
   }
 }
