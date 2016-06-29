@@ -138,20 +138,20 @@ class App.Models.Base
       return promise
 
   @__getPaginationParam: ->
-    if @resources?.paginate?.page?
-      return @resources.paginate.page
+    defaultParam = 'page'
     if App.Env.scope? and @resources? and @resources[App.Env.scope]?
       param = @resources[App.Env.scope]?.paginate?.param
-      return param if param?
-    if @paginate? and @paginate.param? then @paginate.param else "page"
+      return param ? defaultParam
+    if @resources?.paginate?.param?
+      return @resources.paginate.param
+    defaultParam
 
   @__getPaginationPer: ->
     if App.Env.scope? and @resources? and @resources[App.Env.scope]?
-      per = @resources[App.Env.scope]?.paginate?.per
-      return per if per?
+      return @resources[App.Env.scope]?.paginate?.per
     if @resources?.paginate?.per?
       return @resources.paginate.per
-    if @paginate? and @paginate.per? then @paginate.per else null
+    null
 
   @__send: (method, action, opts) ->
     url = @__getResourcesUrl opts
