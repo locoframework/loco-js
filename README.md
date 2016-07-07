@@ -76,10 +76,10 @@ $ bower install loco-js --save
 
 ```coffeescript
 loco = new App.Loco
-  # set to true if you if have enabled turbolinks
+  # set to your Turbolinks version if you have enabled Turbolinks
   turbolinks: false                   # false by default
 
-  # your browser's app will periodically be checking for new notifications via ajax polling
+  # your browser's app will be checking for new notifications periodically via ajax polling
   notifications:
     enable: false                     # false by default
     #pollingTime: 3000                # 3000 ms by default
@@ -255,9 +255,9 @@ Let's describe it's *elements*:
 
 * **receivedSignal** - this method is automatically called by an instance of a class, when signal related to this object is received
 
-### Pagination
+### Fetching a collection of resources (pagination)
 
-Loco-Rails requires that response from the server must be in a correct JSON format. It's described on the [Loco-Rails page](http://github.com/locoframework/loco-rails). Here are some examples:
+Loco-JS requires response from the server in a proper JSON format. It's described on the [Loco-Rails page](http://github.com/locoframework/loco-rails). Here are some examples:
 
 ```coffeescript
 App.Models.Article.get('all').then (resp) ->
@@ -293,8 +293,6 @@ receivedSignal: (signal, data) ->
         @article.applyChanges()
 ```
 
-### Usage
-
 ## Controllers
 
 ## Views
@@ -306,3 +304,14 @@ receivedSignal: (signal, data) ->
 ```console
 $ codo src_coffee
 ```
+
+## Examples
+
+...
+
+## License
+Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+## Author
+
+...

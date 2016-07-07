@@ -2,7 +2,7 @@ class App.Loco
   constructor: (opts={}) ->
     @wire = null
     @locale = null
-    @initTurbolinks = if opts.turbolinks? and opts.turbolinks then true else false
+    @turbolinks = opts.turbolinks ? false
     initWireConditions = opts.notifications? and opts.notifications.enable? and opts.notifications.enable
     @initWire = if initWireConditions then true else false
     @postInit = opts.postInit
@@ -31,8 +31,9 @@ class App.Loco
     if @initWire
       @wire = new App.Wire @notificationsParams
       @wire.connect()
-    if @initTurbolinks
-      jQuery(document).on "page:change", =>
+    if @turbolinks
+      event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
+      jQuery(document).on event, =>
         this.flow()
         @postInit() if @postInit?
     else
