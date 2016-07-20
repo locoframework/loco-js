@@ -68,7 +68,7 @@ Loco-JS is included inside the [`loco-rails`](https://github.com/locoframework/l
 
 ### Installation using Bower
 
-```console
+```bash
 $ bower install loco-js --save
 ```
 
@@ -115,7 +115,7 @@ loco.init()
 
 ## Usage
 
-After calling `init()` Loco's instance checks `<body>` data attributes:
+After calling `init()` Loco's instance checks following `<body>`'s data attributes:
 
 * data-namespace
 * data-controller
@@ -127,6 +127,8 @@ Then, based on their values, it initializes given controller and calls given met
 <body data-namespace="Main" data-controller="Pages" data-action="index">
 </body>
 ```
+
+Loco-JS will act like this:
 
 ```coffeescript
 namespaceController = new App.Controllers.Main
@@ -143,7 +145,7 @@ If you've enabled notifications, Loco will begin checking for them periodically.
 
 ## Structure
 
-Type `App` in browser's console and you'll get:
+Type `App` in the browser's console and you'll get:
 
 ```javascript
 Object {
@@ -171,7 +173,7 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 
 * **Controllers** - a namespace where you define controllers
 * **Env** - an object that has following properties:
-	* **action** - current action's name (method called on current controller's instance)
+	* **action** - a name of current action (method called on an instance of current controller)
 	* **controller** - an instance of current controller
 	* **loco** - an instance of `App.Loco`. It's the most important instance methods are: 
 		* `getWire` - returns current instance of `App.Wire`
@@ -179,7 +181,7 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 	* **namespaceController** - an instance of current namespace controller
 	* **scope** - current scope (used by models to determine URL of resources)
 * **Helpers** - a namespace where you define helpers. Member classes:
-	* **Text** - has method(s) that returns *text* transformed into HTML using simple formatting rules
+	* **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
 * **I18n** - an object that holds localizations. Localizations are objects too
 * **IdentityMap** - a class that stores information about *connected* objects
 * **Loco** - this class rules everything ;)
@@ -240,7 +242,7 @@ class App.Models.Article extends App.Models.Base
 
 Let's describe it's *elements*:
 
-* **@identity** *(required)* - this class variable's value should be the same as class name (it's last component). It's required because of minification - all class names will be converted to ~ one character. But, Loco relies on naming.
+* **@identity** *(required)* - value of this class variable should be the same as the name of a class (last component). It's required because of minification - all class names will be converted to ~ one character. But, Loco relies on naming.
 
 * **@resources** - this class variable stores information about scopes in your app. You can fetch resources from different sources (API endpoints). So here is a place, where you can define them. Then, you can fetch resources in 2 ways: 
 	* by specifing scope in method calls e.g. `App.Models.Article.get 'all', resource: 'main'`
@@ -255,11 +257,11 @@ Let's describe it's *elements*:
 
 * **@validate** - this class variable contains names of custom validation methods
 
-* **receivedSignal** - this method is automatically called by an instance of a class, when signal related to this object is received
+* **receivedSignal** - this method is automatically called by an instance of model, when signal related to that object is received
 
 ### Fetching a collection of resources (pagination)
 
-Loco-JS requires response from the server in a proper JSON format. It's described on the [Loco-Rails page](http://github.com/locoframework/loco-rails). Here are some examples:
+Loco-JS requires response from the server in a proper JSON format (with **resources** and **count** keys). It's described on the [Loco-Rails page](http://github.com/locoframework/loco-rails). Here are some examples:
 
 ```coffeescript
 App.Models.Article.get('all').then (resp) ->
@@ -291,7 +293,7 @@ App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
 ```
 
-You can also pass other parameters. Example:
+You can also pass additional parameters. Example:
 
 ```coffeescript
 App.Models.Article.Comment.all({
@@ -305,7 +307,7 @@ App.Models.Article.Comment.all({
 
 ### Fetching a single resource
 
-Loco-JS provides `find` class method for fetching a single resource. A response from the server should be in a plain JSON format with remote names of attributes as keys. Examples:
+Loco-JS provides `find` class method for fetching a single resource. The response from the server should be in a plain JSON format with remote names of attributes as keys. Examples:
 
 ```coffeescript
 App.Models.Article.find(123).then (article) ->
@@ -316,7 +318,7 @@ App.Models.Article.find(id: 123).then (article) ->
 App.Models.Article.Comment.find(id: 33, articleId: 123).then (comment) ->
 # GET "/user/articles/123/comments/33"
 
-# adding other parameters
+# adding additional parameters
 App.Models.Article.Comment.find({
   id: 33, 
   articleId: 123, 
@@ -328,7 +330,7 @@ App.Models.Article.Comment.find({
 
 ### Sending requests
 
-Each model has inherited from `App.Models.Base` methods for sending requests of given type to the server. All methods that send request of the equivalent type are listed below:
+Each model has inherited from `App.Models.Base` methods for sending requests of given type to the server. All methods that send requests of the equivalent type are listed below:
 
 * instance methods: `get` `post` `put` `delete`
 * class methods: `@get` `@post` `@put` `@delete`
@@ -361,11 +363,11 @@ article.errors  # {title: ["is too short (minimum is 3 characters)"], content: [
 
 When you use `App.UI.Form` for handling forms, validation is done automatically and errors are shown if object is invalid.
 
-Loco-JS implements almost all built-in [Rails](http://guides.rubyonrails.org/active_record_validations.html) validators, except *uniqueness*. And you can use them nearly identically. For more use cases and examples look at the source code (*/validators*), examples and specs. 
+Loco-JS implements almost all built-in [Rails](http://guides.rubyonrails.org/active_record_validations.html) validators, except *uniqueness*. And you can use them nearly identically. For more use cases and examples look at the source code (*/validators*), *Examples* section and specs. 
 
 ### Dirty object
 
-*Dirty object* is an ability of models' instances to express how values of attributes have been changed between time - when an object was initialized and their current value on the server. The most common use case is a reaction to the **update** signal, presented below. You can apply all changes (`applyChanges` method) and re-render article. Or just present them to the user and apply manually selected ones, for example.
+*Dirty object* is an ability of models' instances to express how values of attributes have been changed between 2 moments in time - when an object was initialized and their current value on the server. The most common use case is a reaction to the **update** signal, presented below. You can apply all changes (`applyChanges` method) and re-render the article. Or just present them to the user and apply manually selected ones - for example.
 
 ```coffeescript
 receivedSignal: (signal, data) ->
@@ -379,7 +381,7 @@ receivedSignal: (signal, data) ->
 
 ## Connectivity
 
-`App.Mixins.Connectivity` is a mixin, which is included in `App.Controllers.Base` and `App.Views.Base` base classes. It has very important instance method `connectWith`. You will use this method probably always inside instance methods of controllers and views. `connectWith` accepts 2 arguments. The first one can be an object or an array. Allowed are instances of models or class names of models. Example:
+`App.Mixins.Connectivity` is a mixin, which is included in `App.Controllers.Base` and `App.Views.Base` base classes. It has very important instance method `connectWith`. You will use this method probably always inside instance methods of controllers and views. `connectWith` accepts 2 arguments. The first one can be an object or an array. Allowed are instances of models and class names of models. Example:
 
 ```coffeescript
 this.connectWith [App.Models.Article, App.Models.Article.Comment, user]
@@ -388,13 +390,13 @@ this.connectWith article, receiver: "_articleReceivedSignal"
 
 The second argument is optional and should be an object with *receiver* property. It specifies which method will be called when notification / signal related to connected object / objects is received.
 
-If you pass a class name (or names) as connected object then you will receive all notifications / signals related to all instances of this class.
+If you pass a class name (or names) as connected object then you will receive notifications / signals related to all instances of this class.
 
 Check *Examples* section for real-life usage.
 
 ## Controllers
 
-`App.Controllers.Base` base class is pretty straightforward. Just look at the source code for more details about implemented methods. Among more important things are: 
+`App.Controllers.Base` base class is pretty straightforward. Just look at the source code for more details about implemented methods. More important things are: 
 
 * `params` property - an object with URL params
 * `setScope` / `setResource` method - sets default scope for all models (which URL is used for fetching resources)
@@ -408,14 +410,14 @@ Check *Examples* section for real-life usage.
 This class is responsible for handling forms. It converts attributes of model's instance to the values of corresponding form elements. It's constructor accepts an object with following properties (all are optional):
 
 * **id** *(String)* - HTML **id** attribute of the form. If you don't pass this property, it will be resolved based on *Ruby on Rails* naming convention.
-* **for** *(Object)* - an instance of model that is connected with the form
-* **initObj** *(Boolean)* - whether to initialize an object based on values of corresponding form's elements.
-* **delegator** *(String)* - an object to which the following methods are delegated to
+* **for** *(Object)* - an instance of a model that is connected with the form
+* **initObj** *(Boolean)* - whether to initialize passed object based on values of corresponding form's elements.
+* **delegator** *(Object)* - an object to which the following methods are delegated to
 * **callbackSuccess** *(String)*
 * **callbackFailure** *(String)*
 * **callbackActive** *(String)*
 
-Following HTML code shows how the form should be structured. What is important - all tags related to given attribute, should be wrapped by a tag with **field** class and proper **data-attr** attribute. The value of this attribute should match the **remote name** of given attribute (name of the corresponding attribute on the server side). Look at how errors are expressed. The tag is irrelevant, only **errors** class and **data-for** HTML attribute.
+Following HTML code shows how a form should be structured. What is important - all tags related to given attribute, should be wrapped by a tag with **field** class and proper **data-attr** attribute. The value of this attribute should match the **remote name** of given attribute (name of the corresponding attribute on the server side). Look at how errors are expressed. The tag is irrelevant, only **errors** class and **data-for** HTML attribute are important.
 
 Example:
 
@@ -454,11 +456,7 @@ Instance of this class works internally and is responsible for fetching notifica
 App.Env.loco.getWire()
 ```
 
-The constructor takes an object whose many properties have been described in the *initialization* section, earlier. All methods are rather straightforward and self-explanatory, but you should pay attention to the `setToken` method. When `@token` is not null, it is automatically appended to the requests responsible for fetching notifications. So it allows to fetch notifications assigned to given token.
-
-### Templates
-
-...
+The constructor takes an object whose many properties have been described in the *initialization* section, earlier. All methods are rather straightforward and self-explanatory, but you should pay attention to the `setToken` one. When `@token` is not null, it is automatically appended to the requests that are responsible for fetching notifications. So it allows to fetch notifications assigned to given token.
 
 ## Development
 
@@ -468,14 +466,13 @@ Look inside `gulpfile.js` for more details.
 
 ### Generating documentation
 
-```console
+```bash
 $ codo src_coffee
 ```
 
 ## Examples
 
 * examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
-
 * [Loco + ActionCable example app](http://github.com/locoframework/example-action-cable)
 
 ## License
