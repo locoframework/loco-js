@@ -18,7 +18,6 @@
   "keywords": ["mvc", "framework", "rails"],
   "license": "MIT",
   "homepage": "https://github.com/locoframework/loco-js#readme",
-  "private": true,
   "dependencies": {
     "jquery": "^2.2.4"
   },
