@@ -3,6 +3,7 @@
   "description": "MVC framework for building web apps with ease.",
   "authors": ["himn1 <zbigniew.humeniuk@gmail.com>"],
   "main": "dist/loco.js",
+  "moduleType": ["globals"],
   "keywords": ["mvc", "framework", "rails"],
   "license": "MIT",
   "homepage": "https://github.com/locoframework/loco-js#readme",
