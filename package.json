@@ -1,6 +1,6 @@
 {
   "name": "loco-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MVC framework for building web apps with ease.",
   "author": "himn1 <zbigniew.humeniuk@gmail.com>",
   "main": "dist/loco.js",
@@ -15,7 +15,11 @@
     "type": "git",
     "url": "git+https://github.com/locoframework/loco-js.git"
   },
-  "keywords": ["mvc", "framework", "rails"],
+  "keywords": [
+    "mvc",
+    "framework",
+    "rails"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/locoframework/loco-js#readme",
   "dependencies": {
