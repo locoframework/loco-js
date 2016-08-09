@@ -72,6 +72,12 @@ Loco-JS is included inside the [`loco-rails`](https://github.com/locoframework/l
 $ bower install loco-js --save
 ```
 
+### Installation using NPM
+
+```bash
+$ npm install --save loco-js
+```
+
 ### Initalization
 
 ```coffeescript
