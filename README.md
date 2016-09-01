@@ -1,3 +1,5 @@
+![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/loco_logo_trans_sqr-300px.png)
+
 # Welcome to Loco-JS
 
 **Loco** is a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: 
@@ -486,4 +488,4 @@ Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT)
 
 ## Author
 
-Zbigniew Humeniuk
+Zbigniew Humeniuk from [Art of Code](http://artofcode.co)

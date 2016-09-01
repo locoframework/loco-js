@@ -1,12 +1,12 @@
 {
   "name": "loco-js",
   "description": "MVC framework for building web apps with ease.",
-  "authors": ["himn1 <zbigniew.humeniuk@gmail.com>"],
+  "authors": ["Zbigniew Humeniuk <hello@artofcode.co>"],
   "main": "dist/loco.js",
   "moduleType": ["globals"],
   "keywords": ["mvc", "framework", "rails"],
   "license": "MIT",
-  "homepage": "https://github.com/locoframework/loco-js#readme",
+  "homepage": "http://locoframework.org",
   "dependencies": {
     "jquery": "^2.2.4 || ^3.1.0"
   },
