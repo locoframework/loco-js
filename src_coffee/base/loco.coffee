@@ -1,10 +1,10 @@
 class App.Loco
   constructor: (opts={}) ->
     @wire = null
+    @line = null
     @locale = null
     @turbolinks = opts.turbolinks ? false
-    initWireConditions = opts.notifications? and opts.notifications.enable? and opts.notifications.enable
-    @initWire = if initWireConditions then true else false
+    @initWire = if opts.notifications?.enable then true else false
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
     this.setProtocolWithHost opts.protocolWithHost
@@ -31,6 +31,9 @@ class App.Loco
     if @initWire
       @wire = new App.Wire @notificationsParams
       @wire.connect()
+    if App.cable?
+      @line = new App.Line
+      @line.connect()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
       jQuery(document).on event, =>
@@ -68,6 +71,8 @@ class App.Loco
     if @wire?
       @wire.resetSyncTime()
       @wire._check()
+
+  emit: (data) -> App.Channels.Loco.NotificationCenter.send data
 
   getModels: ->
     models = []

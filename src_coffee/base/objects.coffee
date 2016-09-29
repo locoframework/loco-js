@@ -2,6 +2,7 @@ window.App =
   Loco: null
   IdentityMap: null
   Wire: null
+  Line: null
   Env:
     loco: null
     namespaceController: null
@@ -20,3 +21,5 @@ window.App =
   Validators: {}
   I18n: {}
   Utils: {}
+  Channels:
+    Loco: {}

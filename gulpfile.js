@@ -56,6 +56,7 @@ gulp.task('scripts', ['coffee'], function() {
     './src/base/mix.js',
     './src/base/identity_map.js',
     './src/base/wire.js',
+    './src/base/line.js',
     './src/base/loco.js',
     './src/base/mixins/**/*.js',
     './src/utils/**/*.js',
