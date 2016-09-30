@@ -22,3 +22,4 @@ class App.Services.Date
     str = str.replace '%d', (x) => if @date.getDate() >= 10 then @date.getDate() else "0#{@date.getDate()}"
     str = str.replace '%H', (x) => if @date.getHours() >= 10 then @date.getHours() else "0#{@date.getHours()}"
     str = str.replace '%M', (x) => if @date.getMinutes() >= 10 then @date.getMinutes() else "0#{@date.getMinutes()}"
+    str = str.replace '%S', (x) => if @date.getSeconds() >= 10 then @date.getSeconds() else "0#{@date.getSeconds()}"

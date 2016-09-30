@@ -2448,12 +2448,21 @@ App.Services.Date = (function() {
         }
       };
     })(this));
-    return str = str.replace('%M', (function(_this) {
+    str = str.replace('%M', (function(_this) {
       return function(x) {
         if (_this.date.getMinutes() >= 10) {
           return _this.date.getMinutes();
         } else {
           return "0" + (_this.date.getMinutes());
+        }
+      };
+    })(this));
+    return str = str.replace('%S', (function(_this) {
+      return function(x) {
+        if (_this.date.getSeconds() >= 10) {
+          return _this.date.getSeconds();
+        } else {
+          return "0" + (_this.date.getSeconds());
         }
       };
     })(this));
