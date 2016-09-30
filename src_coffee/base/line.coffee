@@ -10,5 +10,5 @@ class App.Line
       disconnected: ->
         console.log 'disconnected'
       received: (data) ->
-        plug = new App.Services.Plug
-        plug.receivedSignal data
+        notificationCenter = new App.Services.NotificationCenter
+        notificationCenter.receivedSignal data
