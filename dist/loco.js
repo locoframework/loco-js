@@ -158,6 +158,7 @@ App.Wire = (function() {
     this.protocolWithHost = opts.protocolWithHost;
     this.allowedDisconnectionTime = (ref3 = opts.allowedDisconnectionTime) != null ? ref3 : 10;
     this.disconnectedSinceTime = null;
+    this.uuid = null;
   }
 
   Wire.prototype.setToken = function(token) {
@@ -216,6 +217,14 @@ App.Wire = (function() {
 
   Wire.prototype.setAllowedDisconnectionTime = function(val) {
     return this.allowedDisconnectionTime = val;
+  };
+
+  Wire.prototype.getUuid = function() {
+    return this.uuid;
+  };
+
+  Wire.prototype.setUuid = function(val) {
+    return this.uuid = val;
   };
 
   Wire.prototype.connect = function() {
@@ -353,7 +362,10 @@ App.Wire = (function() {
       synced_at: this.syncTime
     };
     if (this.token != null) {
-      params["token"] = this.token;
+      params.token = this.token;
+    }
+    if (this.uuid != null) {
+      params.uuid = this.uuid;
     }
     return params;
   };
@@ -404,11 +416,25 @@ App.Line = (function() {
         return console.log('disconnected');
       },
       received: function(data) {
-        var notificationCenter;
-        notificationCenter = new App.Services.NotificationCenter;
-        return notificationCenter.receivedSignal(data);
+        var notificationCenter, wire;
+        if (data.loco == null) {
+          notificationCenter = new App.Services.NotificationCenter;
+          notificationCenter.receivedSignal(data);
+          return;
+        }
+        if (data.loco.uuid != null) {
+          wire = App.Env.loco.getWire();
+          if (wire == null) {
+            return;
+          }
+          return wire.setUuid(data.loco.uuid);
+        }
       }
     });
+  };
+
+  Line.prototype.send = function(data) {
+    return App.Channels.Loco.NotificationCenter.send(data);
   };
 
   return Line;
@@ -436,6 +462,10 @@ App.Loco = (function() {
 
   Loco.prototype.getWire = function() {
     return this.wire;
+  };
+
+  Loco.prototype.getLine = function() {
+    return this.line;
   };
 
   Loco.prototype.getLocale = function() {
@@ -535,7 +565,7 @@ App.Loco = (function() {
   };
 
   Loco.prototype.emit = function(data) {
-    return App.Channels.Loco.NotificationCenter.send(data);
+    return this.line.send(data);
   };
 
   Loco.prototype.getModels = function() {

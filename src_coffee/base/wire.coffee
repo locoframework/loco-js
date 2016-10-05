@@ -11,6 +11,7 @@ class App.Wire
     @protocolWithHost = opts.protocolWithHost
     @allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
     @disconnectedSinceTime = null
+    @uuid = null
 
   setToken: (token) -> @token = token
 
@@ -36,6 +37,9 @@ class App.Wire
 
   getAllowedDisconnectionTime: -> @allowedDisconnectionTime
   setAllowedDisconnectionTime: (val) -> @allowedDisconnectionTime = val
+
+  getUuid: -> @uuid
+  setUuid: (val) -> @uuid = val
 
   connect: ->
     @pollingInterval = setInterval =>
@@ -100,7 +104,8 @@ class App.Wire
 
   _requestParams: ->
     params = {synced_at: @syncTime}
-    if @token? then params["token"] = @token
+    if @token? then params.token = @token
+    if @uuid? then params.uuid = @uuid
     params
 
   _getURL: ->

@@ -14,6 +14,8 @@ class App.Loco
 
   getWire: -> @wire
 
+  getLine: -> @line
+
   getLocale: -> @locale
   setLocale: (locale) -> @locale = locale
 
@@ -72,7 +74,8 @@ class App.Loco
       @wire.resetSyncTime()
       @wire._check()
 
-  emit: (data) -> App.Channels.Loco.NotificationCenter.send data
+  # TODO: remove
+  emit: (data) -> @line.send data
 
   getModels: ->
     models = []
