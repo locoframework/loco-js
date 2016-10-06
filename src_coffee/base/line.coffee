@@ -14,9 +14,11 @@ class App.Line
           notificationCenter = new App.Services.NotificationCenter
           notificationCenter.receivedSignal data
           return
+        wire = App.Env.loco.getWire()
+        return if not wire?
         if data.loco.uuid?
-          wire = App.Env.loco.getWire()
-          return if not wire?
           wire.setUuid data.loco.uuid
+        else if data.loco.notification?
+          wire.processNotification data.loco.notification
 
   send: (data) -> App.Channels.Loco.NotificationCenter.send data
