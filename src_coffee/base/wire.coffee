@@ -46,8 +46,7 @@ class App.Wire
       this._check()
     , @pollingTime
 
-  disconnect: ->
-    window.clearInterval @pollingInterval
+  disconnect: -> window.clearInterval @pollingInterval
 
   disableNotifications: ->
     console.log 'App.Wire#disableNotifications - DEPRECATED'

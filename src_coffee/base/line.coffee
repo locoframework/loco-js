@@ -6,10 +6,10 @@ class App.Line
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: ->
-        console.log 'connected'
+        console.log 'ws connected'
       disconnected: ->
-        console.log 'disconnected'
-      received: (data) ->
+        console.log 'ws disconnected'
+      received: (data) =>
         if not data.loco?
           notificationCenter = new App.Services.NotificationCenter
           notificationCenter.receivedSignal data
@@ -20,5 +20,7 @@ class App.Line
           wire.setUuid data.loco.uuid
         else if data.loco.notification?
           wire.processNotification data.loco.notification
+        else if data.loco.connection_check?
+          this.send loco: {connection_check: true}
 
   send: (data) -> App.Channels.Loco.NotificationCenter.send data

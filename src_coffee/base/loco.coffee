@@ -30,12 +30,12 @@ class App.Loco
 
   init: ->
     App.Env.loco = this
-    if @initWire
-      @wire = new App.Wire @notificationsParams
-      @wire.connect()
     if App.cable?
       @line = new App.Line
       @line.connect()
+    if @initWire
+      @wire = new App.Wire @notificationsParams
+      @wire.connect()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
       jQuery(document).on event, =>
