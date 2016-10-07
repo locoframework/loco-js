@@ -43,7 +43,7 @@ class App.Wire
 
   connect: ->
     @pollingInterval = setInterval =>
-      this._check()
+      this.check()
     , @pollingTime
 
   disconnect: -> window.clearInterval @pollingInterval
@@ -71,7 +71,7 @@ class App.Wire
 
   processSignal: (notification) -> this.processNotification notification
 
-  _check: ->
+  check: ->
     return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
     jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
     jqxhr.always ->
@@ -83,7 +83,7 @@ class App.Wire
       notifications = data[0]
       return if notifications.length is 0
       this.processNotification notification for notification in notifications
-      this._check() if notifications.length is @size
+      this.check() if notifications.length is @size
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?

@@ -30,12 +30,12 @@ class App.Loco
 
   init: ->
     App.Env.loco = this
-    if App.cable?
-      @line = new App.Line
-      @line.connect()
     if @initWire
       @wire = new App.Wire @notificationsParams
       @wire.connect()
+    if App.cable?
+      @line = new App.Line
+      @line.connect()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
       jQuery(document).on event, =>
@@ -72,7 +72,7 @@ class App.Loco
 
     if @wire?
       @wire.resetSyncTime()
-      @wire._check()
+      @wire.check()
 
   # TODO: remove
   emit: (data) -> @line.send data
