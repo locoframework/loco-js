@@ -16,6 +16,7 @@ class App.Wire
   setToken: (token) -> @token = token
 
   getSyncTime: -> @syncTime
+  setSyncTime: (val) -> @syncTime = val
   resetSyncTime: -> @syncTime = null
 
   getPollingTime: -> @pollingTime
@@ -84,6 +85,15 @@ class App.Wire
       return if notifications.length is 0
       this.processNotification notification for notification in notifications
       this.check() if notifications.length is @size
+
+  fetchSyncTimeAndConnect: ->
+    jqxhr = $.ajax method: "GET", url: "#{this._getURL()}/sync-time"
+    jqxhr.always ->
+    jqxhr.fail =>
+      this.connect()
+    jqxhr.done (data) =>
+      @syncTime = data.sync_time
+      this.connect()
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?
