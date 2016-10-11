@@ -15,7 +15,7 @@ class App.Line
         wire = App.Env.loco.getWire()
         if wire?
           wire.setUuid null
-          wire.fetchSyncTimeAndConnect()
+          wire.fetchSyncTime connect: true
       rejected: -> console.log 'ws rejected'
       received: (data) =>
         console.log data

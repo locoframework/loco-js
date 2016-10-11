@@ -32,7 +32,7 @@ class App.Loco
     App.Env.loco = this
     if @initWire
       @wire = new App.Wire @notificationsParams
-      @wire.connect()
+      @wire.fetchSyncTime connect: true
     if App.cable?
       @line = new App.Line
       @line.connect()
@@ -72,7 +72,7 @@ class App.Loco
 
     if @wire?
       @wire.resetSyncTime()
-      @wire.check()
+      @wire.fetchSyncTime()
 
   # TODO: remove
   emit: (data) -> @line.send data

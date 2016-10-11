@@ -86,14 +86,14 @@ class App.Wire
       this.processNotification notification for notification in notifications
       this.check() if notifications.length is @size
 
-  fetchSyncTimeAndConnect: ->
+  fetchSyncTime: (opts = {}) ->
     jqxhr = $.ajax method: "GET", url: "#{this._getURL()}/sync-time"
     jqxhr.always ->
     jqxhr.fail =>
-      this.connect()
+      this.connect() if opts.connect
     jqxhr.done (data) =>
       @syncTime = data.sync_time
-      this.connect()
+      this.connect() if opts.connect
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?
