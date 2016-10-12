@@ -74,7 +74,6 @@ class App.Loco
       @wire.resetSyncTime()
       @wire.fetchSyncTime()
 
-  # TODO: remove
   emit: (data) -> @line.send data
 
   getModels: ->

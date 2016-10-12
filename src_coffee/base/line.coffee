@@ -18,7 +18,6 @@ class App.Line
           wire.fetchSyncTime connect: true
       rejected: -> console.log 'ws rejected'
       received: (data) =>
-        console.log data
         if data.loco?
           this._processSystemNotification data.loco
           delete data.loco
@@ -36,8 +35,13 @@ class App.Line
     if data.sync_time?
       wire.setSyncTime data.sync_time
     if data.uuid?
+      console.log "uuid: #{data.uuid}"
       wire.setUuid data.uuid
     if data.notification?
       wire.processNotification data.notification
     if data.xhr_notifications?
       wire.check()
+    if data.start_ajax_polling
+      console.log "wire connected"
+      wire.setUuid null
+      wire.fetchSyncTime connect: true
