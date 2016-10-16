@@ -1,29 +1,37 @@
 class App.Line
   constructor: (opts = {}) ->
+    @connected = false
 
   connect: ->
     App.Channels.Loco.NotificationCenter = App.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
-      connected: ->
+      connected: =>
         console.log 'ws connected'
+        @connected = true
         wire = App.Env.loco.getWire()
         if wire?
           wire.disconnect()
-      disconnected: ->
+        this._sendNotification loco: 'connected'
+      disconnected: =>
         console.log 'ws disconnected'
+        @connected = false
         wire = App.Env.loco.getWire()
         if wire?
           wire.setUuid null
-          wire.fetchSyncTime connect: true
-      rejected: -> console.log 'ws rejected'
+          wire.fetchSyncTime after: 'connect'
+        this._sendNotification loco: 'disconnected'
+      rejected: =>
+        console.log 'ws rejected'
+        this._sendNotification loco: 'rejected'
       received: (data) =>
         if data.loco?
           this._processSystemNotification data.loco
           delete data.loco
         return if Object.keys(data).length is 0
-        notificationCenter = new App.Services.NotificationCenter
-        notificationCenter.receivedSignal data
+        this._sendNotification data
+
+  isWireAllowed: -> not @connected
 
   send: (data) -> App.Channels.Loco.NotificationCenter.send data
 
@@ -43,5 +51,10 @@ class App.Line
       wire.check()
     if data.start_ajax_polling
       console.log "wire connected"
+      @connected = null
       wire.setUuid null
-      wire.fetchSyncTime connect: true
+      wire.fetchSyncTime after: 'connect'
+
+  _sendNotification: (data) ->
+    notificationCenter = new App.Services.NotificationCenter
+    notificationCenter.receivedSignal data

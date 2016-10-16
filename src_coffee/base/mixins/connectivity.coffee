@@ -1,13 +1,17 @@
 class App.Mixins.Connectivity
   connectWith: (data, opts = {}) ->
     return null if not data?
-    if data.constructor.name is "Array"
-      for identity in App.Utils.Array.uniq App.Utils.Array.map(data, (obj) -> obj.getIdentity())
+    if data.constructor.name isnt "Array"
+      data = [data]
+    data = App.Utils.Array.uniq data
+    for resource in data
+      if resource.constructor.name is "Function"
+        identity = resource.getIdentity()
         App.IdentityMap.addCollection identity, to: this
         @receivers[identity] = opts.receiver if opts.receiver?
-      return
-    @receivers[data.toKey()] = opts.receiver if opts.receiver?
-    App.IdentityMap.connect this, with: data
+      else
+        App.IdentityMap.connect this, with: resource
+        @receivers[resource.toKey()] = opts.receiver if opts.receiver?
 
   receiverFor: (data) ->
     if data.constructor.name is "String"

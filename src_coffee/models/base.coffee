@@ -162,7 +162,7 @@ class App.Models.Base
 
   setResource: (name) -> @resource = name
 
-  getIdentity: -> this.constructor.identity
+  getIdentity: -> this.constructor.getIdentity()
 
   getAttrRemoteName: (attr) ->
     return null if not this.constructor.attributes?

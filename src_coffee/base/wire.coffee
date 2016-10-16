@@ -43,6 +43,9 @@ class App.Wire
   setUuid: (val) -> @uuid = val
 
   connect: ->
+    line = App.Env.loco.getLine()
+    if line? and !line.isWireAllowed()
+      return
     @pollingInterval = setInterval =>
       this.check()
     , @pollingTime
@@ -90,10 +93,10 @@ class App.Wire
     jqxhr = $.ajax method: "GET", url: "#{this._getURL()}/sync-time"
     jqxhr.always ->
     jqxhr.fail =>
-      this.connect() if opts.connect
+      this[opts.after]() if opts.after?
     jqxhr.done (data) =>
       @syncTime = data.sync_time
-      this.connect() if opts.connect
+      this[opts.after]() if opts.after?
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?

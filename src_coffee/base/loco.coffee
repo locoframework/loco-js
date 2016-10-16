@@ -32,7 +32,7 @@ class App.Loco
     App.Env.loco = this
     if @initWire
       @wire = new App.Wire @notificationsParams
-      @wire.fetchSyncTime connect: true
+      @wire.fetchSyncTime after: 'connect'
     if App.cable?
       @line = new App.Line
       @line.connect()
