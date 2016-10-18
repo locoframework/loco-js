@@ -11,7 +11,7 @@ class App.Line
         @connected = true
         wire = App.Env.loco.getWire()
         if wire?
-          wire.disconnect()
+          wire.setDelayedDisconnection()
         this._sendNotification loco: 'connected'
       disconnected: =>
         console.log 'ws disconnected'

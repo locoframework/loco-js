@@ -12,6 +12,7 @@ class App.Wire
     @allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
     @disconnectedSinceTime = null
     @uuid = null
+    @delayedDisconnection = false
 
   setToken: (token) -> @token = token
 
@@ -42,12 +43,17 @@ class App.Wire
   getUuid: -> @uuid
   setUuid: (val) -> @uuid = val
 
+  setDelayedDisconnection: -> @delayedDisconnection = true
+
   connect: ->
     line = App.Env.loco.getLine()
     if line? and !line.isWireAllowed()
       return
     @pollingInterval = setInterval =>
       this.check()
+      if @delayedDisconnection
+        @delayedDisconnection = false
+        this.disconnect()
     , @pollingTime
 
   disconnect: -> window.clearInterval @pollingInterval
