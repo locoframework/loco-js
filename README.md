@@ -7,7 +7,7 @@
 * [**Loco-Rails**](http://github.com/locoframework/loco-rails) - a back-end part
 * **Loco-JS** - a front-end part
 
-Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of it's internals and API. Loco-JS role in the **Loco** framework is described on [Loco-Rails page](http://github.com/locoframework/loco-rails).
+Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS' role in the **Loco** framework is described on the [Loco-Rails page](http://github.com/locoframework/loco-rails).
 
 ## CoffeeScript naming convention 
 
@@ -64,7 +64,7 @@ Include [`dist/loco.js`](dist/loco.js) in your application’s JavaScript bundle
 
 Loco-JS is included inside the [`loco-rails`](https://github.com/locoframework/loco-rails) gem. To install:
 
-1. Add `loco-rails` to your Gemfile: `gem 'loco-rails', '~> 1.0.0'`
+1. Add `loco-rails` to your Gemfile: `gem 'loco-rails'`
 2. Run `bundle install`.
 3. Add `//= require loco-rails` to your JavaScript manifest file (usually at `app/assets/javascripts/application.js`).
 
@@ -85,11 +85,11 @@ $ npm install --save loco-js
 ```coffeescript
 loco = new App.Loco
   # set to your Turbolinks version if you have enabled Turbolinks
-  turbolinks: false                   # false by default
+  turbolinks: 5                       # false by default
 
   # your browser's app will be checking for new notifications periodically via ajax polling
   notifications:
-    enable: false                     # false by default
+    enable: true                      # false by default
     #pollingTime: 3000                # 3000 ms by default
 
     # display upcoming notifications in browser's console e.g. for debugging
@@ -123,7 +123,7 @@ loco.init()
 
 ## Usage
 
-After calling `init()` Loco's instance checks following `<body>`'s data attributes:
+After calling `init()` Loco-JS' instance checks following `<body>`'s data attributes:
 
 * data-namespace
 * data-controller
@@ -157,11 +157,13 @@ Type `App` in the browser's console and you'll get:
 
 ```javascript
 Object {
+  Channels: Object,                     // since ver. 1.3
   Controllers: Object,
   Env: Object, 
   Helpers: Object,
   I18n: Object,
   IdentityMap: function IdentityMap(),
+  Line: function Line(opts),            // since ver. 1.3
   Loco: function Loco(opts),
   Mix: function (),
   Mixins: Object, 
@@ -179,6 +181,7 @@ Object {
 
 Let's describe each object / function briefly. I'll be using CoffeeScript nomenclature.
 
+* **Channels** - a namespace where are defined `ActionCable`'s subscriptions
 * **Controllers** - a namespace where you define controllers
 * **Env** - an object that has following properties:
 	* **action** - a name of current action (method called on an instance of current controller)
@@ -192,6 +195,7 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 	* **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
 * **I18n** - an object that holds localizations. Localizations are objects too
 * **IdentityMap** - a class that stores information about *connected* objects
+* **Line** - a class that is responsible for sending and receiving messages over WebSocket connection
 * **Loco** - this class rules everything ;)
 * **Mix** - a factory function that generates a `Mixed` superclass (used for implementing mixins)
 * **Mixins** - a namespace where mixins are defined
@@ -466,6 +470,34 @@ App.Env.loco.getWire()
 
 The constructor takes an object whose many properties have been described in the *initialization* section, earlier. All methods are rather straightforward and self-explanatory, but you should pay attention to the `setToken` one. When `@token` is not null, it is automatically appended to the requests that are responsible for fetching notifications. So it allows to fetch notifications assigned to given token.
 
+## App.Line (since ver. 1.3)
+
+Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection. Loco-JS automatically creates instance of `App.Line` and subscribes to `Loco::NotificationCenterChannel` if discovers `ActionCable`'s consumer under `App.cable`. Following code shows - how to get this instance during runtime:
+
+```coffeescript
+App.Env.loco.getLine()
+```
+
+### Sending messages
+
+```coffeescript
+App.Env.loco.getLine().send({})
+
+# or using shortcut:
+App.Env.loco.emit({})
+```
+
+### Receiving messages
+
+Loco-Rails delivers `loco:install` generator that creates following class at *JS-ASSETS-ROOT/services/notification_center.coffee*
+
+```coffeescript
+class App.Services.NotificationCenter
+  receivedSignal: (data) ->
+```
+
+Every time a message is sent from the server, `receivedSignal` instance method is called.
+
 ## Development
 
 ### Development and testing
@@ -481,7 +513,6 @@ $ codo src_coffee
 ## Examples
 
 * examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
-* [Loco + ActionCable example app](http://github.com/locoframework/example-action-cable)
 
 ## License
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
