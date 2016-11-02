@@ -4,7 +4,7 @@ class App.Loco
     @line = null
     @locale = null
     @turbolinks = opts.turbolinks ? false
-    @initWire = if opts.notifications?.enable then true else false
+    @startWire = if opts.notifications?.enable then true else false
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
     this.setProtocolWithHost opts.protocolWithHost
@@ -30,12 +30,8 @@ class App.Loco
 
   init: ->
     App.Env.loco = this
-    if @initWire
-      @wire = new App.Wire @notificationsParams
-      @wire.fetchSyncTime after: 'connect'
-    if App.cable?
-      @line = new App.Line
-      @line.connect()
+    this.initWire()
+    this.initLine()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
       jQuery(document).on event, =>
@@ -45,6 +41,16 @@ class App.Loco
       jQuery =>
         this.flow()
         @postInit() if @postInit?
+
+  initWire: ->
+    return if not @startWire
+    @wire = new App.Wire @notificationsParams
+    @wire.fetchSyncTime after: 'connect'
+
+  initLine: ->
+    return if not App.cable?
+    @line = new App.Line
+    @line.connect()
 
   flow: ->
     App.IdentityMap.clear()
