@@ -2,7 +2,7 @@ class App.Validators.Base
   @sharedInstances = {}
 
   @instance: (obj, attr, opts) ->
-    validatorName = this.name
+    validatorName = @identity
     if not @sharedInstances[validatorName]?
       @sharedInstances[validatorName] = new App.Validators[validatorName]
     sharedInstance = @sharedInstances[validatorName]

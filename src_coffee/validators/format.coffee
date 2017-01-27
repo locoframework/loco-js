@@ -1,4 +1,6 @@
 class App.Validators.Format extends App.Validators.Base
+  @identity = "Format"
+
   constructor: -> super
 
   validate: ->

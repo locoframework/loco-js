@@ -1,4 +1,6 @@
 class App.Validators.Confirmation extends App.Validators.Base
+  @identity = "Confirmation"
+
   constructor: -> super
 
   validate: ->

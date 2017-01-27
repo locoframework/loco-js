@@ -1,4 +1,6 @@
 class App.Validators.Numericality extends App.Validators.Base
+  @identity = "Numericality"
+
   constructor: -> super
 
   validate: ->

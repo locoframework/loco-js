@@ -1,4 +1,6 @@
 class App.Validators.Exclusion extends App.Validators.Base
+  @identity = "Exclusion"
+
   constructor: -> super
 
   validate: ->

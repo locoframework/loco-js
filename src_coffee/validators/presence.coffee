@@ -1,4 +1,6 @@
 class App.Validators.Presence extends App.Validators.Base
+  @identity = "Presence"
+
   constructor: -> super
 
   validate: ->

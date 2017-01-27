@@ -1,4 +1,6 @@
 class App.Validators.Length extends App.Validators.Base
+  @identity = "Length"
+
   constructor: -> super
 
   validate: ->
