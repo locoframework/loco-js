@@ -2,14 +2,14 @@
 
 # Welcome to Loco-JS
 
-**Loco** is a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: 
+**Loco** is a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts:
 
 * [**Loco-Rails**](http://github.com/locoframework/loco-rails) - a back-end part
 * **Loco-JS** - a front-end part
 
 Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS' role in the **Loco** framework is described on the [Loco-Rails page](http://github.com/locoframework/loco-rails).
 
-## CoffeeScript naming convention 
+## CoffeeScript naming convention
 
 Loco-JS uses the following naming convention. It's worth to notice that "**@**" sign is used only to define and call class variables and class methods. Although **this** and **@** are equivalent, this convention improves readability of code imo.
 
@@ -17,10 +17,10 @@ Loco-JS uses the following naming convention. It's worth to notice that "**@**" 
 class Example
   @classVar = 50
 
-  @classMethod: -> 
+  @classMethod: ->
     "@classVar is #{@classVar}." + "\n" + @_privateClassMethod true
-	
-  @_privateClassMethod: (sayName = false) -> 
+
+  @_privateClassMethod: (sayName = false) ->
     if sayName
       "Class name is #{@name}"
     else
@@ -29,13 +29,13 @@ class Example
   constructor: (opts = {}) ->
     @iVarA = opts.a ? 0
     @iVarB = opts.b ? 'foo'
-		
-  instanceMethod: (c) -> 
+
+  instanceMethod: (c) ->
     classVarVal = this.constructor.classVar
     str = "@iVarA is #{@iVarA}, @iVarB is #{@iVarB}, c is #{c} and @classVar is #{classVarVal}."
     str + '\n' + this._privateInstanceMethod false
-	
-  _privateInstanceMethod: (explain = true) -> 
+
+  _privateInstanceMethod: (explain = true) ->
     str = if explain then ' only by convention.' else '.'
     "I'm private instance method#{str}"
 
@@ -43,7 +43,7 @@ class Example
 Example.classVar                   # 50
 Example.classMethod()              # "@classVar is 50.
                                    # Class name is Example"
-Example._privateClassMethod()      # "I'm private class method only by convention." 
+Example._privateClassMethod()      # "I'm private class method only by convention."
 instance = new Example b: 'bar'
 instance.instanceMethod()          # "@iVarA is 0, @iVarB is bar, c is undefined and @classVar is 50.
                                    # I'm private instance method."
@@ -56,6 +56,7 @@ Other data structures in CoffeeScript are pretty good explained on the [official
 * [jQuery 2.2.4 or higher](http://jquery.com/download)
 
 Loco-JS has a single dependency. But it's based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) and promises are supported natively only in [some browsers](http://caniuse.com/#feat=promises). So, I recommend to use [lie](https://github.com/calvinmetcalf/lie).
+
 ## Getting started
 
 Include [`dist/loco.js`](dist/loco.js) in your application’s JavaScript bundle.
@@ -67,12 +68,6 @@ Loco-JS is included inside the [`loco-rails`](https://github.com/locoframework/l
 1. Add `loco-rails` to your Gemfile: `gem 'loco-rails'`
 2. Run `bundle install`.
 3. Add `//= require loco-rails` to your JavaScript manifest file (usually at `app/assets/javascripts/application.js`).
-
-### Installation using Bower
-
-```bash
-$ bower install loco-js --save
-```
 
 ### Installation using NPM
 
@@ -159,18 +154,18 @@ Type `App` in the browser's console and you'll get:
 Object {
   Channels: Object,                     // since ver. 1.3
   Controllers: Object,
-  Env: Object, 
+  Env: Object,
   Helpers: Object,
   I18n: Object,
   IdentityMap: function IdentityMap(),
   Line: function Line(opts),            // since ver. 1.3
   Loco: function Loco(opts),
   Mix: function (),
-  Mixins: Object, 
+  Mixins: Object,
   Models: Object,
   Presenters: Object,
   Services: Object,
-  UI: Object, 
+  UI: Object,
   Utils: Object,
   Validators: Object,
   Views: Object,
@@ -186,7 +181,7 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 * **Env** - an object that has following properties:
 	* **action** - a name of current action (method called on an instance of current controller)
 	* **controller** - an instance of current controller
-	* **loco** - an instance of `App.Loco`. It's the most important instance methods are: 
+	* **loco** - an instance of `App.Loco`. It's the most important instance methods are:
 		* `getWire` - returns current instance of `App.Wire`
 		* `setLocale` / `getLocale` - allows you to set / get current locale
 	* **namespaceController** - an instance of current namespace controller
@@ -256,11 +251,11 @@ Let's describe it's *elements*:
 
 * **@identity** *(required)* - value of this class variable should be the same as the name of a class (last component). It's required because of minification - all class names will be converted to ~ one character. But, Loco relies on naming.
 
-* **@resources** - this class variable stores information about scopes in your app. You can fetch resources from different sources (API endpoints). So here is a place, where you can define them. Then, you can fetch resources in 2 ways: 
+* **@resources** - this class variable stores information about scopes in your app. You can fetch resources from different sources (API endpoints). So here is a place, where you can define them. Then, you can fetch resources in 2 ways:
 	* by specifing scope in method calls e.g. `App.Models.Article.get 'all', resource: 'main'`
 	* by specifing scope globally. You can do this by calling `setScope '<scope name>'` instance method in a namespace controller, usually
 
-* **@attributes** - this class variable stores information about model's attributes. For each attribute you can define: 
+* **@attributes** - this class variable stores information about model's attributes. For each attribute you can define:
 	* **validators** - `Absence`, `Confirmation`, `Exclusion`, `Format`, `Inclusion`, `Length`, `Numericality`, `Presence`, `Size` are available
 	* **remoteName** - the name of model's attribute and name returned by API endpoint may vary. So here you can define a *binding*.
 	* **type** - when assigning values from API endpoint, Loco may convert them to certain types. Available types: `Date`, `Integer`, `Float`, `Boolean`, `Number`, `String`
@@ -282,7 +277,7 @@ App.Models.Article.get('all').then (resp) ->
 # GET "/user/articles?current-page=3"
 # ...
 
-App.Models.Article.get('all', resource: 'main').then (resp) -> 
+App.Models.Article.get('all', resource: 'main').then (resp) ->
 # GET "/articles?page=1"
 # GET "/articles?page=2"
 # GET "/articles?page=3"
@@ -300,7 +295,7 @@ class App.Models.Article.Comment extends App.Models.Base
   @remoteName = "Comment"
   @resources =
     url: '/user/articles/:articleId/comments', paginate: {per: 10}
-    
+
 App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
 ```
@@ -309,9 +304,9 @@ You can also pass additional parameters. Example:
 
 ```coffeescript
 App.Models.Article.Comment.all({
-  articleId: 21, 
-  page: 2, 
-  title: 'foo', 
+  articleId: 21,
+  page: 2,
+  title: 'foo',
   content: 'bar'
 }).then (resp) ->
 # GET "/user/articles/21/comments?page=2&title=foo&content=bar"
@@ -324,7 +319,7 @@ Loco-JS provides `find` class method for fetching a single resource. The respons
 ```coffeescript
 App.Models.Article.find(123).then (article) ->
 # or
-App.Models.Article.find(id: 123).then (article) -> 
+App.Models.Article.find(id: 123).then (article) ->
 # GET "/user/articles/123"
 
 App.Models.Article.Comment.find(id: 33, articleId: 123).then (comment) ->
@@ -332,9 +327,9 @@ App.Models.Article.Comment.find(id: 33, articleId: 123).then (comment) ->
 
 # adding additional parameters
 App.Models.Article.Comment.find({
-  id: 33, 
-  articleId: 123, 
-  foo: 'bar', 
+  id: 33,
+  articleId: 123,
+  foo: 'bar',
   baz: 'buz'
 }).then (comment) ->
 # GET "/user/articles/123/comments/33?foo=bar&baz=buz"
@@ -363,7 +358,7 @@ App.Models.Article.find(id: 43).then (article) ->
 
 ### Validation
 
-If you have specified validations for attributes, you can use `isValid` / `isInvalid` methods to check whether an instance of a model is valid or not. 
+If you have specified validations for attributes, you can use `isValid` / `isInvalid` methods to check whether an instance of a model is valid or not.
 
 Example:
 
@@ -375,7 +370,7 @@ article.errors  # {title: ["is too short (minimum is 3 characters)"], content: [
 
 When you use `App.UI.Form` for handling forms, validation is done automatically and errors are shown if object is invalid.
 
-Loco-JS implements almost all built-in [Rails](http://guides.rubyonrails.org/active_record_validations.html) validators, except *uniqueness*. And you can use them nearly identically. For more use cases and examples look at the source code (*/validators*), *Examples* section and specs. 
+Loco-JS implements almost all built-in [Rails](http://guides.rubyonrails.org/active_record_validations.html) validators, except *uniqueness*. And you can use them nearly identically. For more use cases and examples look at the source code (*/validators*), *Examples* section and specs.
 
 ### Dirty object
 
@@ -408,7 +403,7 @@ Check *Examples* section for real-life usage.
 
 ## Controllers
 
-`App.Controllers.Base` base class is pretty straightforward. Just look at the source code for more details about implemented methods. More important things are: 
+`App.Controllers.Base` base class is pretty straightforward. Just look at the source code for more details about implemented methods. More important things are:
 
 * `params` property - an object with URL params
 * `setScope` / `setResource` method - sets default scope for all models (which URL is used for fetching resources)
@@ -434,9 +429,9 @@ Following HTML code shows how a form should be structured. What is important - a
 Example:
 
 ```html
-<form class="edit_article" id="edit_article_42" action="/user/articles/42" 
+<form class="edit_article" id="edit_article_42" action="/user/articles/42"
   accept-charset="UTF-8" method="post">
-  
+
   <input name="utf8" type="hidden" value="&#x2713;" />
   <input type="hidden" name="_method" value="patch" />
   <input type="hidden" name="authenticity_token" value="secret" />

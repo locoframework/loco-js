@@ -1,8 +1,3 @@
-/*!
- * gulp
- * $ npm install gulp-coffee gulp-concat gulp-notify del gulp-jasmine-browser gulp-watch --save-dev
- */
-
 /*
   $ gulp         - start jasmine & watch tasks
   $ gulp watch   - watch .coffee files for changes
@@ -127,7 +122,7 @@ gulp.task('concat_dummy_app', ['copy_js_spec_files'], function() {
 gulp.task('jasmine', ['concat_dummy_app'], function() {
   var filesForTest = [
     'spec/helpers/**/*.js',
-    'bower_components/jquery/dist/jquery.js',
+    'node_modules/jquery/dist/jquery.js',
     'spec/loco/**/*.js',
     'dist/loco.js',
     'spec/dummy/application.js'
