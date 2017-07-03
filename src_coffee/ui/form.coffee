@@ -182,10 +182,14 @@ class App.UI.Form
     this._hideErrors() if hideErrors
 
   _connectionError: ->
-    @submitJQ.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
+    App.Utils.Dom.removeClass @submit, 'active'
+    App.Utils.Dom.addClass @submit, 'failure'
+    @submit.val = App.I18n[@locale].ui.form.errors.connection
     setTimeout =>
-      @submitJQ.removeAttr('disabled').removeClass('failure').val @submitVal
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'failure'
+      @submit.val = @submitVal
     , 3000
 
   _alwaysAfterRequest: ->
-    @submitJQ.removeClass("active")
+    App.Utils.Dom.removeClass @submit, 'active'

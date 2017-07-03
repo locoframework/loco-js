@@ -863,6 +863,22 @@ App.Utils.Dom = (function() {
     }
   };
 
+  Dom.addClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.add(className);
+    } else {
+      return el.className += ' ' + className;
+    }
+  };
+
+  Dom.removeClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.remove(className);
+    } else {
+      return el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    }
+  };
+
   return Dom;
 
 })();
@@ -2517,16 +2533,20 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._connectionError = function() {
-    this.submitJQ.removeClass('active').addClass('failure').val(App.I18n[this.locale].ui.form.errors.connection);
+    App.Utils.Dom.removeClass(this.submit, 'active');
+    App.Utils.Dom.addClass(this.submit, 'failure');
+    this.submit.val = App.I18n[this.locale].ui.form.errors.connection;
     return setTimeout((function(_this) {
       return function() {
-        return _this.submitJQ.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
+        _this.submit.disabled = false;
+        App.Utils.Dom.removeClass(_this.submit, 'failure');
+        return _this.submit.val = _this.submitVal;
       };
     })(this), 3000);
   };
 
   Form.prototype._alwaysAfterRequest = function() {
-    return this.submitJQ.removeClass("active");
+    return App.Utils.Dom.removeClass(this.submit, 'active');
   };
 
   return Form;
