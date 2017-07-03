@@ -2292,7 +2292,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._handle = function() {
-    return this.formJQ.on('submit', (function(_this) {
+    return this.form.addEventListener('submit', (function(_this) {
       return function(e) {
         var clearForm;
         e.preventDefault();
@@ -2332,13 +2332,13 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._canBeSubmitted = function() {
-    if (this.submitJQ.hasClass('active')) {
+    if (App.Utils.Dom.hasClass(this.submit, 'active')) {
       return false;
     }
-    if (this.submitJQ.hasClass('success')) {
+    if (App.Utils.Dom.hasClass(this.submit, 'success')) {
       return false;
     }
-    if (this.submitJQ.hasClass('failure')) {
+    if (App.Utils.Dom.hasClass(this.submit, 'failure')) {
       return false;
     }
     return true;

@@ -58,7 +58,7 @@ class App.UI.Form
         document.getElementById "new_#{objName}"
 
   _handle: ->
-    @formJQ.on 'submit', (e) =>
+    @form.addEventListener 'submit', (e) =>
       e.preventDefault()
       return if not this._canBeSubmitted()
       if not @obj?
@@ -83,9 +83,9 @@ class App.UI.Form
       .catch (err) => this._connectionError()
 
   _canBeSubmitted: ->
-    return false if @submitJQ.hasClass 'active'
-    return false if @submitJQ.hasClass 'success'
-    return false if @submitJQ.hasClass 'failure'
+    return false if App.Utils.Dom.hasClass @submit, 'active'
+    return false if App.Utils.Dom.hasClass @submit, 'success'
+    return false if App.Utils.Dom.hasClass @submit, 'failure'
     true
 
   _submitForm: ->
