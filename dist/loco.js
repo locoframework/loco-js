@@ -661,9 +661,9 @@ App.Loco = (function() {
   Loco.prototype.flow = function() {
     var action_name, controller_name, namespace_name;
     App.IdentityMap.clear();
-    namespace_name = $('body').data('namespace');
-    controller_name = $('body').data('controller');
-    action_name = $('body').data('action');
+    namespace_name = document.getElementsByTagName('body')[0].getAttribute('data-namespace');
+    controller_name = document.getElementsByTagName('body')[0].getAttribute('data-controller');
+    action_name = document.getElementsByTagName('body')[0].getAttribute('data-action');
     App.Env.action = action_name;
     if (App.Controllers[namespace_name] != null) {
       App.Env.namespaceController = new App.Controllers[namespace_name];
@@ -849,6 +849,21 @@ App.Utils.Collection = (function() {
   };
 
   return Collection;
+
+})();
+
+App.Utils.Dom = (function() {
+  function Dom() {}
+
+  Dom.hasClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.contains(className);
+    } else {
+      return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+    }
+  };
+
+  return Dom;
 
 })();
 
@@ -2193,9 +2208,11 @@ App.UI.Form = (function() {
     this.callbackFailure = opts.callbackFailure;
     this.callbackActive = opts.callbackActive;
     this.form = this._findForm();
-    this.submit = this.form.find(':submit');
-    this.submitVal = this.submit.val();
+    this.submit = this.form.querySelectorAll('input[type="submit"]')[0];
+    this.submitVal = this.submit.value;
     this.locale = App.Env.loco.getLocale();
+    this.formJQ = $(this.form);
+    this.submitJQ = $(this.submit);
   }
 
   Form.prototype.getObj = function() {
@@ -2232,7 +2249,7 @@ App.UI.Form = (function() {
     for (name in attributes) {
       _ = attributes[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.form.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      formEl = this.formJQ.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
       if (formEl.length === 1) {
         formEl.val(this.obj[name]);
         continue;
@@ -2262,20 +2279,20 @@ App.UI.Form = (function() {
   Form.prototype._findForm = function() {
     var objName;
     if (this.formId != null) {
-      return $("#" + this.formId);
+      return document.getElementById("" + this.formId);
     }
     if (this.obj != null) {
       objName = this.obj.getIdentity().toLowerCase();
       if (this.obj.id != null) {
-        return $("#edit_" + objName + "_" + this.obj.id);
+        return document.getElementById("edit_" + objName + "_" + this.obj.id);
       } else {
-        return $("#new_" + objName);
+        return document.getElementById("new_" + objName);
       }
     }
   };
 
   Form.prototype._handle = function() {
-    return this.form.on('submit', (function(_this) {
+    return this.formJQ.on('submit', (function(_this) {
       return function(e) {
         var clearForm;
         e.preventDefault();
@@ -2315,13 +2332,13 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._canBeSubmitted = function() {
-    if (this.submit.hasClass('active')) {
+    if (this.submitJQ.hasClass('active')) {
       return false;
     }
-    if (this.submit.hasClass('success')) {
+    if (this.submitJQ.hasClass('success')) {
       return false;
     }
-    if (this.submit.hasClass('failure')) {
+    if (this.submitJQ.hasClass('failure')) {
       return false;
     }
     return true;
@@ -2330,12 +2347,12 @@ App.UI.Form = (function() {
   Form.prototype._submitForm = function() {
     var jqxhr, url;
     this._submittingForm();
-    url = this.form.attr('action') + '.json';
-    jqxhr = $.post(url, this.form.serialize());
+    url = this.formJQ.attr('action') + '.json';
+    jqxhr = $.post(url, this.formJQ.serialize());
     jqxhr.always((function(_this) {
       return function() {
         _this._alwaysAfterRequest();
-        return _this.submit.blur();
+        return _this.submitJQ.blur();
       };
     })(this));
     jqxhr.fail((function(_this) {
@@ -2346,7 +2363,7 @@ App.UI.Form = (function() {
     return jqxhr.done((function(_this) {
       return function(data) {
         if (data.success) {
-          return _this._handleSuccess(data, _this.form.attr("method") === "POST");
+          return _this._handleSuccess(data, _this.formJQ.attr("method") === "POST");
         } else {
           return _this._renderErrors(data.errors);
         }
@@ -2360,7 +2377,7 @@ App.UI.Form = (function() {
       clearForm = true;
     }
     val = (ref = (ref1 = data.flash) != null ? ref1.success : void 0) != null ? ref : App.I18n[this.locale].ui.form.success;
-    this.submit.addClass('success').val(val);
+    this.submitJQ.addClass('success').val(val);
     if (data.access_token != null) {
       App.Env.loco.getWire().setToken(data.access_token);
     }
@@ -2375,10 +2392,10 @@ App.UI.Form = (function() {
     return setTimeout((function(_this) {
       return function() {
         var selector;
-        _this.submit.removeAttr('disabled').removeClass('success').val(_this.submitVal);
+        _this.submitJQ.removeAttr('disabled').removeClass('success').val(_this.submitVal);
         selector = ":not([data-loco-not-clear=true])";
         if (clearForm) {
-          return _this.form.find("input:not([type='submit'])" + selector + ", textarea" + selector).val('');
+          return _this.formJQ.find("input:not([type='submit'])" + selector + ", textarea" + selector).val('');
         }
       };
     })(this), 5000);
@@ -2400,26 +2417,26 @@ App.UI.Form = (function() {
       errors = data[attrib];
       remoteName = this.obj != null ? this.obj.getAttrRemoteName(attrib) : attrib;
       if ((remoteName != null) && attrib !== "base") {
-        this.form.find("[data-attr=" + remoteName + "]").find(".errors[data-for=" + remoteName + "]").text(errors[0]);
+        this.formJQ.find("[data-attr=" + remoteName + "]").find(".errors[data-for=" + remoteName + "]").text(errors[0]);
         continue;
       }
       if (attrib === "base" && errors.length > 0) {
         if ($(".errors[data-for='base']").length === 1) {
           $(".errors[data-for='base']").text(errors[0]);
         } else {
-          this.submit.val(errors[0]);
+          this.submitJQ.val(errors[0]);
         }
       }
     }
-    if (this.submit.val() === this.submitVal || this.submit.val() === App.I18n[this.locale].ui.form.sending) {
-      this.submit.val(App.I18n[this.locale].ui.form.errors.invalid_data);
+    if (this.submitJQ.val() === this.submitVal || this.submitJQ.val() === App.I18n[this.locale].ui.form.sending) {
+      this.submitJQ.val(App.I18n[this.locale].ui.form.errors.invalid_data);
     }
-    this.submit.addClass('failure');
+    this.submitJQ.addClass('failure');
     this._showErrors();
     return setTimeout((function(_this) {
       return function() {
-        _this.submit.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
-        return _this.form.find('input.invalid, textarea.invalid, select.invalid').removeClass('invalid');
+        _this.submitJQ.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
+        return _this.formJQ.find('input.invalid, textarea.invalid, select.invalid').removeClass('invalid');
       };
     })(this), 1000);
   };
@@ -2434,7 +2451,7 @@ App.UI.Form = (function() {
     for (name in ref) {
       _ = ref[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.form.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      formEl = this.formJQ.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
       if (formEl.length === 1) {
         this.obj.assignAttr(name, formEl.val());
         continue;
@@ -2466,7 +2483,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._hideErrors = function() {
-    return this.form.find('.errors').each((function(_this) {
+    return this.formJQ.find('.errors').each((function(_this) {
       return function(index, e) {
         if ($(e).text().trim().length > 0) {
           $(e).text("");
@@ -2477,7 +2494,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._showErrors = function() {
-    return this.form.find('.errors').each((function(_this) {
+    return this.formJQ.find('.errors').each((function(_this) {
       return function(index, e) {
         if ($(e).text().trim().length > 0) {
           return $(e).show();
@@ -2490,7 +2507,7 @@ App.UI.Form = (function() {
     if (hideErrors == null) {
       hideErrors = true;
     }
-    this.submit.removeClass('success').removeClass('failure').addClass('active').val(App.I18n[this.locale].ui.form.sending);
+    this.submitJQ.removeClass('success').removeClass('failure').addClass('active').val(App.I18n[this.locale].ui.form.sending);
     if (this.callbackActive != null) {
       this.delegator[this.callbackActive]();
     }
@@ -2500,16 +2517,16 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._connectionError = function() {
-    this.submit.removeClass('active').addClass('failure').val(App.I18n[this.locale].ui.form.errors.connection);
+    this.submitJQ.removeClass('active').addClass('failure').val(App.I18n[this.locale].ui.form.errors.connection);
     return setTimeout((function(_this) {
       return function() {
-        return _this.submit.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
+        return _this.submitJQ.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
       };
     })(this), 3000);
   };
 
   Form.prototype._alwaysAfterRequest = function() {
-    return this.submit.removeClass("active");
+    return this.submitJQ.removeClass("active");
   };
 
   return Form;

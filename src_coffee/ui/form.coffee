@@ -8,9 +8,12 @@ class App.UI.Form
     @callbackFailure = opts.callbackFailure
     @callbackActive = opts.callbackActive
     @form = this._findForm()
-    @submit = @form.find ':submit'
-    @submitVal = @submit.val()
+    @submit = @form.querySelectorAll('input[type="submit"]')[0]
+    @submitVal = @submit.value
     @locale = App.Env.loco.getLocale()
+    # TODO: remove
+    @formJQ = $(@form)
+    @submitJQ = $(@submit)
 
   getObj: -> @obj
 
@@ -31,7 +34,7 @@ class App.UI.Form
       attributes = @obj.constructor.attributes
     for name, _ of attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      formEl = @formJQ.find("[data-attr=#{remoteName}]").find "input,textarea,select"
       if formEl.length is 1
         formEl.val @obj[name]
         continue
@@ -46,13 +49,16 @@ class App.UI.Form
       formEl.last().prop 'checked', Boolean(@obj[name])
 
   _findForm: ->
-    return $("##{@formId}") if @formId?
+    return document.getElementById("#{@formId}") if @formId?
     if @obj?
       objName = @obj.getIdentity().toLowerCase()
-      if @obj.id? then $("#edit_#{objName}_#{@obj.id}") else $("#new_#{objName}")
+      if @obj.id?
+        document.getElementById "edit_#{objName}_#{@obj.id}"
+      else
+        document.getElementById "new_#{objName}"
 
   _handle: ->
-    @form.on 'submit', (e) =>
+    @formJQ.on 'submit', (e) =>
       e.preventDefault()
       return if not this._canBeSubmitted()
       if not @obj?
@@ -77,28 +83,28 @@ class App.UI.Form
       .catch (err) => this._connectionError()
 
   _canBeSubmitted: ->
-    return false if @submit.hasClass 'active'
-    return false if @submit.hasClass 'success'
-    return false if @submit.hasClass 'failure'
+    return false if @submitJQ.hasClass 'active'
+    return false if @submitJQ.hasClass 'success'
+    return false if @submitJQ.hasClass 'failure'
     true
 
   _submitForm: ->
     this._submittingForm()
-    url = @form.attr('action') + '.json'
-    jqxhr = $.post url, @form.serialize()
+    url = @formJQ.attr('action') + '.json'
+    jqxhr = $.post url, @formJQ.serialize()
     jqxhr.always =>
       this._alwaysAfterRequest()
-      @submit.blur()
+      @submitJQ.blur()
     jqxhr.fail => this._connectionError()
     jqxhr.done (data) =>
       if data.success
-        this._handleSuccess data, @form.attr("method") is "POST"
+        this._handleSuccess data, @formJQ.attr("method") is "POST"
       else
         this._renderErrors data.errors
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
-    @submit.addClass('success').val val
+    @submitJQ.addClass('success').val val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
@@ -108,10 +114,10 @@ class App.UI.Form
         @delegator[@callbackSuccess]()
       return
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('success').val @submitVal
+      @submitJQ.removeAttr('disabled').removeClass('success').val @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
-        @form.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
+        @formJQ.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
     , 5000
 
   _renderErrors: (remoteErrors = null) ->
@@ -122,27 +128,27 @@ class App.UI.Form
       remoteName = if @obj? then @obj.getAttrRemoteName(attrib) else attrib
       if remoteName? and attrib isnt "base"
         # be aware of invalid elements's nesting e.g. "div" inside of "p"
-        @form.find("[data-attr=#{remoteName}]").find(".errors[data-for=#{remoteName}]").text errors[0]
+        @formJQ.find("[data-attr=#{remoteName}]").find(".errors[data-for=#{remoteName}]").text errors[0]
         continue
       if attrib is "base" and errors.length > 0
         if $(".errors[data-for='base']").length is 1
           $(".errors[data-for='base']").text errors[0]
         else
-          @submit.val errors[0]
-    if @submit.val() is @submitVal or @submit.val() is App.I18n[@locale].ui.form.sending
-      @submit.val App.I18n[@locale].ui.form.errors.invalid_data
-    @submit.addClass 'failure'
+          @submitJQ.val errors[0]
+    if @submitJQ.val() is @submitVal or @submitJQ.val() is App.I18n[@locale].ui.form.sending
+      @submitJQ.val App.I18n[@locale].ui.form.errors.invalid_data
+    @submitJQ.addClass 'failure'
     this._showErrors()
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
-      @form.find('input.invalid, textarea.invalid, select.invalid').removeClass 'invalid'
+      @submitJQ.removeAttr('disabled').removeClass('failure').val @submitVal
+      @formJQ.find('input.invalid, textarea.invalid, select.invalid').removeClass 'invalid'
     , 1000
 
   _assignAttribs: ->
     return null if not @obj.constructor.attributes?
     for name, _ of @obj.constructor.attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      formEl = @formJQ.find("[data-attr=#{remoteName}]").find "input,textarea,select"
       if formEl.length is 1
         @obj.assignAttr name, formEl.val()
         continue
@@ -160,26 +166,26 @@ class App.UI.Form
         @obj.assignAttr name, formEl.first().val()
 
   _hideErrors: ->
-    @form.find('.errors').each (index, e) =>
+    @formJQ.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
         $(e).text ""
         $(e).hide()
 
   _showErrors: ->
-    @form.find('.errors').each (index, e) =>
+    @formJQ.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
         $(e).show()
 
   _submittingForm: (hideErrors = true) ->
-    @submit.removeClass('success').removeClass('failure').addClass('active').val App.I18n[@locale].ui.form.sending
+    @submitJQ.removeClass('success').removeClass('failure').addClass('active').val App.I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 
   _connectionError: ->
-    @submit.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
+    @submitJQ.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
+      @submitJQ.removeAttr('disabled').removeClass('failure').val @submitVal
     , 3000
 
   _alwaysAfterRequest: ->
-    @submit.removeClass("active")
+    @submitJQ.removeClass("active")

@@ -55,9 +55,9 @@ class App.Loco
   flow: ->
     App.IdentityMap.clear()
 
-    namespace_name = $('body').data 'namespace'
-    controller_name = $('body').data 'controller'
-    action_name = $('body').data 'action'
+    namespace_name = document.getElementsByTagName('body')[0].getAttribute 'data-namespace'
+    controller_name = document.getElementsByTagName('body')[0].getAttribute 'data-controller'
+    action_name = document.getElementsByTagName('body')[0].getAttribute 'data-action'
 
     App.Env.action = action_name
 
