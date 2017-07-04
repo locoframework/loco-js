@@ -166,18 +166,21 @@ class App.UI.Form
         @obj.assignAttr name, formEl.first().val()
 
   _hideErrors: ->
-    @formJQ.find('.errors').each (index, e) =>
-      if $(e).text().trim().length > 0
-        $(e).text ""
-        $(e).hide()
+    for e in @form.querySelectorAll('.errors')
+      if e.textContent.trim().length > 0
+        e.textContent = ''
+        e.style.display = 'none'
 
   _showErrors: ->
-    @formJQ.find('.errors').each (index, e) =>
-      if $(e).text().trim().length > 0
-        $(e).show()
+    for e in @form.querySelectorAll('.errors')
+      if e.textContent.trim().length > 0
+        e.style.display = ''
 
   _submittingForm: (hideErrors = true) ->
-    @submitJQ.removeClass('success').removeClass('failure').addClass('active').val App.I18n[@locale].ui.form.sending
+    App.Utils.Dom.removeClass @submit, 'success'
+    App.Utils.Dom.removeClass @submit, 'failure'
+    App.Utils.Dom.addClass @submit, 'active'
+    @submit.value = App.I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 

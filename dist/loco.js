@@ -2499,31 +2499,44 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._hideErrors = function() {
-    return this.formJQ.find('.errors').each((function(_this) {
-      return function(index, e) {
-        if ($(e).text().trim().length > 0) {
-          $(e).text("");
-          return $(e).hide();
-        }
-      };
-    })(this));
+    var e, i, len, ref, results;
+    ref = this.form.querySelectorAll('.errors');
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      e = ref[i];
+      if (e.textContent.trim().length > 0) {
+        e.textContent = '';
+        results.push(e.style.display = 'none');
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   };
 
   Form.prototype._showErrors = function() {
-    return this.formJQ.find('.errors').each((function(_this) {
-      return function(index, e) {
-        if ($(e).text().trim().length > 0) {
-          return $(e).show();
-        }
-      };
-    })(this));
+    var e, i, len, ref, results;
+    ref = this.form.querySelectorAll('.errors');
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      e = ref[i];
+      if (e.textContent.trim().length > 0) {
+        results.push(e.style.display = '');
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   };
 
   Form.prototype._submittingForm = function(hideErrors) {
     if (hideErrors == null) {
       hideErrors = true;
     }
-    this.submitJQ.removeClass('success').removeClass('failure').addClass('active').val(App.I18n[this.locale].ui.form.sending);
+    App.Utils.Dom.removeClass(this.submit, 'success');
+    App.Utils.Dom.removeClass(this.submit, 'failure');
+    App.Utils.Dom.addClass(this.submit, 'active');
+    this.submit.value = App.I18n[this.locale].ui.form.sending;
     if (this.callbackActive != null) {
       this.delegator[this.callbackActive]();
     }
