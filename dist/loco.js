@@ -1922,7 +1922,7 @@ App.Models.Base = (function() {
     for (name in ref) {
       val = ref[name];
       if (val !== currentObj[name]) {
-        if (val.constructor === Date && currentObj[name] - val === 0) {
+        if ((val != null) && val.constructor === Date && currentObj[name] - val === 0) {
           continue;
         }
         if (val !== currentObj[name]) {

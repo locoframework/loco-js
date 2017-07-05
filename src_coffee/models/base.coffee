@@ -290,7 +290,7 @@ class App.Models.Base
     currentObj = App.IdentityMap.find this.getIdentity(), this.id
     for name, val of this.attributes()
       if val isnt currentObj[name]
-        continue if val.constructor is Date and currentObj[name] - val is 0
+        continue if val? and val.constructor is Date and currentObj[name] - val is 0
         result[name] = {is: currentObj[name], was: val} if val isnt currentObj[name]
     return result
 
