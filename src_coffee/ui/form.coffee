@@ -107,7 +107,8 @@ class App.UI.Form
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
-    @submitJQ.addClass('success').val val
+    App.Utils.Dom.addClass @submit, 'success'
+    @submit.value = val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
@@ -117,10 +118,14 @@ class App.UI.Form
         @delegator[@callbackSuccess]()
       return
     setTimeout =>
-      @submitJQ.removeAttr('disabled').removeClass('success').val @submitVal
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'success'
+      @submit.value = @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
-        @formJQ.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
+        nodes = @form.querySelectorAll "input:not([type='submit'])#{selector}, textarea#{selector}"
+        for node in nodes
+          node.value = ''
     , 5000
 
   _renderErrors: (remoteErrors = null) ->

@@ -2400,7 +2400,8 @@ App.UI.Form = (function() {
       clearForm = true;
     }
     val = (ref = (ref1 = data.flash) != null ? ref1.success : void 0) != null ? ref : App.I18n[this.locale].ui.form.success;
-    this.submitJQ.addClass('success').val(val);
+    App.Utils.Dom.addClass(this.submit, 'success');
+    this.submit.value = val;
     if (data.access_token != null) {
       App.Env.loco.getWire().setToken(data.access_token);
     }
@@ -2414,11 +2415,19 @@ App.UI.Form = (function() {
     }
     return setTimeout((function(_this) {
       return function() {
-        var selector;
-        _this.submitJQ.removeAttr('disabled').removeClass('success').val(_this.submitVal);
+        var i, len, node, nodes, results, selector;
+        _this.submit.disabled = false;
+        App.Utils.Dom.removeClass(_this.submit, 'success');
+        _this.submit.value = _this.submitVal;
         selector = ":not([data-loco-not-clear=true])";
         if (clearForm) {
-          return _this.formJQ.find("input:not([type='submit'])" + selector + ", textarea" + selector).val('');
+          nodes = _this.form.querySelectorAll("input:not([type='submit'])" + selector + ", textarea" + selector);
+          results = [];
+          for (i = 0, len = nodes.length; i < len; i++) {
+            node = nodes[i];
+            results.push(node.value = '');
+          }
+          return results;
         }
       };
     })(this), 5000);
