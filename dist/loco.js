@@ -2245,7 +2245,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype.fill = function(attr) {
-    var _, attributes, formEl, name, radioEl, remoteName, results, uniqInputTypes;
+    var _, attributes, formEl, name, query, radioEl, remoteName, results, uniqInputTypes;
     if (attr == null) {
       attr = null;
     }
@@ -2265,29 +2265,36 @@ App.UI.Form = (function() {
     for (name in attributes) {
       _ = attributes[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.formJQ.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      query = this.form.querySelector("[data-attr=" + remoteName + "]");
+      if (query === null) {
+        continue;
+      }
+      formEl = query.querySelectorAll("input,textarea,select");
+      if (formEl.length === 0) {
+        continue;
+      }
       if (formEl.length === 1) {
-        formEl.val(this.obj[name]);
+        formEl[0].value = this.obj[name];
         continue;
       }
       uniqInputTypes = App.Utils.Array.uniq(App.Utils.Array.map(formEl, function(e) {
-        return $(e).attr('type');
+        return e.getAttribute('type');
       }));
       if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
         radioEl = App.Utils.Collection.find(formEl, (function(_this) {
           return function(e) {
-            return $(e).val() === String(_this.obj[name]);
+            return e.value === String(_this.obj[name]);
           };
         })(this));
         if (radioEl != null) {
-          $(radioEl).prop('checked', true);
+          radioEl.checked = true;
           continue;
         }
       }
-      if (formEl.first().attr("type") !== "hidden" && formEl.last().attr('type') !== "checkbox") {
+      if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
         continue;
       }
-      results.push(formEl.last().prop('checked', Boolean(this.obj[name])));
+      results.push(formEl[formEl.length - 1].checked = Boolean(this.obj[name]));
     }
     return results;
   };

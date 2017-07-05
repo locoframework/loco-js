@@ -34,19 +34,22 @@ class App.UI.Form
       attributes = @obj.constructor.attributes
     for name, _ of attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @formJQ.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      query = @form.querySelector "[data-attr=#{remoteName}]"
+      continue if query is null
+      formEl = query.querySelectorAll "input,textarea,select"
+      continue if formEl.length is 0
       if formEl.length is 1
-        formEl.val @obj[name]
+        formEl[0].value = @obj[name]
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => $(e).val() is String(@obj[name])
+        radioEl = App.Utils.Collection.find formEl, (e) => e.value is String(@obj[name])
         if radioEl?
-          $(radioEl).prop 'checked', true
+          radioEl.checked = true
           continue
-      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+      if formEl[0].getAttribute("type") isnt "hidden" and formEl[formEl.length - 1].getAttribute('type') isnt "checkbox"
         continue
-      formEl.last().prop 'checked', Boolean(@obj[name])
+      formEl[formEl.length - 1].checked = Boolean(@obj[name])
 
   _findForm: ->
     return document.getElementById("#{@formId}") if @formId?
