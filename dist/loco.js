@@ -1878,28 +1878,31 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.updateAttribute = function(attr) {
-    var jqxhr;
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'PUT',
-      url: this.__getResourceUrl(),
-      data: this.serialize(attr)
-    });
+    var req;
+    req = new XMLHttpRequest();
+    req.open('PUT', this.__getResourceUrl());
+    req.send(this.serialize(attr));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
-          if (data.success) {
-            resolve(data);
-            return;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var data;
+          if (e.target.status >= 200 && e.target.status < 400) {
+            data = JSON.parse(e.target.response);
+            if (data.success) {
+              resolve(data);
+              return;
+            }
+            if (data.errors != null) {
+              _this.__assignRemoteErrorMessages(data.errors);
+            }
+            return resolve(data);
+          } else if (e.target.status >= 500) {
+            return reject(e);
           }
-          if (data.errors != null) {
-            _this.__assignRemoteErrorMessages(data.errors);
-          }
-          return resolve(data);
-        });
+        };
       };
     })(this));
   };
@@ -2008,24 +2011,26 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.__send = function(method, action, data) {
-    var jqxhr, url;
+    var req, url;
     url = this.__getResourceUrl();
     if (action != null) {
       url = url + "/" + action;
     }
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: method,
-      url: url,
-      data: data
-    });
+    req = new XMLHttpRequest();
+    req.open(method, url);
+    req.send(data);
     return new Promise(function(resolve, reject) {
-      jqxhr.fail(function(xhr) {
-        return reject(xhr);
-      });
-      return jqxhr.done(function(data) {
-        return resolve(data);
-      });
+      req.onerror = function(e) {
+        return reject(e);
+      };
+      return req.onload = function(e) {
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          return resolve(data);
+        } else if (e.target.status >= 500) {
+          return reject(e);
+        }
+      };
     });
   };
 

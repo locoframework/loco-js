@@ -249,20 +249,23 @@ class App.Models.Base
         this.__assignRemoteErrorMessages(data.errors) if data.errors?
         resolve data
 
+  # TODO: test it!
   updateAttribute: (attr) ->
-    jqxhr = $.ajax
-      dataType: 'json'
-      method: 'PUT'
-      url: this.__getResourceUrl()
-      data: this.serialize attr
+    req = new XMLHttpRequest()
+    req.open 'PUT', this.__getResourceUrl()
+    req.send this.serialize(attr)
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
-        if data.success
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        if e.target.status >= 200 and e.target.status < 400
+          data = JSON.parse e.target.response
+          if data.success
+            resolve data
+            return
+          this.__assignRemoteErrorMessages(data.errors) if data.errors?
           resolve data
-          return
-        this.__assignRemoteErrorMessages(data.errors) if data.errors?
-        resolve data
+        else if e.target.status >= 500
+          reject e
 
   serialize: (attr = null) ->
     return {} if not this.constructor.attributes?
@@ -307,14 +310,17 @@ class App.Models.Base
     url = this.__getResourceUrl()
     if action?
       url = "#{url}/#{action}"
-    jqxhr = $.ajax
-      dataType: 'json',
-      method: method,
-      url: url,
-      data: data
+    req = new XMLHttpRequest()
+    req.open method, url
+    req.send data
     return new Promise (resolve, reject) ->
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) -> resolve data
+      req.onerror = (e) -> reject e
+      req.onload = (e) ->
+        if e.target.status >= 200 and e.target.status < 400
+          data = JSON.parse e.target.response
+          resolve data
+        else if e.target.status >= 500
+          reject e
 
   __assignAttributes: (data) ->
     for key, val of data

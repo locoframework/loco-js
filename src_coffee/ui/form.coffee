@@ -93,6 +93,7 @@ class App.UI.Form
     return false if App.Utils.Dom.hasClass @submit, 'failure'
     true
 
+  # TODO: test it!
   _submitForm: ->
     this._submittingForm()
     url = @form.getAttribute('action') + '.json'
