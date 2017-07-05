@@ -2373,11 +2373,12 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._submitForm = function() {
-    var request, url;
+    var data, request, url;
     this._submittingForm();
     url = this.form.getAttribute('action') + '.json';
+    data = new FormData(this.form);
     request = new XMLHttpRequest();
-    request.open('GET', url, true);
+    request.open('POST', url);
     request.onload = (function(_this) {
       return function() {
         var resp;
@@ -2400,7 +2401,7 @@ App.UI.Form = (function() {
         return _this._connectionError();
       };
     })(this);
-    return request.send();
+    return request.send(data);
   };
 
   Form.prototype._handleSuccess = function(data, clearForm) {

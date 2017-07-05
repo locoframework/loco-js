@@ -96,8 +96,9 @@ class App.UI.Form
   _submitForm: ->
     this._submittingForm()
     url = @form.getAttribute('action') + '.json'
+    data = new FormData @form
     request = new XMLHttpRequest()
-    request.open 'GET', url, true
+    request.open 'POST', url
     request.onload = =>
       this._alwaysAfterRequest()
       @submit.blur()
@@ -111,7 +112,7 @@ class App.UI.Form
       this._alwaysAfterRequest()
       @submit.blur()
       this._connectionError()
-    request.send()
+    request.send data
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
