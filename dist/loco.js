@@ -297,66 +297,74 @@ App.Wire = (function() {
   };
 
   Wire.prototype.check = function() {
-    var jqxhr;
+    var request;
     if (Object.keys(App.IdentityMap.imap).length === 0 && (this.token == null) && (this.syncTime != null)) {
       return;
     }
-    jqxhr = $.ajax({
-      method: "GET",
-      url: this._getURL(),
-      data: this._requestParams()
-    });
-    jqxhr.always(function() {});
-    jqxhr.fail((function(_this) {
+    request = new XMLHttpRequest();
+    request.open('GET', this._getURL() + '?' + App.Utils.Object.toURIParams(this._requestParams()));
+    request.onload = (function(_this) {
+      return function(e) {
+        var data, i, len, notification, notifications;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this.disconnectedSinceTime = null;
+          _this.syncTime = data[1];
+          notifications = data[0];
+          if (notifications.length === 0) {
+            return;
+          }
+          for (i = 0, len = notifications.length; i < len; i++) {
+            notification = notifications[i];
+            _this.processNotification(notification);
+          }
+          if (notifications.length === _this.size) {
+            return _this.check();
+          }
+        } else if (e.target.status >= 500) {
+          return _this._handleDisconnection();
+        }
+      };
+    })(this);
+    request.onerror = (function(_this) {
       return function() {
         return _this._handleDisconnection();
       };
-    })(this));
-    return jqxhr.done((function(_this) {
-      return function(data) {
-        var i, len, notification, notifications;
-        _this.disconnectedSinceTime = null;
-        _this.syncTime = data[1];
-        notifications = data[0];
-        if (notifications.length === 0) {
-          return;
-        }
-        for (i = 0, len = notifications.length; i < len; i++) {
-          notification = notifications[i];
-          _this.processNotification(notification);
-        }
-        if (notifications.length === _this.size) {
-          return _this.check();
-        }
-      };
-    })(this));
+    })(this);
+    return request.send();
   };
 
   Wire.prototype.fetchSyncTime = function(opts) {
-    var jqxhr;
+    var request;
     if (opts == null) {
       opts = {};
     }
-    jqxhr = $.ajax({
-      method: "GET",
-      url: (this._getURL()) + "/sync-time"
-    });
-    jqxhr.always(function() {});
-    jqxhr.fail((function(_this) {
+    request = new XMLHttpRequest();
+    request.open('GET', (this._getURL()) + "/sync-time");
+    request.onerror = (function(_this) {
       return function() {
         if (opts.after != null) {
           return _this[opts.after]();
         }
       };
-    })(this));
-    return jqxhr.done((function(_this) {
-      return function(data) {
-        _this.syncTime = data.sync_time;
-        if (opts.after != null) {
-          return _this[opts.after]();
+    })(this);
+    request.onload = (function(_this) {
+      return function(e) {
+        var data;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this.syncTime = data.sync_time;
+          if (opts.after != null) {
+            return _this[opts.after]();
+          }
+        } else if (e.target.status >= 500) {
+          if (opts.after != null) {
+            return _this[opts.after]();
+          }
         }
       };
-    })(this));
+    })(this);
+    return request.send();
   };
 
   Wire.prototype._emitSignalToMembers = function(id, signal, payload, model, identity, obj) {
@@ -880,6 +888,26 @@ App.Utils.Dom = (function() {
   };
 
   return Dom;
+
+})();
+
+App.Utils.Object = (function() {
+  function Object() {}
+
+  Object.toURIParams = function(obj) {
+    var key, str, val;
+    str = "";
+    for (key in obj) {
+      val = obj[key];
+      if (str !== "") {
+        str += "&";
+      }
+      str += key + "=" + encodeURIComponent(val);
+    }
+    return str;
+  };
+
+  return Object;
 
 })();
 
@@ -2380,17 +2408,18 @@ App.UI.Form = (function() {
     request = new XMLHttpRequest();
     request.open('POST', url);
     request.onload = (function(_this) {
-      return function() {
-        var resp;
+      return function(e) {
         _this._alwaysAfterRequest();
         _this.submit.blur();
-        if (_this.status >= 200 && _this.status < 400) {
-          resp = _this.response;
-          if (resp.data.success) {
-            return _this._handleSuccess(resp.data, _this.form.getAttribute("method") === "POST");
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          if (data.success) {
+            return _this._handleSuccess(data, _this.form.getAttribute("method") === "POST");
           } else {
-            return _this._renderErrors(resp.data.errors);
+            return _this._renderErrors(data.errors);
           }
+        } else if (e.target.status >= 500) {
+          return _this._connectionError();
         }
       };
     })(this);

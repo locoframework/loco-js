@@ -99,15 +99,17 @@ class App.UI.Form
     data = new FormData @form
     request = new XMLHttpRequest()
     request.open 'POST', url
-    request.onload = =>
+    request.onload = (e) =>
       this._alwaysAfterRequest()
       @submit.blur()
-      if this.status >= 200 and this.status < 400
-        resp = this.response
-        if resp.data.success
-          this._handleSuccess resp.data, @form.getAttribute("method") is "POST"
+      if e.target.status >= 200 and e.target.status < 400
+        data = JSON.parse e.target.response
+        if data.success
+          this._handleSuccess data, @form.getAttribute("method") is "POST"
         else
-          this._renderErrors resp.data.errors
+          this._renderErrors data.errors
+       else if e.target.status >= 500
+         this._connectionError()
     request.onerror = =>
       this._alwaysAfterRequest()
       @submit.blur()
