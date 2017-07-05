@@ -156,22 +156,25 @@ class App.UI.Form
     return null if not @obj.constructor.attributes?
     for name, _ of @obj.constructor.attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @formJQ.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      query = @form.querySelector "[data-attr=#{remoteName}]"
+      continue if query is null
+      formEl = query.querySelectorAll "input,textarea,select"
+      continue if formEl.length is 0
       if formEl.length is 1
-        @obj.assignAttr name, formEl.val()
+        @obj.assignAttr name, formEl[0].value
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => $(e).is ':checked'
+        radioEl = App.Utils.Collection.find formEl, (e) => e.checked is true
         if radioEl?
-          @obj.assignAttr name, $(radioEl).val()
+          @obj.assignAttr name, radioEl.value
           continue
-      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+      if formEl[0].getAttribute("type") isnt "hidden" and formEl[formEl.length - 1].getAttribute('type') isnt "checkbox"
         continue
-      if formEl.last().is ":checked"
-        @obj.assignAttr name, formEl.last().val()
+      if formEl[formEl.length - 1].checked is true
+        @obj.assignAttr name, formEl[formEl.length - 1].value
       else
-        @obj.assignAttr name, formEl.first().val()
+        @obj.assignAttr name, formEl[0].value
 
   _hideErrors: ->
     for e in @form.querySelectorAll('.errors')

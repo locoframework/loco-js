@@ -2474,7 +2474,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._assignAttribs = function() {
-    var _, formEl, name, radioEl, ref, remoteName, results, uniqInputTypes;
+    var _, formEl, name, query, radioEl, ref, remoteName, results, uniqInputTypes;
     if (this.obj.constructor.attributes == null) {
       return null;
     }
@@ -2483,32 +2483,39 @@ App.UI.Form = (function() {
     for (name in ref) {
       _ = ref[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.formJQ.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      query = this.form.querySelector("[data-attr=" + remoteName + "]");
+      if (query === null) {
+        continue;
+      }
+      formEl = query.querySelectorAll("input,textarea,select");
+      if (formEl.length === 0) {
+        continue;
+      }
       if (formEl.length === 1) {
-        this.obj.assignAttr(name, formEl.val());
+        this.obj.assignAttr(name, formEl[0].value);
         continue;
       }
       uniqInputTypes = App.Utils.Array.uniq(App.Utils.Array.map(formEl, function(e) {
-        return $(e).attr('type');
+        return e.getAttribute('type');
       }));
       if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
         radioEl = App.Utils.Collection.find(formEl, (function(_this) {
           return function(e) {
-            return $(e).is(':checked');
+            return e.checked === true;
           };
         })(this));
         if (radioEl != null) {
-          this.obj.assignAttr(name, $(radioEl).val());
+          this.obj.assignAttr(name, radioEl.value);
           continue;
         }
       }
-      if (formEl.first().attr("type") !== "hidden" && formEl.last().attr('type') !== "checkbox") {
+      if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
         continue;
       }
-      if (formEl.last().is(":checked")) {
-        results.push(this.obj.assignAttr(name, formEl.last().val()));
+      if (formEl[formEl.length - 1].checked === true) {
+        results.push(this.obj.assignAttr(name, formEl[formEl.length - 1].value));
       } else {
-        results.push(this.obj.assignAttr(name, formEl.first().val()));
+        results.push(this.obj.assignAttr(name, formEl[0].value));
       }
     }
     return results;
