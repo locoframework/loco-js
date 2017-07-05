@@ -2434,7 +2434,7 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._renderErrors = function(remoteErrors) {
-    var attrib, data, errors, remoteName;
+    var attrib, data, errors, i, len, node, nodes, query, remoteName;
     if (remoteErrors == null) {
       remoteErrors = null;
     }
@@ -2449,26 +2449,47 @@ App.UI.Form = (function() {
       errors = data[attrib];
       remoteName = this.obj != null ? this.obj.getAttrRemoteName(attrib) : attrib;
       if ((remoteName != null) && attrib !== "base") {
-        this.formJQ.find("[data-attr=" + remoteName + "]").find(".errors[data-for=" + remoteName + "]").text(errors[0]);
+        query = this.form.querySelector("[data-attr=" + remoteName + "]");
+        if (query === null) {
+          continue;
+        }
+        nodes = query.querySelectorAll(".errors[data-for=" + remoteName + "]");
+        if (nodes.length === 0) {
+          continue;
+        }
+        for (i = 0, len = nodes.length; i < len; i++) {
+          node = nodes[i];
+          node.textContent = errors[0];
+        }
         continue;
       }
       if (attrib === "base" && errors.length > 0) {
-        if ($(".errors[data-for='base']").length === 1) {
-          $(".errors[data-for='base']").text(errors[0]);
+        nodes = document.querySelectorAll(".errors[data-for='base']");
+        if (nodes.length === 1) {
+          nodes[0].textContent = errors[0];
         } else {
-          this.submitJQ.val(errors[0]);
+          this.submit.value = errors[0];
         }
       }
     }
-    if (this.submitJQ.val() === this.submitVal || this.submitJQ.val() === App.I18n[this.locale].ui.form.sending) {
-      this.submitJQ.val(App.I18n[this.locale].ui.form.errors.invalid_data);
+    if (this.submit.value === this.submitVal || this.submit.value === App.I18n[this.locale].ui.form.sending) {
+      this.submit.value = App.I18n[this.locale].ui.form.errors.invalid_data;
     }
-    this.submitJQ.addClass('failure');
+    App.Utils.Dom.addClass(this.submit, 'failure');
     this._showErrors();
     return setTimeout((function(_this) {
       return function() {
-        _this.submitJQ.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
-        return _this.formJQ.find('input.invalid, textarea.invalid, select.invalid').removeClass('invalid');
+        var j, len1, ref, results;
+        _this.submit.disabled = false;
+        App.Utils.Dom.removeClass(_this.submit, 'failure');
+        _this.submit.val = _this.submitVal;
+        ref = _this.form.querySelectorAll('input.invalid, textarea.invalid, select.invalid');
+        results = [];
+        for (j = 0, len1 = ref.length; j < len1; j++) {
+          node = ref[j];
+          results.push(App.Utils.Dom.removeClass(node, 'invalid'));
+        }
+        return results;
       };
     })(this), 1000);
   };

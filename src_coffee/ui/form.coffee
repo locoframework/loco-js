@@ -136,20 +136,29 @@ class App.UI.Form
       remoteName = if @obj? then @obj.getAttrRemoteName(attrib) else attrib
       if remoteName? and attrib isnt "base"
         # be aware of invalid elements's nesting e.g. "div" inside of "p"
-        @formJQ.find("[data-attr=#{remoteName}]").find(".errors[data-for=#{remoteName}]").text errors[0]
+        query = @form.querySelector "[data-attr=#{remoteName}]"
+        continue if query is null
+        nodes = query.querySelectorAll ".errors[data-for=#{remoteName}]"
+        continue if nodes.length is 0
+        for node in nodes
+          node.textContent = errors[0]
         continue
       if attrib is "base" and errors.length > 0
-        if $(".errors[data-for='base']").length is 1
-          $(".errors[data-for='base']").text errors[0]
+        nodes = document.querySelectorAll ".errors[data-for='base']"
+        if nodes.length is 1
+          nodes[0].textContent = errors[0]
         else
-          @submitJQ.val errors[0]
-    if @submitJQ.val() is @submitVal or @submitJQ.val() is App.I18n[@locale].ui.form.sending
-      @submitJQ.val App.I18n[@locale].ui.form.errors.invalid_data
-    @submitJQ.addClass 'failure'
+          @submit.value = errors[0]
+    if @submit.value is @submitVal or @submit.value is App.I18n[@locale].ui.form.sending
+      @submit.value = App.I18n[@locale].ui.form.errors.invalid_data
+    App.Utils.Dom.addClass @submit, 'failure'
     this._showErrors()
     setTimeout =>
-      @submitJQ.removeAttr('disabled').removeClass('failure').val @submitVal
-      @formJQ.find('input.invalid, textarea.invalid, select.invalid').removeClass 'invalid'
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'failure'
+      @submit.val = @submitVal
+      for node in @form.querySelectorAll('input.invalid, textarea.invalid, select.invalid')
+        App.Utils.Dom.removeClass node, 'invalid'
     , 1000
 
   _assignAttribs: ->
