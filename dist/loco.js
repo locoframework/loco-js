@@ -2224,11 +2224,15 @@ App.UI.Form = (function() {
     this.callbackFailure = opts.callbackFailure;
     this.callbackActive = opts.callbackActive;
     this.form = this._findForm();
-    this.submit = this.form.querySelectorAll('input[type="submit"]')[0];
-    this.submitVal = this.submit.value;
+    this.submit = null;
+    this.submitVal = null;
+    if (this.form != null) {
+      this.submit = this.form.querySelectorAll('input[type="submit"]')[0];
+    }
+    if (this.submit != null) {
+      this.submitVal = this.submit.value;
+    }
     this.locale = App.Env.loco.getLocale();
-    this.formJQ = $(this.form);
-    this.submitJQ = $(this.submit);
   }
 
   Form.prototype.getObj = function() {
@@ -2238,10 +2242,11 @@ App.UI.Form = (function() {
   Form.prototype.render = function() {
     if (this.initObj) {
       this._assignAttribs();
-    } else {
+      return this._handle();
+    } else if (this.form != null) {
       this.fill();
+      return this._handle();
     }
-    return this._handle();
   };
 
   Form.prototype.fill = function(attr) {
@@ -2368,30 +2373,34 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._submitForm = function() {
-    var jqxhr, url;
+    var request, url;
     this._submittingForm();
-    url = this.formJQ.attr('action') + '.json';
-    jqxhr = $.post(url, this.formJQ.serialize());
-    jqxhr.always((function(_this) {
+    url = this.form.getAttribute('action') + '.json';
+    request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onload = (function(_this) {
       return function() {
+        var resp;
         _this._alwaysAfterRequest();
-        return _this.submitJQ.blur();
-      };
-    })(this));
-    jqxhr.fail((function(_this) {
-      return function() {
-        return _this._connectionError();
-      };
-    })(this));
-    return jqxhr.done((function(_this) {
-      return function(data) {
-        if (data.success) {
-          return _this._handleSuccess(data, _this.formJQ.attr("method") === "POST");
-        } else {
-          return _this._renderErrors(data.errors);
+        _this.submit.blur();
+        if (_this.status >= 200 && _this.status < 400) {
+          resp = _this.response;
+          if (resp.data.success) {
+            return _this._handleSuccess(resp.data, _this.form.getAttribute("method") === "POST");
+          } else {
+            return _this._renderErrors(resp.data.errors);
+          }
         }
       };
-    })(this));
+    })(this);
+    request.onerror = (function(_this) {
+      return function() {
+        _this._alwaysAfterRequest();
+        _this.submit.blur();
+        return _this._connectionError();
+      };
+    })(this);
+    return request.send();
   };
 
   Form.prototype._handleSuccess = function(data, clearForm) {

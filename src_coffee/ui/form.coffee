@@ -8,21 +8,23 @@ class App.UI.Form
     @callbackFailure = opts.callbackFailure
     @callbackActive = opts.callbackActive
     @form = this._findForm()
-    @submit = @form.querySelectorAll('input[type="submit"]')[0]
-    @submitVal = @submit.value
+    @submit = null
+    @submitVal = null
+    if @form?
+      @submit = @form.querySelectorAll('input[type="submit"]')[0]
+    if @submit?
+      @submitVal = @submit.value
     @locale = App.Env.loco.getLocale()
-    # TODO: remove
-    @formJQ = $(@form)
-    @submitJQ = $(@submit)
 
   getObj: -> @obj
 
   render: ->
     if @initObj
       this._assignAttribs()
-    else
+      this._handle()
+    else if @form?
       this.fill()
-    this._handle()
+      this._handle()
 
   fill: (attr = null) ->
     return null if not @obj?
@@ -93,17 +95,23 @@ class App.UI.Form
 
   _submitForm: ->
     this._submittingForm()
-    url = @formJQ.attr('action') + '.json'
-    jqxhr = $.post url, @formJQ.serialize()
-    jqxhr.always =>
+    url = @form.getAttribute('action') + '.json'
+    request = new XMLHttpRequest()
+    request.open 'GET', url, true
+    request.onload = =>
       this._alwaysAfterRequest()
-      @submitJQ.blur()
-    jqxhr.fail => this._connectionError()
-    jqxhr.done (data) =>
-      if data.success
-        this._handleSuccess data, @formJQ.attr("method") is "POST"
-      else
-        this._renderErrors data.errors
+      @submit.blur()
+      if this.status >= 200 and this.status < 400
+        resp = this.response
+        if resp.data.success
+          this._handleSuccess resp.data, @form.getAttribute("method") is "POST"
+        else
+          this._renderErrors resp.data.errors
+    request.onerror = =>
+      this._alwaysAfterRequest()
+      @submit.blur()
+      this._connectionError()
+    request.send()
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
