@@ -628,7 +628,7 @@ App.Loco = (function() {
     this.initLine();
     if (this.turbolinks) {
       event = Number(this.turbolinks) >= 5 ? "turbolinks:load" : "page:change";
-      return jQuery(document).on(event, (function(_this) {
+      return document.addEventListener(event, (function(_this) {
         return function() {
           _this.flow();
           if (_this.postInit != null) {
@@ -637,7 +637,7 @@ App.Loco = (function() {
         };
       })(this));
     } else {
-      return jQuery((function(_this) {
+      return this.ready((function(_this) {
         return function() {
           _this.flow();
           if (_this.postInit != null) {
@@ -645,6 +645,16 @@ App.Loco = (function() {
           }
         };
       })(this));
+    }
+  };
+
+  Loco.prototype.ready = function(fn) {
+    var cond;
+    cond = document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading";
+    if (cond) {
+      return fn();
+    } else {
+      return document.addEventListener('DOMContentLoaded', fn);
     }
   };
 
@@ -2816,7 +2826,7 @@ App.Helpers.Text = (function() {
 
   Text.prototype.simpleFormat = function(str) {
     str = str.replace(/\r\n?/, "\n");
-    str = $.trim(str);
+    str = str.trim();
     if (str.length > 0) {
       str = str.replace(/\n\n+/g, '</p><p>');
       str = str.replace(/\n/g, '<br>');

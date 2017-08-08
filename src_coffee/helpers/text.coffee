@@ -3,7 +3,7 @@ class App.Helpers.Text
 
   simpleFormat: (str) ->
     str = str.replace /\r\n?/, "\n"
-    str = $.trim str
+    str = str.trim()
     if str.length > 0
       str = str.replace /\n\n+/g, '</p><p>'
       str = str.replace /\n/g, '<br>'

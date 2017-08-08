@@ -34,13 +34,20 @@ class App.Loco
     this.initLine()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
-      jQuery(document).on event, =>
+      document.addEventListener event, =>
         this.flow()
         @postInit() if @postInit?
     else
-      jQuery =>
+      this.ready =>
         this.flow()
         @postInit() if @postInit?
+
+  ready: (fn) ->
+    cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
+    if cond
+      fn()
+    else
+      document.addEventListener 'DOMContentLoaded', fn
 
   initWire: ->
     return if not @startWire
