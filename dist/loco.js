@@ -1412,7 +1412,7 @@ App.Models.Base = (function() {
   };
 
   Base.find = function(idOrObj) {
-    var id, jqxhr, urlParams;
+    var id, req, urlParams;
     urlParams = {};
     if (typeof idOrObj === "object") {
       urlParams = idOrObj;
@@ -1421,23 +1421,23 @@ App.Models.Base = (function() {
     } else {
       id = idOrObj;
     }
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'GET',
-      url: (this.__getResourcesUrl(urlParams)) + "/" + id,
-      data: urlParams
-    });
+    req = new XMLHttpRequest();
+    req.open('GET', (this.__getResourcesUrl(urlParams)) + "/" + id);
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(urlParams));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(record) {
-          var obj;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var obj, record;
+          record = JSON.parse(e.target.response);
           obj = _this.__initSubclass(record);
           App.IdentityMap.add(obj);
           return resolve(obj);
-        });
+        };
       };
     })(this));
   };

@@ -31,15 +31,15 @@ class App.Models.Base
       delete urlParams.id
     else
       id = idOrObj
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'GET',
-      url: "#{@__getResourcesUrl(urlParams)}/#{id}",
-      data: urlParams
-    })
+    req = new XMLHttpRequest()
+    req.open 'GET', "#{@__getResourcesUrl(urlParams)}/#{id}"
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.send JSON.stringify(urlParams)
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (record) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        record = JSON.parse e.target.response
         obj = @__initSubclass record
         App.IdentityMap.add obj
         resolve obj
