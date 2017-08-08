@@ -1546,7 +1546,7 @@ App.Models.Base = (function() {
   };
 
   Base.__page = function(i, opts, reqOpts, resp) {
-    var data, httpMethod, jqxhr, key, ref, url, val;
+    var data, httpMethod, key, ref, ref1, req, url, val;
     if (opts == null) {
       opts = {};
     }
@@ -1573,19 +1573,23 @@ App.Models.Base = (function() {
       }
     }
     data[this.__getPaginationParam()] = i;
-    jqxhr = $.ajax({
-      dataType: "json",
-      method: httpMethod,
-      url: url,
-      data: data
-    });
+    if (httpMethod === 'GET') {
+      url = url + '?' + App.Utils.Object.toURIParams(data);
+    }
+    req = new XMLHttpRequest();
+    req.open(httpMethod, url);
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref1 = document.querySelector("meta[name='csrf-token']")) != null ? ref1.content : void 0);
+    req.send(JSON.stringify(data));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
-          var j, len, obj, record, ref1;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var j, len, obj, record, ref2;
+          data = JSON.parse(e.target.response);
           resp.count = data.count;
           for (key in data) {
             val = data[key];
@@ -1593,9 +1597,9 @@ App.Models.Base = (function() {
               resp[key] = val;
             }
           }
-          ref1 = data.resources;
-          for (j = 0, len = ref1.length; j < len; j++) {
-            record = ref1[j];
+          ref2 = data.resources;
+          for (j = 0, len = ref2.length; j < len; j++) {
+            record = ref2[j];
             obj = _this.__initSubclass(record);
             if (opts.resource != null) {
               obj.resource = opts.resource;
@@ -1604,7 +1608,7 @@ App.Models.Base = (function() {
             resp.resources.push(obj);
           }
           return resolve(resp);
-        });
+        };
       };
     })(this));
   };

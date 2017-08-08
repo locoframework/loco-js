@@ -102,14 +102,18 @@ class App.Models.Base
         continue if key is "resource"
         data[key] = val
     data[@__getPaginationParam()] = i
-    jqxhr = $.ajax
-      dataType: "json",
-      method: httpMethod,
-      url: url,
-      data: data
+    if httpMethod is 'GET'
+      url = url + '?' + App.Utils.Object.toURIParams(data)
+    req = new XMLHttpRequest()
+    req.open httpMethod, url
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(data)
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        data = JSON.parse e.target.response
         resp.count = data.count
         for key, val of data
           resp[key] = val if ['resources', 'count'].indexOf(key) is -1
