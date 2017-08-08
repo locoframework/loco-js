@@ -235,14 +235,17 @@ class App.Models.Base
     @errors[opts.for].push message
 
   save: ->
-    jqxhr = $.ajax
-      dataType: 'json',
-      method: if @id? then "PUT" else "POST",
-      url: this.__getResourceUrl(),
-      data: this.serialize()
+    httpMeth = if @id? then "PUT" else "POST"
+    req = new XMLHttpRequest()
+    req.open httpMeth, this.__getResourceUrl()
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(this.serialize())
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        data = JSON.parse e.target.response
         if data.success
           resolve data
           return

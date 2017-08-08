@@ -1851,19 +1851,22 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.save = function() {
-    var jqxhr;
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: this.id != null ? "PUT" : "POST",
-      url: this.__getResourceUrl(),
-      data: this.serialize()
-    });
+    var httpMeth, ref, req;
+    httpMeth = this.id != null ? "PUT" : "POST";
+    req = new XMLHttpRequest();
+    req.open(httpMeth, this.__getResourceUrl());
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.send(JSON.stringify(this.serialize()));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var data;
+          data = JSON.parse(e.target.response);
           if (data.success) {
             resolve(data);
             return;
@@ -1872,7 +1875,7 @@ App.Models.Base = (function() {
             _this.__assignRemoteErrorMessages(data.errors);
           }
           return resolve(data);
-        });
+        };
       };
     })(this));
   };
