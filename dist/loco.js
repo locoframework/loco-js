@@ -1761,7 +1761,7 @@ App.Models.Base = (function() {
         break;
       case "Boolean":
       case "Bool":
-        val = Boolean(parseInt(val));
+        val = typeof val === 'boolean' ? val : Boolean(parseInt(val));
         break;
       case "Number":
         val = Number(val);

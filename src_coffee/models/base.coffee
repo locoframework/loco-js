@@ -195,7 +195,11 @@ class App.Models.Base
       when "Date" then val = new Date Date.parse val
       when "Integer", "Int" then val = parseInt val
       when "Float" then val = parseFloat val
-      when "Boolean", "Bool" then val = Boolean parseInt val
+      when "Boolean", "Bool"
+        val = if typeof val is 'boolean'
+          val
+        else
+          Boolean parseInt val
       when "Number" then val = Number val
       when "String" then val = String val
     @[attrName] = val
@@ -256,7 +260,6 @@ class App.Models.Base
         this.__assignRemoteErrorMessages(data.errors) if data.errors?
         resolve data
 
-  # TODO: test it!
   updateAttribute: (attr) ->
     req = new XMLHttpRequest()
     req.open 'PUT', this.__getResourceUrl()

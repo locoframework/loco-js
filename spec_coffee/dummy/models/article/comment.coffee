@@ -25,6 +25,8 @@ class App.Models.Article.Comment extends App.Models.Base
     updatedAt:
       type: "Date"
       remoteName: "updated_at"
+    approved:
+      type: "Boolean"
 
   constructor: (data) -> super data
 
