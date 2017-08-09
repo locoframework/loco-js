@@ -98,9 +98,10 @@ class App.UI.Form
     this._submittingForm()
     url = @form.getAttribute('action') + '.json'
     data = new FormData @form
-    request = new XMLHttpRequest()
-    request.open 'POST', url
-    request.onload = (e) =>
+    req = new XMLHttpRequest()
+    req.open 'POST', url
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.onload = (e) =>
       this._alwaysAfterRequest()
       @submit.blur()
       if e.target.status >= 200 and e.target.status < 400
@@ -111,11 +112,11 @@ class App.UI.Form
           this._renderErrors data.errors
        else if e.target.status >= 500
          this._connectionError()
-    request.onerror = =>
+    req.onerror = =>
       this._alwaysAfterRequest()
       @submit.blur()
       this._connectionError()
-    request.send data
+    req.send data
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success

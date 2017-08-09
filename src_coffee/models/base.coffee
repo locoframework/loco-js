@@ -260,7 +260,10 @@ class App.Models.Base
   updateAttribute: (attr) ->
     req = new XMLHttpRequest()
     req.open 'PUT', this.__getResourceUrl()
-    req.send this.serialize(attr)
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(this.serialize(attr))
     return new Promise (resolve, reject) =>
       req.onerror = (e) -> reject e
       req.onload = (e) =>

@@ -1895,10 +1895,13 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.updateAttribute = function(attr) {
-    var req;
+    var ref, req;
     req = new XMLHttpRequest();
     req.open('PUT', this.__getResourceUrl());
-    req.send(this.serialize(attr));
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.send(JSON.stringify(this.serialize(attr)));
     return new Promise((function(_this) {
       return function(resolve, reject) {
         req.onerror = function(e) {
@@ -2423,13 +2426,14 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._submitForm = function() {
-    var data, request, url;
+    var data, ref, req, url;
     this._submittingForm();
     url = this.form.getAttribute('action') + '.json';
     data = new FormData(this.form);
-    request = new XMLHttpRequest();
-    request.open('POST', url);
-    request.onload = (function(_this) {
+    req = new XMLHttpRequest();
+    req.open('POST', url);
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.onload = (function(_this) {
       return function(e) {
         _this._alwaysAfterRequest();
         _this.submit.blur();
@@ -2445,14 +2449,14 @@ App.UI.Form = (function() {
         }
       };
     })(this);
-    request.onerror = (function(_this) {
+    req.onerror = (function(_this) {
       return function() {
         _this._alwaysAfterRequest();
         _this.submit.blur();
         return _this._connectionError();
       };
     })(this);
-    return request.send(data);
+    return req.send(data);
   };
 
   Form.prototype._handleSuccess = function(data, clearForm) {
