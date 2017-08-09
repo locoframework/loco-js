@@ -53,9 +53,7 @@ Other data structures in CoffeeScript are pretty good explained on the [official
 
 ## Dependencies
 
-* [jQuery 2.2.4 or higher](http://jquery.com/download)
-
-Loco-JS has a single dependency. But it's based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) and promises are supported natively only in [some browsers](http://caniuse.com/#feat=promises). So, I recommend to use [lie](https://github.com/calvinmetcalf/lie).
+Loco-JS has no dependencies. But it's based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) and promises are not supported natively in [IE](http://caniuse.com/#feat=promises). So, if you care, I recommend to use [lie](https://github.com/calvinmetcalf/lie).
 
 ## Getting started
 

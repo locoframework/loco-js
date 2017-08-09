@@ -34,13 +34,20 @@ class App.Loco
     this.initLine()
     if @turbolinks
       event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
-      jQuery(document).on event, =>
+      document.addEventListener event, =>
         this.flow()
         @postInit() if @postInit?
     else
-      jQuery =>
+      this.ready =>
         this.flow()
         @postInit() if @postInit?
+
+  ready: (fn) ->
+    cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
+    if cond
+      fn()
+    else
+      document.addEventListener 'DOMContentLoaded', fn
 
   initWire: ->
     return if not @startWire
@@ -55,9 +62,9 @@ class App.Loco
   flow: ->
     App.IdentityMap.clear()
 
-    namespace_name = $('body').data 'namespace'
-    controller_name = $('body').data 'controller'
-    action_name = $('body').data 'action'
+    namespace_name = document.getElementsByTagName('body')[0].getAttribute 'data-namespace'
+    controller_name = document.getElementsByTagName('body')[0].getAttribute 'data-controller'
+    action_name = document.getElementsByTagName('body')[0].getAttribute 'data-action'
 
     App.Env.action = action_name
 

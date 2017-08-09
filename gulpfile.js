@@ -122,7 +122,6 @@ gulp.task('concat_dummy_app', ['copy_js_spec_files'], function() {
 gulp.task('jasmine', ['concat_dummy_app'], function() {
   var filesForTest = [
     'spec/helpers/**/*.js',
-    'node_modules/jquery/dist/jquery.js',
     'spec/loco/**/*.js',
     'dist/loco.js',
     'spec/dummy/application.js'

@@ -83,26 +83,36 @@ class App.Wire
 
   check: ->
     return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
-    jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
-    jqxhr.always ->
-    jqxhr.fail =>
+    request = new XMLHttpRequest()
+    request.open 'GET', this._getURL() + '?' + App.Utils.Object.toURIParams(this._requestParams())
+    request.onload = (e) =>
+      if e.target.status >= 200 and e.target.status < 400
+        data = JSON.parse e.target.response
+        @disconnectedSinceTime = null
+        @syncTime = data[1]
+        notifications = data[0]
+        return if notifications.length is 0
+        this.processNotification notification for notification in notifications
+        this.check() if notifications.length is @size
+      else if e.target.status >= 500
+        this._handleDisconnection()
+    request.onerror = =>
       this._handleDisconnection()
-    jqxhr.done (data) =>
-      @disconnectedSinceTime = null
-      @syncTime = data[1]
-      notifications = data[0]
-      return if notifications.length is 0
-      this.processNotification notification for notification in notifications
-      this.check() if notifications.length is @size
+    request.send()
 
   fetchSyncTime: (opts = {}) ->
-    jqxhr = $.ajax method: "GET", url: "#{this._getURL()}/sync-time"
-    jqxhr.always ->
-    jqxhr.fail =>
+    request = new XMLHttpRequest()
+    request.open 'GET', "#{this._getURL()}/sync-time"
+    request.onerror = =>
       this[opts.after]() if opts.after?
-    jqxhr.done (data) =>
-      @syncTime = data.sync_time
-      this[opts.after]() if opts.after?
+    request.onload = (e) =>
+      if e.target.status >= 200 and e.target.status < 400
+        data = JSON.parse e.target.response
+        @syncTime = data.sync_time
+        this[opts.after]() if opts.after?
+      else if e.target.status >= 500
+        this[opts.after]() if opts.after?
+    request.send()
 
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?

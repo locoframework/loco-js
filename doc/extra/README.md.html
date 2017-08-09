@@ -11,8 +11,8 @@
     <div id='base' data-path='../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../extra/README.md.html' title='Loco'>
-      Loco
+    <a href='../extra/README.md.html' title='Loco-js'>
+      Loco-js
     </a>
     &raquo;
     <a href='../alphabetical_index.html' title='Index'>
@@ -34,14 +34,16 @@
         </p>
       </nav>
       <div id='filecontents'>
-        <h1 id="welcome-to-loco-js">Welcome to Loco-JS</h1>
-<h2 id="coffeescript-naming-convention">CoffeeScript naming convention</h2><p>Coffee project page</p><p><a href="https://coffeescript-cookbook.github.io">CoffeeScript Cookbook</a></p><p><a href="https://repl.it">repl.it</a></p><pre><code class="lang-coffeescript">class Example
+        <p><img src="https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/loco_logo_trans_sqr-300px.png" alt="logo"></p><h1 id="welcome-to-loco-js">Welcome to Loco-JS</h1><p><strong>Loco</strong> is a framework that works on top of <a href="http://rubyonrails.org">Rails</a>. It consists of 2 parts:</p><ul>
+<li><a href="http://github.com/locoframework/loco-rails"><strong>Loco-Rails</strong></a> - a back-end part</li>
+<li><strong>Loco-JS</strong> - a front-end part</li>
+</ul><p>Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS&#39; role in the <strong>Loco</strong> framework is described on the <a href="http://github.com/locoframework/loco-rails">Loco-Rails page</a>.</p><h2 id="coffeescript-naming-convention">CoffeeScript naming convention</h2><p>Loco-JS uses the following naming convention. It&#39;s worth to notice that &quot;<strong>@</strong>&quot; sign is used only to define and call class variables and class methods. Although <strong>this</strong> and <strong>@</strong> are equivalent, this convention improves readability of code imo.</p><pre><code class="lang-coffeescript">class Example
   @classVar = 50
 
-  @classMethod: -&gt; 
+  @classMethod: -&gt;
     &quot;@classVar is #{@classVar}.&quot; + &quot;\n&quot; + @_privateClassMethod true
 
-  @_privateClassMethod: (sayName = false) -&gt; 
+  @_privateClassMethod: (sayName = false) -&gt;
     if sayName
       &quot;Class name is #{@name}&quot;
     else
@@ -51,32 +53,156 @@
     @iVarA = opts.a ? 0
     @iVarB = opts.b ? &#39;foo&#39;
 
-  instanceMethod: (c) -&gt; 
+  instanceMethod: (c) -&gt;
     classVarVal = this.constructor.classVar
     str = &quot;@iVarA is #{@iVarA}, @iVarB is #{@iVarB}, c is #{c} and @classVar is #{classVarVal}.&quot;
     str + &#39;\n&#39; + this._privateInstanceMethod false
 
-  _privateInstanceMethod: (explain = true) -&gt; 
+  _privateInstanceMethod: (explain = true) -&gt;
     str = if explain then &#39; only by convention.&#39; else &#39;.&#39;
     &quot;I&#39;m private instance method#{str}&quot;
 
 
-Example.classVar                        # 50
-Example.classMethod()                 # &quot;@classVar is 50.
-                                      # Class name is Example&quot;
-Example._privateClassMethod()      # &quot;I&#39;m private class method only by convention.&quot; 
+Example.classVar                   # 50
+Example.classMethod()              # &quot;@classVar is 50.
+                                   # Class name is Example&quot;
+Example._privateClassMethod()      # &quot;I&#39;m private class method only by convention.&quot;
 instance = new Example b: &#39;bar&#39;
-instance.instanceMethod()             # &quot;@iVarA is 0, @iVarB is bar, c is undefined and @classVar is 50.
+instance.instanceMethod()          # &quot;@iVarA is 0, @iVarB is bar, c is undefined and @classVar is 50.
                                    # I&#39;m private instance method.&quot;
 instance._privateInstanceMethod()  # &quot;I&#39;m private instance method only by convention.&quot;
-</code></pre><p>@ / this</p><h2 id="structure">Structure</h2><p>console.log App</p><h2 id="promise-based">Promise based</h2>
-<h2 id="models">Models</h2>
-<pre><code class="lang-coffeescript">class App.Models.Article extends App.Models.Base
+</code></pre><p>Other data structures in CoffeeScript are pretty good explained on the <a href="http://coffeescript.org">official page</a> and in <a href="https://coffeescript-cookbook.github.io">CoffeeScript Cookbook</a>.</p><h2 id="dependencies">Dependencies</h2><p>Loco-JS has no dependencies. But it&#39;s based on <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promises</a> and promises are not supported natively in <a href="http://caniuse.com/#feat=promises">IE</a>. So, if you care, I recommend to use <a href="https://github.com/calvinmetcalf/lie">lie</a>.</p><h2 id="getting-started">Getting started</h2><p>Include <a href="dist/loco.js"><code>dist/loco.js</code></a> in your application’s JavaScript bundle.</p><h3 id="installation-using-ruby-on-rails">Installation using Ruby on Rails</h3><p>Loco-JS is included inside the <a href="https://github.com/locoframework/loco-rails"><code>loco-rails</code></a> gem. To install:</p><ol>
+<li>Add <code>loco-rails</code> to your Gemfile: <code>gem &#39;loco-rails&#39;</code></li>
+<li>Run <code>bundle install</code>.</li>
+<li>Add <code>//= require loco-rails</code> to your JavaScript manifest file (usually at <code>app/assets/javascripts/application.js</code>).</li>
+</ol>
+<h3 id="installation-using-npm">Installation using NPM</h3>
+<pre><code class="lang-bash">$ npm install --save loco-js
+</code></pre>
+<h3 id="initalization">Initalization</h3>
+<pre><code class="lang-coffeescript">loco = new App.Loco
+  # set to your Turbolinks version if you have enabled Turbolinks
+  turbolinks: 5                       # false by default
+
+  # your browser&#39;s app will be checking for new notifications periodically via ajax polling
+  notifications:
+    enable: true                      # false by default
+    #pollingTime: 3000                # 3000 ms by default
+
+    # display upcoming notifications in browser&#39;s console e.g. for debugging
+    #log: true                        # false by default
+
+    #ssl: false                       # your current protocol by default
+
+    # location must the same as where you mount Loco in routes.rb
+    #location: &#39;notification-center&#39;  # &#39;notification-center&#39; by default
+
+    # max number of notifications that is fetched at once via ajax pooling
+    # must be the same as notifications_size defined in initializers/loco.rb
+    # next batch of notifications will be fetched immediately after max size is reached
+    #size: 100                        # 100 by default
+
+    # after this time your current namespace controller / controller instance method
+    # disconnectedForTooLong: will be called with the &#39;time since disconnection&#39; passed as an argument
+    #allowedDisconnectionTime: 10     # 10 by default [sec]
+  #locale: &#39;en&#39;                       # &#39;en&#39; by default
+
+  # if provided - loco will be using absolute path instead of site-root-relative path in all xhr requests
+  #protocolWithHost: &#39;https://example.com&#39;
+
+  # this method is called at the end, after given controller methods has been called
+  # at this time Loco&#39;s instance is initialized and you can use it to change behaviour of your browser app
+  # e.g. polling interval -&gt; App.Env.loco.getWire().setPollingTime &lt;time&gt;
+  #postInit: -&gt;
+
+loco.init()
+</code></pre>
+<h2 id="usage">Usage</h2><p>After calling <code>init()</code> Loco-JS&#39; instance checks following <code>&lt;body&gt;</code>&#39;s data attributes:</p><ul>
+<li>data-namespace</li>
+<li>data-controller</li>
+<li>data-action</li>
+</ul><p>Then, based on their values, it initializes given controller and calls given methods. Example:</p><pre><code class="lang-html">&lt;body data-namespace=&quot;Main&quot; data-controller=&quot;Pages&quot; data-action=&quot;index&quot;&gt;
+&lt;/body&gt;
+</code></pre><p>Loco-JS will act like this:</p><pre><code class="lang-coffeescript">namespaceController = new App.Controllers.Main
+namespaceController.initialize()
+
+controller = new App.Controllers.Main.Pages
+controller.initialize()
+controller.index()
+</code></pre><p>All methods will be called, if are defined. If namespace controller is not defined, Loco will assume <code>App.Controllers.Pages</code> as controller.</p><p>If you&#39;ve enabled notifications, Loco will begin checking for them periodically.</p><h2 id="structure">Structure</h2><p>Type <code>App</code> in the browser&#39;s console and you&#39;ll get:</p><pre><code class="lang-javascript">Object {
+  Channels: Object,                     // since ver. 1.3
+  Controllers: Object,
+  Env: Object,
+  Helpers: Object,
+  I18n: Object,
+  IdentityMap: function IdentityMap(),
+  Line: function Line(opts),            // since ver. 1.3
+  Loco: function Loco(opts),
+  Mix: function (),
+  Mixins: Object,
+  Models: Object,
+  Presenters: Object,
+  Services: Object,
+  UI: Object,
+  Utils: Object,
+  Validators: Object,
+  Views: Object,
+  Wire: function Wire(opts),
+  __proto__: Object
+}
+</code></pre><p>Let&#39;s describe each object / function briefly. I&#39;ll be using CoffeeScript nomenclature.</p><ul>
+<li><strong>Channels</strong> - a namespace where are defined <code>ActionCable</code>&#39;s subscriptions</li>
+<li><strong>Controllers</strong> - a namespace where you define controllers</li>
+<li><strong>Env</strong> - an object that has following properties:<ul>
+<li><strong>action</strong> - a name of current action (method called on an instance of current controller)</li>
+<li><strong>controller</strong> - an instance of current controller</li>
+<li><strong>loco</strong> - an instance of <code>App.Loco</code>. It&#39;s the most important instance methods are:<ul>
+<li><code>getWire</code> - returns current instance of <code>App.Wire</code></li>
+<li><code>setLocale</code> / <code>getLocale</code> - allows you to set / get current locale</li>
+</ul>
+</li>
+<li><strong>namespaceController</strong> - an instance of current namespace controller</li>
+<li><strong>scope</strong> - current scope (used by models to determine URL of resources)</li>
+</ul>
+</li>
+<li><strong>Helpers</strong> - a namespace where you define helpers. Member classes:<ul>
+<li><strong>Text</strong> - has method(s) that returns <em>text</em> transformed into HTML by using simple formatting rules</li>
+</ul>
+</li>
+<li><strong>I18n</strong> - an object that holds localizations. Localizations are objects too</li>
+<li><strong>IdentityMap</strong> - a class that stores information about <em>connected</em> objects</li>
+<li><strong>Line</strong> - a class that is responsible for sending and receiving messages over WebSocket connection</li>
+<li><strong>Loco</strong> - this class rules everything ;)</li>
+<li><strong>Mix</strong> - a factory function that generates a <code>Mixed</code> superclass (used for implementing mixins)</li>
+<li><strong>Mixins</strong> - a namespace where mixins are defined</li>
+<li><strong>Models</strong> - a namespace where you define models</li>
+<li><strong>Presenters</strong> - an empty namespace where you define presenters</li>
+<li><strong>Services</strong> - a namespace where you define services. Member classes:<ul>
+<li><strong>Date</strong> - it&#39;s instance methods are useful for formatting <code>Date</code> as string</li>
+</ul>
+</li>
+<li><strong>UI</strong> - a namespace where UI components are defined. Member classes:<ul>
+<li><strong>Form</strong> - a class responsible for dealing with forms</li>
+</ul>
+</li>
+<li><strong>Utils</strong> - a namespace where utility classes are defined. Members:<ul>
+<li><strong>Array</strong> - utilities for arrays</li>
+<li><strong>Collection</strong> - utilities for collections (arrays and objects)</li>
+<li><strong>String</strong> - utilities for strings</li>
+</ul>
+</li>
+<li><strong>Validators</strong> - a namespace where validators are defined</li>
+<li><strong>Views</strong> - a namespace where you define views</li>
+<li><strong>Wire</strong> - a class that is responsible for fetching notifications</li>
+</ul>
+<h2 id="models">Models</h2><p>Following example presents how simple model could look like:</p><pre><code class="lang-coffeescript">class App.Models.Article extends App.Models.Base
   @identity = &quot;Article&quot;
   @resources =
-    url: &#39;/user/articles&#39;, paginate: {per: 100}
+    url: &#39;/user/articles&#39;, paginate: {per: 100, param: &quot;current-page&quot;}
     main:
       url: &#39;/articles&#39;, paginate: {per: 10}
+    admin:
+      url: &#39;/admin/articles&#39;, paginate: {per: 100}
 
   @attributes =
     title:
@@ -101,13 +227,153 @@ instance._privateInstanceMethod()  # &quot;I&#39;m private instance method only 
   vulgarityLevel: -&gt;
     if this._isVulgar()  # not implemented
       this.addErrorMessage &quot;Article contains strong language.&quot;, for: &#39;base&#39;
-</code></pre><p>@identity</p><h2 id="dirty-object">Dirty object</h2>
-<h2 id="pagination">Pagination</h2>
-<h2 id="dependencies">Dependencies</h2>
-<h2 id="development">Development</h2>
-<pre><code class="lang-console">$ codo src_coffee
-</code></pre>
+</code></pre><p>Let&#39;s describe it&#39;s <em>elements</em>:</p><ul>
+<li><p><strong>@identity</strong> <em>(required)</em> - value of this class variable should be the same as the name of a class (last component). It&#39;s required because of minification - all class names will be converted to ~ one character. But, Loco relies on naming.</p></li>
+<li><p><strong>@resources</strong> - this class variable stores information about scopes in your app. You can fetch resources from different sources (API endpoints). So here is a place, where you can define them. Then, you can fetch resources in 2 ways:</p><ul>
+<li>by specifing scope in method calls e.g. <code>App.Models.Article.get &#39;all&#39;, resource: &#39;main&#39;</code></li>
+<li>by specifing scope globally. You can do this by calling <code>setScope &#39;&lt;scope name&gt;&#39;</code> instance method in a namespace controller, usually</li>
+</ul>
+</li>
+<li><p><strong>@attributes</strong> - this class variable stores information about model&#39;s attributes. For each attribute you can define:</p><ul>
+<li><strong>validators</strong> - <code>Absence</code>, <code>Confirmation</code>, <code>Exclusion</code>, <code>Format</code>, <code>Inclusion</code>, <code>Length</code>, <code>Numericality</code>, <code>Presence</code>, <code>Size</code> are available</li>
+<li><strong>remoteName</strong> - the name of model&#39;s attribute and name returned by API endpoint may vary. So here you can define a <em>binding</em>.</li>
+<li><strong>type</strong> - when assigning values from API endpoint, Loco may convert them to certain types. Available types: <code>Date</code>, <code>Integer</code>, <code>Float</code>, <code>Boolean</code>, <code>Number</code>, <code>String</code></li>
+</ul>
+</li>
+<li><p><strong>@receivedSignal</strong> - this class method is called when signal, related to any instance of this class, is received</p></li>
+<li><p><strong>@validate</strong> - this class variable contains names of custom validation methods</p></li>
+<li><p><strong>receivedSignal</strong> - this method is automatically called by an instance of model, when signal related to that object is received</p></li>
+</ul>
+<h3 id="fetching-a-collection-of-resources-pagination-">Fetching a collection of resources (pagination)</h3><p>Loco-JS requires response from the server in a proper JSON format (with <strong>resources</strong> and <strong>count</strong> keys). It&#39;s described on the <a href="http://github.com/locoframework/loco-rails">Loco-Rails page</a>. Here are some examples:</p><pre><code class="lang-coffeescript">App.Models.Article.get(&#39;all&#39;).then (resp) -&gt;
+# GET &quot;/user/articles?current-page=1&quot;
+# GET &quot;/user/articles?current-page=2&quot;
+# GET &quot;/user/articles?current-page=3&quot;
+# ...
 
+App.Models.Article.get(&#39;all&#39;, resource: &#39;main&#39;).then (resp) -&gt;
+# GET &quot;/articles?page=1&quot;
+# GET &quot;/articles?page=2&quot;
+# GET &quot;/articles?page=3&quot;
+# ...
+
+App.Models.Article.get(&#39;published&#39;, resource: &#39;admin&#39;, page: 2).then (resp) -&gt;
+# GET &quot;/admin/articles/published?page=2&quot;
+</code></pre><p>Loco-JS supports nested resources. Only single nesting is allowed. Example:</p><pre><code class="lang-coffeescript">class App.Models.Article.Comment extends App.Models.Base
+  @identity = &quot;Article.Comment&quot;
+  @remoteName = &quot;Comment&quot;
+  @resources =
+    url: &#39;/user/articles/:articleId/comments&#39;, paginate: {per: 10}
+
+App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) -&gt;
+# GET &quot;/user/articles/321/comments?page=2&quot;
+</code></pre><p>You can also pass additional parameters. Example:</p><pre><code class="lang-coffeescript">App.Models.Article.Comment.all({
+  articleId: 21,
+  page: 2,
+  title: &#39;foo&#39;,
+  content: &#39;bar&#39;
+}).then (resp) -&gt;
+# GET &quot;/user/articles/21/comments?page=2&amp;title=foo&amp;content=bar&quot;
+</code></pre>
+<h3 id="fetching-a-single-resource">Fetching a single resource</h3><p>Loco-JS provides <code>find</code> class method for fetching a single resource. The response from the server should be in a plain JSON format with remote names of attributes as keys. Examples:</p><pre><code class="lang-coffeescript">App.Models.Article.find(123).then (article) -&gt;
+# or
+App.Models.Article.find(id: 123).then (article) -&gt;
+# GET &quot;/user/articles/123&quot;
+
+App.Models.Article.Comment.find(id: 33, articleId: 123).then (comment) -&gt;
+# GET &quot;/user/articles/123/comments/33&quot;
+
+# adding additional parameters
+App.Models.Article.Comment.find({
+  id: 33,
+  articleId: 123,
+  foo: &#39;bar&#39;,
+  baz: &#39;buz&#39;
+}).then (comment) -&gt;
+# GET &quot;/user/articles/123/comments/33?foo=bar&amp;baz=buz&quot;
+</code></pre>
+<h3 id="sending-requests">Sending requests</h3><p>Each model has inherited from <code>App.Models.Base</code> methods for sending requests of given type to the server. All methods that send requests of the equivalent type are listed below:</p><ul>
+<li>instance methods: <code>get</code> <code>post</code> <code>put</code> <code>delete</code></li>
+<li>class methods: <code>@get</code> <code>@post</code> <code>@put</code> <code>@delete</code></li>
+</ul><p>Examples:</p><pre><code class="lang-coffeescript"># usually you use class methods for fetching resources. It&#39;s just an example here:
+# App.Models.Article.post(&#39;published&#39;, resource: &#39;admin&#39;, page: 2)
+# POST &quot;/admin/articles/published&quot;
+# Parameters: {&quot;page&quot;=&gt;2}
+
+App.Models.Article.find(id: 43).then (article) -&gt;
+  article.put &quot;publish&quot;, foo: &#39;bar&#39;, buz: 1
+# PUT &quot;/user/articles/43/publish&quot;
+# Parameters: {&quot;foo&quot;=&gt;&quot;bar&quot;, &quot;buz&quot;=&gt;&quot;1&quot;, &quot;id&quot;=&gt;&quot;43&quot;}
+</code></pre>
+<h3 id="validation">Validation</h3><p>If you have specified validations for attributes, you can use <code>isValid</code> / <code>isInvalid</code> methods to check whether an instance of a model is valid or not.</p><p>Example:</p><pre><code class="lang-coffeescript">article = new App.Models.Article title: &#39;f&#39;
+article.isValid()  # false
+article.errors  # {title: [&quot;is too short (minimum is 3 characters)&quot;], content: [&quot;can&#39;t be blank&quot;]}
+</code></pre><p>When you use <code>App.UI.Form</code> for handling forms, validation is done automatically and errors are shown if object is invalid.</p><p>Loco-JS implements almost all built-in <a href="http://guides.rubyonrails.org/active_record_validations.html">Rails</a> validators, except <em>uniqueness</em>. And you can use them nearly identically. For more use cases and examples look at the source code (<em>/validators</em>), <em>Examples</em> section and specs.</p><h3 id="dirty-object">Dirty object</h3><p><em>Dirty object</em> is an ability of models&#39; instances to express how values of attributes have been changed between 2 moments in time - when an object was initialized and their current value on the server. The most common use case is a reaction to the <strong>update</strong> signal, presented below. You can apply all changes (<code>applyChanges</code> method) and re-render the article. Or just present them to the user and apply manually selected ones - for example.</p><pre><code class="lang-coffeescript">receivedSignal: (signal, data) -&gt;
+  switch signal
+    when &#39;updated&#39;
+      @article.reload().then =&gt;
+        @article.changes()  # {title: {is: &#39;bar&#39;, was: &#39;foo&#39;}, content: {is: &#39;buz&#39;, was: &#39;baz&#39;}}
+        @article.applyChanges()
+        this.renderArticle()
+</code></pre>
+<h2 id="connectivity">Connectivity</h2><p><code>App.Mixins.Connectivity</code> is a mixin, which is included in <code>App.Controllers.Base</code> and <code>App.Views.Base</code> base classes. It has very important instance method <code>connectWith</code>. You will use this method probably always inside instance methods of controllers and views. <code>connectWith</code> accepts 2 arguments. The first one can be an object or an array. Allowed are instances of models and class names of models. Example:</p><pre><code class="lang-coffeescript">this.connectWith [App.Models.Article, App.Models.Article.Comment, user]
+this.connectWith article, receiver: &quot;_articleReceivedSignal&quot;
+</code></pre><p>The second argument is optional and should be an object with <em>receiver</em> property. It specifies which method will be called when notification / signal related to connected object / objects is received.</p><p>If you pass a class name (or names) as connected object then you will receive notifications / signals related to all instances of this class.</p><p>Check <em>Examples</em> section for real-life usage.</p><h2 id="controllers">Controllers</h2><p><code>App.Controllers.Base</code> base class is pretty straightforward. Just look at the source code for more details about implemented methods. More important things are:</p><ul>
+<li><code>params</code> property - an object with URL params</li>
+<li><code>setScope</code> / <code>setResource</code> method - sets default scope for all models (which URL is used for fetching resources)</li>
+</ul>
+<h2 id="views">Views</h2><p><code>App.Views.Base</code> base class is also straightforward and source code is self-explanatory. For more use cases check <em>Examples</em> section.</p><h2 id="app-ui-form">App.UI.Form</h2><p>This class is responsible for handling forms. It converts attributes of model&#39;s instance to the values of corresponding form elements. It&#39;s constructor accepts an object with following properties (all are optional):</p><ul>
+<li><strong>id</strong> <em>(String)</em> - HTML <strong>id</strong> attribute of the form. If you don&#39;t pass this property, it will be resolved based on <em>Ruby on Rails</em> naming convention.</li>
+<li><strong>for</strong> <em>(Object)</em> - an instance of a model that is connected with the form</li>
+<li><strong>initObj</strong> <em>(Boolean)</em> - whether to initialize passed object based on values of corresponding form&#39;s elements.</li>
+<li><strong>delegator</strong> <em>(Object)</em> - an object to which the following methods are delegated to</li>
+<li><strong>callbackSuccess</strong> <em>(String)</em></li>
+<li><strong>callbackFailure</strong> <em>(String)</em></li>
+<li><strong>callbackActive</strong> <em>(String)</em></li>
+</ul><p>Following HTML code shows how a form should be structured. What is important - all tags related to given attribute, should be wrapped by a tag with <strong>field</strong> class and proper <strong>data-attr</strong> attribute. The value of this attribute should match the <strong>remote name</strong> of given attribute (name of the corresponding attribute on the server side). Look at how errors are expressed. The tag is irrelevant, only <strong>errors</strong> class and <strong>data-for</strong> HTML attribute are important.</p><p>Example:</p><pre><code class="lang-html">&lt;form class=&quot;edit_article&quot; id=&quot;edit_article_42&quot; action=&quot;/user/articles/42&quot;
+  accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;
+
+  &lt;input name=&quot;utf8&quot; type=&quot;hidden&quot; value=&quot;&amp;#x2713;&quot; /&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;patch&quot; /&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;secret&quot; /&gt;
+
+  &lt;div class=&quot;field&quot; data-attr=&quot;title&quot;&gt;
+    &lt;label for=&quot;article_title&quot;&gt;Title&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; value=&quot;A few examples&quot; name=&quot;article[title]&quot; id=&quot;article_title&quot; /&gt;
+    &lt;span class=&quot;errors&quot; data-for=&quot;title&quot;&gt;&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;field&quot; data-attr=&quot;text&quot;&gt;
+    &lt;label for=&quot;article_text&quot;&gt;Text&lt;/label&gt;&lt;br&gt;
+    &lt;textarea name=&quot;article[text]&quot; id=&quot;article_text&quot;&gt;&lt;/textarea&gt;
+    &lt;span class=&quot;errors&quot; data-for=&quot;text&quot;&gt;&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;input type=&quot;submit&quot; name=&quot;commit&quot; value=&quot;Update Article&quot; /&gt;
+    &lt;span class=&quot;errors&quot; data-for=&quot;base&quot;&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+<h2 id="app-wire">App.Wire</h2><p>Instance of this class works internally and is responsible for fetching notifications. Following code shows - how to get this instance during runtime:</p><pre><code class="lang-coffeescript">App.Env.loco.getWire()
+</code></pre><p>The constructor takes an object whose many properties have been described in the <em>initialization</em> section, earlier. All methods are rather straightforward and self-explanatory, but you should pay attention to the <code>setToken</code> one. When <code>@token</code> is not null, it is automatically appended to the requests that are responsible for fetching notifications. So it allows to fetch notifications assigned to given token.</p><h2 id="app-line-since-ver-1-3-">App.Line (since ver. 1.3)</h2><p>Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection. Loco-JS automatically creates instance of <code>App.Line</code> and subscribes to <code>Loco::NotificationCenterChannel</code> if discovers <code>ActionCable</code>&#39;s consumer under <code>App.cable</code>. Following code shows - how to get this instance during runtime:</p><pre><code class="lang-coffeescript">App.Env.loco.getLine()
+</code></pre>
+<h3 id="sending-messages">Sending messages</h3>
+<pre><code class="lang-coffeescript">App.Env.loco.getLine().send({})
+
+# or using shortcut:
+App.Env.loco.emit({})
+</code></pre>
+<h3 id="receiving-messages">Receiving messages</h3><p>Loco-Rails delivers <code>loco:install</code> generator that creates following class at <em>JS-ASSETS-ROOT/services/notification_center.coffee</em></p><pre><code class="lang-coffeescript">class App.Services.NotificationCenter
+  receivedSignal: (data) -&gt;
+</code></pre><p>Every time a message is sent from the server, <code>receivedSignal</code> instance method is called.</p><h2 id="development">Development</h2>
+<h3 id="development-and-testing">Development and testing</h3><p>Look inside <code>gulpfile.js</code> for more details.</p><h3 id="generating-documentation">Generating documentation</h3>
+<pre><code class="lang-bash">$ codo src_coffee
+</code></pre>
+<h2 id="examples">Examples</h2>
+<ul>
+<li>examine <code>test/dummy</code> app inside <a href="http://github.com/locoframework/loco-rails">Loco-Rails project</a> for real-life use cases of almost all Loco&#39;s features in various scenarios</li>
+</ul>
+<h2 id="license">License</h2><p>Loco-JS is released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p><h2 id="author">Author</h2><p>Zbigniew Humeniuk from <a href="http://artofcode.co">Art of Code</a></p>
       </div>
     </div>
     <div id='footer'>
@@ -115,7 +381,7 @@ instance._privateInstanceMethod()  # &quot;I&#39;m private instance method only 
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>
-  2.1.0
+  2.1.2
   &#10034;
   Press H to see the keyboard shortcuts
   &#10034;

@@ -8,8 +8,12 @@ class App.UI.Form
     @callbackFailure = opts.callbackFailure
     @callbackActive = opts.callbackActive
     @form = this._findForm()
-    @submit = @form.find ':submit'
-    @submitVal = @submit.val()
+    @submit = null
+    @submitVal = null
+    if @form?
+      @submit = @form.querySelector 'input[type="submit"]'
+    if @submit?
+      @submitVal = @submit.value
     @locale = App.Env.loco.getLocale()
 
   getObj: -> @obj
@@ -17,9 +21,10 @@ class App.UI.Form
   render: ->
     if @initObj
       this._assignAttribs()
-    else
+      this._handle()
+    else if @form?
       this.fill()
-    this._handle()
+      this._handle()
 
   fill: (attr = null) ->
     return null if not @obj?
@@ -31,28 +36,34 @@ class App.UI.Form
       attributes = @obj.constructor.attributes
     for name, _ of attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      query = @form.querySelector "[data-attr=#{remoteName}]"
+      continue if query is null
+      formEl = query.querySelectorAll "input,textarea,select"
+      continue if formEl.length is 0
       if formEl.length is 1
-        formEl.val @obj[name]
+        formEl[0].value = @obj[name]
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => $(e).val() is String(@obj[name])
+        radioEl = App.Utils.Collection.find formEl, (e) => e.value is String(@obj[name])
         if radioEl?
-          $(radioEl).prop 'checked', true
+          radioEl.checked = true
           continue
-      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+      if formEl[0].getAttribute("type") isnt "hidden" and formEl[formEl.length - 1].getAttribute('type') isnt "checkbox"
         continue
-      formEl.last().prop 'checked', Boolean(@obj[name])
+      formEl[formEl.length - 1].checked = Boolean(@obj[name])
 
   _findForm: ->
-    return $("##{@formId}") if @formId?
+    return document.getElementById("#{@formId}") if @formId?
     if @obj?
       objName = @obj.getIdentity().toLowerCase()
-      if @obj.id? then $("#edit_#{objName}_#{@obj.id}") else $("#new_#{objName}")
+      if @obj.id?
+        document.getElementById "edit_#{objName}_#{@obj.id}"
+      else
+        document.getElementById "new_#{objName}"
 
   _handle: ->
-    @form.on 'submit', (e) =>
+    @form.addEventListener 'submit', (e) =>
       e.preventDefault()
       return if not this._canBeSubmitted()
       if not @obj?
@@ -77,28 +88,39 @@ class App.UI.Form
       .catch (err) => this._connectionError()
 
   _canBeSubmitted: ->
-    return false if @submit.hasClass 'active'
-    return false if @submit.hasClass 'success'
-    return false if @submit.hasClass 'failure'
+    return false if App.Utils.Dom.hasClass @submit, 'active'
+    return false if App.Utils.Dom.hasClass @submit, 'success'
+    return false if App.Utils.Dom.hasClass @submit, 'failure'
     true
 
   _submitForm: ->
     this._submittingForm()
-    url = @form.attr('action') + '.json'
-    jqxhr = $.post url, @form.serialize()
-    jqxhr.always =>
+    url = @form.getAttribute('action') + '.json'
+    data = new FormData @form
+    req = new XMLHttpRequest()
+    req.open 'POST', url
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.onload = (e) =>
       this._alwaysAfterRequest()
       @submit.blur()
-    jqxhr.fail => this._connectionError()
-    jqxhr.done (data) =>
-      if data.success
-        this._handleSuccess data, @form.attr("method") is "POST"
-      else
-        this._renderErrors data.errors
+      if e.target.status >= 200 and e.target.status < 400
+        data = JSON.parse e.target.response
+        if data.success
+          this._handleSuccess data, @form.getAttribute("method") is "POST"
+        else
+          this._renderErrors data.errors
+       else if e.target.status >= 500
+         this._connectionError()
+    req.onerror = =>
+      this._alwaysAfterRequest()
+      @submit.blur()
+      this._connectionError()
+    req.send data
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
-    @submit.addClass('success').val val
+    App.Utils.Dom.addClass @submit, 'success'
+    @submit.value = val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
@@ -108,10 +130,14 @@ class App.UI.Form
         @delegator[@callbackSuccess]()
       return
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('success').val @submitVal
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'success'
+      @submit.value = @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
-        @form.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
+        nodes = @form.querySelectorAll "input:not([type='submit'])#{selector}, textarea#{selector}"
+        for node in nodes
+          node.value = ''
     , 5000
 
   _renderErrors: (remoteErrors = null) ->
@@ -122,64 +148,83 @@ class App.UI.Form
       remoteName = if @obj? then @obj.getAttrRemoteName(attrib) else attrib
       if remoteName? and attrib isnt "base"
         # be aware of invalid elements's nesting e.g. "div" inside of "p"
-        @form.find("[data-attr=#{remoteName}]").find(".errors[data-for=#{remoteName}]").text errors[0]
+        query = @form.querySelector "[data-attr=#{remoteName}]"
+        continue if query is null
+        nodes = query.querySelectorAll ".errors[data-for=#{remoteName}]"
+        continue if nodes.length is 0
+        for node in nodes
+          node.textContent = errors[0]
         continue
       if attrib is "base" and errors.length > 0
-        if $(".errors[data-for='base']").length is 1
-          $(".errors[data-for='base']").text errors[0]
+        nodes = document.querySelectorAll ".errors[data-for='base']"
+        if nodes.length is 1
+          nodes[0].textContent = errors[0]
         else
-          @submit.val errors[0]
-    if @submit.val() is @submitVal or @submit.val() is App.I18n[@locale].ui.form.sending
-      @submit.val App.I18n[@locale].ui.form.errors.invalid_data
-    @submit.addClass 'failure'
+          @submit.value = errors[0]
+    if @submit.value is @submitVal or @submit.value is App.I18n[@locale].ui.form.sending
+      @submit.value = App.I18n[@locale].ui.form.errors.invalid_data
+    App.Utils.Dom.addClass @submit, 'failure'
     this._showErrors()
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
-      @form.find('input.invalid, textarea.invalid, select.invalid').removeClass 'invalid'
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'failure'
+      @submit.val = @submitVal
+      for node in @form.querySelectorAll('input.invalid, textarea.invalid, select.invalid')
+        App.Utils.Dom.removeClass node, 'invalid'
     , 1000
 
   _assignAttribs: ->
     return null if not @obj.constructor.attributes?
     for name, _ of @obj.constructor.attributes
       remoteName = @obj.getAttrRemoteName name
-      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      query = @form.querySelector "[data-attr=#{remoteName}]"
+      continue if query is null
+      formEl = query.querySelectorAll "input,textarea,select"
+      continue if formEl.length is 0
       if formEl.length is 1
-        @obj.assignAttr name, formEl.val()
+        @obj.assignAttr name, formEl[0].value
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> $(e).attr 'type'
+      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => $(e).is ':checked'
+        radioEl = App.Utils.Collection.find formEl, (e) => e.checked is true
         if radioEl?
-          @obj.assignAttr name, $(radioEl).val()
+          @obj.assignAttr name, radioEl.value
           continue
-      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+      if formEl[0].getAttribute("type") isnt "hidden" and formEl[formEl.length - 1].getAttribute('type') isnt "checkbox"
         continue
-      if formEl.last().is ":checked"
-        @obj.assignAttr name, formEl.last().val()
+      if formEl[formEl.length - 1].checked is true
+        @obj.assignAttr name, formEl[formEl.length - 1].value
       else
-        @obj.assignAttr name, formEl.first().val()
+        @obj.assignAttr name, formEl[0].value
 
   _hideErrors: ->
-    @form.find('.errors').each (index, e) =>
-      if $(e).text().trim().length > 0
-        $(e).text ""
-        $(e).hide()
+    for e in @form.querySelectorAll('.errors')
+      if e.textContent.trim().length > 0
+        e.textContent = ''
+        e.style.display = 'none'
 
   _showErrors: ->
-    @form.find('.errors').each (index, e) =>
-      if $(e).text().trim().length > 0
-        $(e).show()
+    for e in @form.querySelectorAll('.errors')
+      if e.textContent.trim().length > 0
+        e.style.display = ''
 
   _submittingForm: (hideErrors = true) ->
-    @submit.removeClass('success').removeClass('failure').addClass('active').val App.I18n[@locale].ui.form.sending
+    App.Utils.Dom.removeClass @submit, 'success'
+    App.Utils.Dom.removeClass @submit, 'failure'
+    App.Utils.Dom.addClass @submit, 'active'
+    @submit.value = App.I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 
   _connectionError: ->
-    @submit.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
+    App.Utils.Dom.removeClass @submit, 'active'
+    App.Utils.Dom.addClass @submit, 'failure'
+    @submit.val = App.I18n[@locale].ui.form.errors.connection
     setTimeout =>
-      @submit.removeAttr('disabled').removeClass('failure').val @submitVal
+      @submit.disabled = false
+      App.Utils.Dom.removeClass @submit, 'failure'
+      @submit.val = @submitVal
     , 3000
 
   _alwaysAfterRequest: ->
-    @submit.removeClass("active")
+    App.Utils.Dom.removeClass @submit, 'active'

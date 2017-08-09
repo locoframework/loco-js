@@ -31,15 +31,15 @@ class App.Models.Base
       delete urlParams.id
     else
       id = idOrObj
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'GET',
-      url: "#{@__getResourcesUrl(urlParams)}/#{id}",
-      data: urlParams
-    })
+    req = new XMLHttpRequest()
+    req.open 'GET', "#{@__getResourcesUrl(urlParams)}/#{id}"
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.send JSON.stringify(urlParams)
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (record) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        record = JSON.parse e.target.response
         obj = @__initSubclass record
         App.IdentityMap.add obj
         resolve obj
@@ -102,14 +102,18 @@ class App.Models.Base
         continue if key is "resource"
         data[key] = val
     data[@__getPaginationParam()] = i
-    jqxhr = $.ajax
-      dataType: "json",
-      method: httpMethod,
-      url: url,
-      data: data
+    if httpMethod is 'GET'
+      url = url + '?' + App.Utils.Object.toURIParams(data)
+    req = new XMLHttpRequest()
+    req.open httpMethod, url
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(data)
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        data = JSON.parse e.target.response
         resp.count = data.count
         for key, val of data
           resp[key] = val if ['resources', 'count'].indexOf(key) is -1
@@ -191,7 +195,11 @@ class App.Models.Base
       when "Date" then val = new Date Date.parse val
       when "Integer", "Int" then val = parseInt val
       when "Float" then val = parseFloat val
-      when "Boolean", "Bool" then val = Boolean parseInt val
+      when "Boolean", "Bool"
+        val = if typeof val is 'boolean'
+          val
+        else
+          Boolean parseInt val
       when "Number" then val = Number val
       when "String" then val = String val
     @[attrName] = val
@@ -235,14 +243,17 @@ class App.Models.Base
     @errors[opts.for].push message
 
   save: ->
-    jqxhr = $.ajax
-      dataType: 'json',
-      method: if @id? then "PUT" else "POST",
-      url: this.__getResourceUrl(),
-      data: this.serialize()
+    httpMeth = if @id? then "PUT" else "POST"
+    req = new XMLHttpRequest()
+    req.open httpMeth, this.__getResourceUrl()
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(this.serialize())
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        data = JSON.parse e.target.response
         if data.success
           resolve data
           return
@@ -250,19 +261,24 @@ class App.Models.Base
         resolve data
 
   updateAttribute: (attr) ->
-    jqxhr = $.ajax
-      dataType: 'json'
-      method: 'PUT'
-      url: this.__getResourceUrl()
-      data: this.serialize attr
+    req = new XMLHttpRequest()
+    req.open 'PUT', this.__getResourceUrl()
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(this.serialize(attr))
     return new Promise (resolve, reject) =>
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) =>
-        if data.success
+      req.onerror = (e) -> reject e
+      req.onload = (e) =>
+        if e.target.status >= 200 and e.target.status < 400
+          data = JSON.parse e.target.response
+          if data.success
+            resolve data
+            return
+          this.__assignRemoteErrorMessages(data.errors) if data.errors?
           resolve data
-          return
-        this.__assignRemoteErrorMessages(data.errors) if data.errors?
-        resolve data
+        else if e.target.status >= 500
+          reject e
 
   serialize: (attr = null) ->
     return {} if not this.constructor.attributes?
@@ -290,7 +306,7 @@ class App.Models.Base
     currentObj = App.IdentityMap.find this.getIdentity(), this.id
     for name, val of this.attributes()
       if val isnt currentObj[name]
-        continue if val.constructor is Date and currentObj[name] - val is 0
+        continue if val? and val.constructor is Date and currentObj[name] - val is 0
         result[name] = {is: currentObj[name], was: val} if val isnt currentObj[name]
     return result
 
@@ -307,14 +323,17 @@ class App.Models.Base
     url = this.__getResourceUrl()
     if action?
       url = "#{url}/#{action}"
-    jqxhr = $.ajax
-      dataType: 'json',
-      method: method,
-      url: url,
-      data: data
+    req = new XMLHttpRequest()
+    req.open method, url
+    req.send data
     return new Promise (resolve, reject) ->
-      jqxhr.fail (xhr) -> reject xhr
-      jqxhr.done (data) -> resolve data
+      req.onerror = (e) -> reject e
+      req.onload = (e) ->
+        if e.target.status >= 200 and e.target.status < 400
+          data = JSON.parse e.target.response
+          resolve data
+        else if e.target.status >= 500
+          reject e
 
   __assignAttributes: (data) ->
     for key, val of data
