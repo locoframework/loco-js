@@ -2280,7 +2280,7 @@ App.UI.Form = (function() {
     this.submit = null;
     this.submitVal = null;
     if (this.form != null) {
-      this.submit = this.form.querySelectorAll('input[type="submit"]')[0];
+      this.submit = this.form.querySelector('input[type="submit"]');
     }
     if (this.submit != null) {
       this.submitVal = this.submit.value;

@@ -11,7 +11,7 @@ class App.UI.Form
     @submit = null
     @submitVal = null
     if @form?
-      @submit = @form.querySelectorAll('input[type="submit"]')[0]
+      @submit = @form.querySelector 'input[type="submit"]'
     if @submit?
       @submitVal = @submit.value
     @locale = App.Env.loco.getLocale()
@@ -93,7 +93,6 @@ class App.UI.Form
     return false if App.Utils.Dom.hasClass @submit, 'failure'
     true
 
-  # TODO: test it!
   _submitForm: ->
     this._submittingForm()
     url = @form.getAttribute('action') + '.json'
