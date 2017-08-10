@@ -9,6 +9,14 @@
 
 Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS' role in the **Loco** framework is described on the [Loco-Rails page](http://github.com/locoframework/loco-rails).
 
+## Major releases
+
+Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+
+### 1.5
+
+* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
+
 ## CoffeeScript naming convention
 
 Loco-JS uses the following naming convention. It's worth to notice that "**@**" sign is used only to define and call class variables and class methods. Although **this** and **@** are equivalent, this convention improves readability of code imo.
