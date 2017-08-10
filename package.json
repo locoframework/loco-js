@@ -1,6 +1,6 @@
 {
   "name": "loco-js",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "MVC framework for building web apps with ease.",
   "author": "Zbigniew Humeniuk <hello@artofcode.co>",
   "main": "dist/loco.js",
@@ -22,8 +22,7 @@
   ],
   "license": "MIT",
   "homepage": "http://locoframework.org",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",
