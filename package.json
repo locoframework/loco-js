@@ -1,6 +1,6 @@
 {
   "name": "loco-js",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "MVC framework for building web apps with ease.",
   "author": "Zbigniew Humeniuk <hello@artofcode.co>",
   "main": "dist/loco.js",
