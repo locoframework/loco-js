@@ -11,7 +11,7 @@ class App.UI.Form
     @submit = null
     @submitVal = null
     if @form?
-      @submit = @form.querySelector 'input[type="submit"]'
+      @submit = @form.querySelector '[type="submit"]'
     if @submit?
       @submitVal = @submit.value
     @locale = App.Env.loco.getLocale()
@@ -88,6 +88,7 @@ class App.UI.Form
       .catch (err) => this._connectionError()
 
   _canBeSubmitted: ->
+    return true unless @submit?
     return false if App.Utils.Dom.hasClass @submit, 'active'
     return false if App.Utils.Dom.hasClass @submit, 'success'
     return false if App.Utils.Dom.hasClass @submit, 'failure'
@@ -102,7 +103,7 @@ class App.UI.Form
     req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
     req.onload = (e) =>
       this._alwaysAfterRequest()
-      @submit.blur()
+      @submit.blur() if @submit?
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
         if data.success
@@ -113,14 +114,15 @@ class App.UI.Form
          this._connectionError()
     req.onerror = =>
       this._alwaysAfterRequest()
-      @submit.blur()
+      @submit.blur() if @submit?
       this._connectionError()
     req.send data
 
   _handleSuccess: (data, clearForm = true) ->
     val = data.flash?.success ? App.I18n[@locale].ui.form.success
-    App.Utils.Dom.addClass @submit, 'success'
-    @submit.value = val
+    if @submit?
+      App.Utils.Dom.addClass @submit, 'success'
+      @submit.value = val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
@@ -130,9 +132,10 @@ class App.UI.Form
         @delegator[@callbackSuccess]()
       return
     setTimeout =>
-      @submit.disabled = false
-      App.Utils.Dom.removeClass @submit, 'success'
-      @submit.value = @submitVal
+      if @submit?
+        @submit.disabled = false
+        App.Utils.Dom.removeClass @submit, 'success'
+        @submit.value = @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
         nodes = @form.querySelectorAll "input:not([type='submit'])#{selector}, textarea#{selector}"
@@ -159,16 +162,18 @@ class App.UI.Form
         nodes = document.querySelectorAll ".errors[data-for='base']"
         if nodes.length is 1
           nodes[0].textContent = errors[0]
-        else
+        else if @submit?
           @submit.value = errors[0]
-    if @submit.value is @submitVal or @submit.value is App.I18n[@locale].ui.form.sending
-      @submit.value = App.I18n[@locale].ui.form.errors.invalid_data
-    App.Utils.Dom.addClass @submit, 'failure'
+    if @submit?
+      if @submit.value is @submitVal or @submit.value is App.I18n[@locale].ui.form.sending
+        @submit.value = App.I18n[@locale].ui.form.errors.invalid_data
+      App.Utils.Dom.addClass @submit, 'failure'
     this._showErrors()
     setTimeout =>
-      @submit.disabled = false
-      App.Utils.Dom.removeClass @submit, 'failure'
-      @submit.val = @submitVal
+      if @submit?
+        @submit.disabled = false
+        App.Utils.Dom.removeClass @submit, 'failure'
+        @submit.val = @submitVal
       for node in @form.querySelectorAll('input.invalid, textarea.invalid, select.invalid')
         App.Utils.Dom.removeClass node, 'invalid'
     , 1000
@@ -206,17 +211,19 @@ class App.UI.Form
   _showErrors: ->
     for e in @form.querySelectorAll('.errors')
       if e.textContent.trim().length > 0
-        e.style.display = ''
+        e.style.display = 'block'
 
   _submittingForm: (hideErrors = true) ->
-    App.Utils.Dom.removeClass @submit, 'success'
-    App.Utils.Dom.removeClass @submit, 'failure'
-    App.Utils.Dom.addClass @submit, 'active'
-    @submit.value = App.I18n[@locale].ui.form.sending
+    if @submit?
+      App.Utils.Dom.removeClass @submit, 'success'
+      App.Utils.Dom.removeClass @submit, 'failure'
+      App.Utils.Dom.addClass @submit, 'active'
+      @submit.value = App.I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 
   _connectionError: ->
+    return unless @submit?
     App.Utils.Dom.removeClass @submit, 'active'
     App.Utils.Dom.addClass @submit, 'failure'
     @submit.val = App.I18n[@locale].ui.form.errors.connection
@@ -227,4 +234,5 @@ class App.UI.Form
     , 3000
 
   _alwaysAfterRequest: ->
+    return unless @submit?
     App.Utils.Dom.removeClass @submit, 'active'
