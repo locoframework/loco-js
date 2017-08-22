@@ -325,7 +325,10 @@ class App.Models.Base
       url = "#{url}/#{action}"
     req = new XMLHttpRequest()
     req.open method, url
-    req.send data
+    req.setRequestHeader "Accept", "application/json"
+    req.setRequestHeader "Content-Type", "application/json"
+    req.setRequestHeader "X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content
+    req.send JSON.stringify(data)
     return new Promise (resolve, reject) ->
       req.onerror = (e) -> reject e
       req.onload = (e) ->
