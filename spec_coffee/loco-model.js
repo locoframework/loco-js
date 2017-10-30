@@ -155,10 +155,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.I18n = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _en = __webpack_require__(9);
 
-var I18n = {
-  en: _en.en
+var I18n = function I18n() {
+  if (typeof window !== 'undefined' && window.App !== undefined) {
+    return _extends({ en: _en.en }, window.App.I18n);
+  }
+  return { en: _en.en };
 };
 
 exports.I18n = I18n;
@@ -262,19 +267,19 @@ Length = (function(superClass) {
   Length.prototype._selectErrorMessage = function(msg, val) {
     var i, len, message, ref, variant;
     if (val === 1) {
-      return __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg].one;
+      return Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg].one;
     }
     message = null;
     ref = ['few', 'many'];
     for (i = 0, len = ref.length; i < len; i++) {
       variant = ref[i];
       if (this._checkVariant(variant, val)) {
-        message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg][variant];
+        message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg][variant];
         break;
       }
     }
     if (message == null) {
-      message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg].other;
+      message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages[msg].other;
     }
     if (this.opts.message != null) {
       message = this.opts.message;
@@ -286,10 +291,10 @@ Length = (function(superClass) {
   };
 
   Length.prototype._checkVariant = function(variant, val) {
-    if (__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].variants[variant] == null) {
+    if (Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].variants[variant] == null) {
       return;
     }
-    return __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].variants[variant](val);
+    return Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].variants[variant](val);
   };
 
   return Length;
@@ -1241,7 +1246,7 @@ Absence = (function(superClass) {
 
   Absence.prototype._addErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.present;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.present;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1370,9 +1375,9 @@ Confirmation = (function(superClass) {
   Confirmation.prototype._addErrorMessage = function() {
     var attrName, attrNames, defaultAttrName, message;
     defaultAttrName = this.attr.charAt(0).toUpperCase() + this.attr.slice(1);
-    attrNames = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].attributes[this.obj.getIdentity()];
+    attrNames = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].attributes[this.obj.getIdentity()];
     attrName = (attrNames && attrNames[this.attr]) || defaultAttrName;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.confirmation;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.confirmation;
     message = message.replace('%{attribute}', attrName);
     return this.obj.addErrorMessage(message, {
       "for": this._properAttr()
@@ -1432,7 +1437,7 @@ Exclusion = (function(superClass) {
 
   Exclusion.prototype._addErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.exclusion;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.exclusion;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1487,7 +1492,7 @@ Format = (function(superClass) {
 
   Format.prototype._addErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.invalid;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.invalid;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1542,7 +1547,7 @@ Inclusion = (function(superClass) {
 
   Inclusion.prototype._addErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.inclusion;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.inclusion;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1612,7 +1617,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addNaNErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.not_a_number;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.not_a_number;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1620,7 +1625,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addIntErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.not_an_integer;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.not_an_integer;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1628,7 +1633,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addGreatherThanErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.greater_than;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.greater_than;
     message = message.replace('%{count}', this.opts.greater_than);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1637,7 +1642,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addGreatherThanOrEqualToErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.greater_than_or_equal_to;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.greater_than_or_equal_to;
     message = message.replace('%{count}', this.opts.greater_than_or_equal_to);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1646,7 +1651,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addEqualToErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.equal_to;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.equal_to;
     message = message.replace('%{count}', this.opts.equal_to);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1655,7 +1660,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addLessThanErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.less_than;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.less_than;
     message = message.replace('%{count}', this.opts.less_than);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1664,7 +1669,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addLessThanOrEqualToErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.less_than_or_equal_to;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.less_than_or_equal_to;
     message = message.replace('%{count}', this.opts.less_than_or_equal_to);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1673,7 +1678,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addOtherThanErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.other_than;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.other_than;
     message = message.replace('%{count}', this.opts.other_than);
     return this.obj.addErrorMessage(message, {
       "for": this.attr
@@ -1682,7 +1687,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addOddErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.odd;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.odd;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1690,7 +1695,7 @@ Numericality = (function(superClass) {
 
   Numericality.prototype._addEvenErrorMessage = function() {
     var message;
-    message = __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.even;
+    message = Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.even;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
@@ -1751,7 +1756,7 @@ Presence = (function(superClass) {
 
   Presence.prototype._addErrorMessage = function() {
     var message;
-    message = this.opts.message != null ? this.opts.message : __WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"][Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.blank;
+    message = this.opts.message != null ? this.opts.message : Object(__WEBPACK_IMPORTED_MODULE_1__i18n__["I18n"])()[Object(__WEBPACK_IMPORTED_MODULE_2__env__["Env"])().loco.getLocale()].errors.messages.blank;
     return this.obj.addErrorMessage(message, {
       "for": this.attr
     });
