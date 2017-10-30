@@ -1,6 +1,6 @@
 window.App = {
   Loco: null,
-  IdentityMap: null,
+  IdentityMap: LocoModel.IdentityMap,
   Wire: null,
   Line: null,
   Env: {
@@ -14,12 +14,14 @@ window.App = {
   Mixins: {},
   UI: {},
   Controllers: {},
-  Models: {},
+  Models: {
+    Base: LocoModel.Base
+  },
   Views: {},
   Services: {},
   Helpers: {},
   Presenters: {},
-  Validators: {},
+  Validators: LocoModel.Validators,
   I18n: {},
   Utils: {},
   Channels: {
