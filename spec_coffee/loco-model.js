@@ -602,15 +602,17 @@ Base = (function() {
   };
 
   Base.__initSubclass = function(params) {
-    var parts;
+    var model, parts;
     if (params == null) {
       params = {};
     }
     parts = this.getIdentity().split(".");
     if (parts.length === 1) {
-      return new __WEBPACK_IMPORTED_MODULE_4__models__["Models"]()[parts[0]](params);
+      model = Object(__WEBPACK_IMPORTED_MODULE_4__models__["Models"])()[parts[0]];
+      return new model(params);
     }
-    return new __WEBPACK_IMPORTED_MODULE_4__models__["Models"]()[parts[0]][parts[1]](params);
+    model = Object(__WEBPACK_IMPORTED_MODULE_4__models__["Models"])()[parts[0]][parts[1]];
+    return new model(params);
   };
 
   Base.__page = function(i, opts, reqOpts, resp) {
