@@ -135,10 +135,10 @@ var LocalEnv = {
 };
 
 var Env = function Env() {
-  if (typeof window === 'undefined') {
+  if (typeof App === 'undefined') {
     return LocalEnv;
   }
-  return window.App === undefined ? LocalEnv : window.App.Env;
+  return App.Env;
 };
 
 exports.Env = Env;
@@ -160,8 +160,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _en = __webpack_require__(9);
 
 var I18n = function I18n() {
-  if (typeof window !== 'undefined' && window.App !== undefined) {
-    return _extends({ en: _en.en }, window.App.I18n);
+  if (typeof App !== 'undefined') {
+    return _extends({ en: _en.en }, App.I18n);
   }
   return { en: _en.en };
 };
@@ -1869,10 +1869,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var Models = function Models() {
-  if (typeof window === 'undefined') {
+  if (typeof App === 'undefined') {
     return {};
   }
-  return window.App === undefined ? {} : window.App.Models;
+  return App.Models;
 };
 
 exports.Models = Models;
