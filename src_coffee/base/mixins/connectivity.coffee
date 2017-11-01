@@ -1,16 +1,19 @@
-class App.Mixins.Connectivity
+import {IdentityMap} from 'loco-js-model'
+import ArrayUtils from '../../utils/array.coffee'
+
+class Connectivity
   connectWith: (data, opts = {}) ->
     return null if not data?
     if data.constructor.name isnt "Array"
       data = [data]
-    data = App.Utils.Array.uniq data
+    data = ArrayUtils.uniq data
     for resource in data
       if resource.constructor.name is "Function"
         identity = resource.getIdentity()
-        App.IdentityMap.addCollection identity, to: this
+        IdentityMap.addCollection identity, to: this
         @receivers[identity] = opts.receiver if opts.receiver?
       else
-        App.IdentityMap.connect this, with: resource
+        IdentityMap.connect this, with: resource
         @receivers[resource.toKey()] = opts.receiver if opts.receiver?
 
   receiverFor: (data) ->
@@ -18,3 +21,5 @@ class App.Mixins.Connectivity
       return if @receivers[data]? then @receivers[data] else null
     return @receivers[data.toKey()] if @receivers[data.toKey()]?
     null
+
+export default Connectivity

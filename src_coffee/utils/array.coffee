@@ -1,4 +1,4 @@
-class App.Utils.Array
+class ArrayUtils
   @map: (arr, func) ->
     newArr = []
     for o in arr
@@ -10,3 +10,5 @@ class App.Utils.Array
     for o in arr
       newArr.push(o) if newArr.indexOf(o) is -1
     newArr
+
+export default ArrayUtils

@@ -1,5 +1,9 @@
-class App.Views.Base extends App.Mix App.Mixins.Connectivity
+import Mix from '../base/mix.coffee'
+import Connectivity from '../base/mixins/connectivity.coffee'
+
+class Base extends Mix Connectivity
   constructor: (opts = {}) ->
+    super opts
     @views = {}
     @intervals = {}
     @receivers = {}
@@ -17,3 +21,5 @@ class App.Views.Base extends App.Mix App.Mixins.Connectivity
 
   setDelegator: (delegator) -> @delegator = delegator
   getDelegator: (delegator) -> @delegator
+
+export default Base
