@@ -23,7 +23,7 @@
   "license": "MIT",
   "homepage": "http://locoframework.org",
   "dependencies": {
-    "loco-js-model": "0.0.2"
+    "loco-js-model": "0.0.3"
   },
   "devDependencies": {
     "del": "^2.2.0",
