@@ -25,5 +25,13 @@ module.exports = {
     filename: 'loco.beta.js',
     library: 'App',
     libraryTarget: 'umd'
+  },
+  externals: {
+    'loco-js-model': {
+      commonjs: 'loco-js-model',
+      commonjs2: 'loco-js-model',
+      amd: 'loco-js-model',
+      root: 'LocoModel'
+    }
   }
 };

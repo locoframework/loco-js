@@ -17,6 +17,10 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, `${rootPath}/dev/`));
 });
 
+app.get('/loco-model.js', function(req, res) {
+  res.sendFile(path.join(__dirname, `${rootPath}/node_modules/loco-js-model/dist/loco-model.js`));
+});
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!\n');
 });
