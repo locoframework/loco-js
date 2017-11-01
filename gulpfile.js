@@ -121,7 +121,7 @@ gulp.task('jasmine', ['concat_dummy_app'], function() {
     'spec/helpers/**/*.js',
     'spec/loco/**/*.js',
     'node_modules/loco-js-model/dist/loco-model.js',
-    'dist/loco.js',
+    'dist/loco.beta.js',
     'spec/dummy/application.js'
   ];
   return gulp.src(filesForTest)

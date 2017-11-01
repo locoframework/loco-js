@@ -1,4 +1,9 @@
-const Line = {todo: true};
-const Wire = {todo: true};
+import {Base as BaseModel, IdentityMap, Validators} from 'loco-js-model';
 
-export {Line, Wire};
+const Models = {Base: BaseModel};
+
+export {
+  IdentityMap,
+  Models,
+  Validators
+};
