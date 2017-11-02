@@ -6,6 +6,7 @@ import I18n from './src/i18n';
 import Loco from './src/base/loco.coffee';
 import Models from './src/models';
 import Services from './src/services';
+import UI from './src/ui';
 import Utils from './src/utils';
 import Views from './src/views';
 import Wire from './src/base/wire.coffee';
@@ -18,6 +19,7 @@ export {
   Loco,
   Models,
   Services,
+  UI,
   Utils,
   Validators,
   Views,

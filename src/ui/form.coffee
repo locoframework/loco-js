@@ -1,4 +1,8 @@
-class App.UI.Form
+import Utils from '../utils'
+import I18n from '../i18n'
+import Env from '../env'
+
+class Form
   constructor: (opts = {}) ->
     @formId = opts.id
     @obj = opts.for
@@ -14,7 +18,7 @@ class App.UI.Form
       @submit = @form.querySelector '[type="submit"]'
     if @submit?
       @submitVal = @submit.value
-    @locale = App.Env.loco.getLocale()
+    @locale = Env.loco.getLocale()
 
   getObj: -> @obj
 
@@ -43,9 +47,9 @@ class App.UI.Form
       if formEl.length is 1
         formEl[0].value = @obj[name]
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
+      uniqInputTypes = Utils.Array.uniq Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => e.value is String(@obj[name])
+        radioEl = Utils.Collection.find formEl, (e) => e.value is String(@obj[name])
         if radioEl?
           radioEl.checked = true
           continue
@@ -89,9 +93,9 @@ class App.UI.Form
 
   _canBeSubmitted: ->
     return true unless @submit?
-    return false if App.Utils.Dom.hasClass @submit, 'active'
-    return false if App.Utils.Dom.hasClass @submit, 'success'
-    return false if App.Utils.Dom.hasClass @submit, 'failure'
+    return false if Utils.Dom.hasClass @submit, 'active'
+    return false if Utils.Dom.hasClass @submit, 'success'
+    return false if Utils.Dom.hasClass @submit, 'failure'
     true
 
   _submitForm: ->
@@ -119,12 +123,12 @@ class App.UI.Form
     req.send data
 
   _handleSuccess: (data, clearForm = true) ->
-    val = data.flash?.success ? App.I18n[@locale].ui.form.success
+    val = data.flash?.success ? I18n[@locale].ui.form.success
     if @submit?
-      App.Utils.Dom.addClass @submit, 'success'
+      Utils.Dom.addClass @submit, 'success'
       @submit.value = val
     if data.access_token?
-      App.Env.loco.getWire().setToken data.access_token
+      Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
       if data.data?
         @delegator[@callbackSuccess](data.data)
@@ -134,7 +138,7 @@ class App.UI.Form
     setTimeout =>
       if @submit?
         @submit.disabled = false
-        App.Utils.Dom.removeClass @submit, 'success'
+        Utils.Dom.removeClass @submit, 'success'
         @submit.value = @submitVal
       selector = ":not([data-loco-not-clear=true])"
       if clearForm
@@ -165,17 +169,17 @@ class App.UI.Form
         else if @submit?
           @submit.value = errors[0]
     if @submit?
-      if @submit.value is @submitVal or @submit.value is App.I18n[@locale].ui.form.sending
-        @submit.value = App.I18n[@locale].ui.form.errors.invalid_data
-      App.Utils.Dom.addClass @submit, 'failure'
+      if @submit.value is @submitVal or @submit.value is I18n[@locale].ui.form.sending
+        @submit.value = I18n[@locale].ui.form.errors.invalid_data
+      Utils.Dom.addClass @submit, 'failure'
     this._showErrors()
     setTimeout =>
       if @submit?
         @submit.disabled = false
-        App.Utils.Dom.removeClass @submit, 'failure'
+        Utils.Dom.removeClass @submit, 'failure'
         @submit.val = @submitVal
       for node in @form.querySelectorAll('input.invalid, textarea.invalid, select.invalid')
-        App.Utils.Dom.removeClass node, 'invalid'
+        Utils.Dom.removeClass node, 'invalid'
     , 1000
 
   _assignAttribs: ->
@@ -189,9 +193,9 @@ class App.UI.Form
       if formEl.length is 1
         @obj.assignAttr name, formEl[0].value
         continue
-      uniqInputTypes = App.Utils.Array.uniq App.Utils.Array.map formEl, (e) -> e.getAttribute 'type'
+      uniqInputTypes = Utils.Array.uniq Utils.Array.map formEl, (e) -> e.getAttribute 'type'
       if uniqInputTypes.length is 1 and uniqInputTypes[0] is 'radio'
-        radioEl = App.Utils.Collection.find formEl, (e) => e.checked is true
+        radioEl = Utils.Collection.find formEl, (e) => e.checked is true
         if radioEl?
           @obj.assignAttr name, radioEl.value
           continue
@@ -215,24 +219,26 @@ class App.UI.Form
 
   _submittingForm: (hideErrors = true) ->
     if @submit?
-      App.Utils.Dom.removeClass @submit, 'success'
-      App.Utils.Dom.removeClass @submit, 'failure'
-      App.Utils.Dom.addClass @submit, 'active'
-      @submit.value = App.I18n[@locale].ui.form.sending
+      Utils.Dom.removeClass @submit, 'success'
+      Utils.Dom.removeClass @submit, 'failure'
+      Utils.Dom.addClass @submit, 'active'
+      @submit.value = I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 
   _connectionError: ->
     return unless @submit?
-    App.Utils.Dom.removeClass @submit, 'active'
-    App.Utils.Dom.addClass @submit, 'failure'
-    @submit.val = App.I18n[@locale].ui.form.errors.connection
+    Utils.Dom.removeClass @submit, 'active'
+    Utils.Dom.addClass @submit, 'failure'
+    @submit.val = I18n[@locale].ui.form.errors.connection
     setTimeout =>
       @submit.disabled = false
-      App.Utils.Dom.removeClass @submit, 'failure'
+      Utils.Dom.removeClass @submit, 'failure'
       @submit.val = @submitVal
     , 3000
 
   _alwaysAfterRequest: ->
     return unless @submit?
-    App.Utils.Dom.removeClass @submit, 'active'
+    Utils.Dom.removeClass @submit, 'active'
+
+export default Form

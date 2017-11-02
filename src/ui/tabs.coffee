@@ -1,4 +1,4 @@
-class App.UI.Tabs
+class Tabs
   constructor: (node, delegator, opts = {}) ->
     @sel = $(node)
     @delegator = delegator
@@ -20,3 +20,5 @@ class App.UI.Tabs
       $(e.target).addClass 'active'
       @sel.find('div.background')[@animFunc] {left: left}, 200
       @delegator[$(e.target).data("action")]()
+
+export default Tabs

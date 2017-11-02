@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -163,7 +163,30 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _base = __webpack_require__(11);
+var _en = __webpack_require__(15);
+
+var _en2 = _interopRequireDefault(_en);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var I18n = {
+  en: _en2.default
+};
+
+exports.default = I18n;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = __webpack_require__(12);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -174,7 +197,7 @@ var Controllers = { Base: _base2.default };
 exports.default = Controllers;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -225,7 +248,7 @@ Mix = function Mix(base) {
 exports.default = Mix;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -314,29 +337,6 @@ Connectivity = function () {
 }();
 
 exports.default = Connectivity;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _en = __webpack_require__(14);
-
-var _en2 = _interopRequireDefault(_en);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var I18n = {
-  en: _en2.default
-};
-
-exports.default = I18n;
 
 /***/ }),
 /* 7 */
@@ -797,11 +797,54 @@ exports.default = Models;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.Services = exports.Models = exports.Loco = exports.I18n = exports.Helpers = exports.Env = exports.Controllers = undefined;
+
+var _array = __webpack_require__(2);
+
+var _array2 = _interopRequireDefault(_array);
+
+var _collection = __webpack_require__(23);
+
+var _collection2 = _interopRequireDefault(_collection);
+
+var _dom = __webpack_require__(24);
+
+var _dom2 = _interopRequireDefault(_dom);
+
+var _object = __webpack_require__(8);
+
+var _object2 = _interopRequireDefault(_object);
+
+var _string = __webpack_require__(25);
+
+var _string2 = _interopRequireDefault(_string);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Utils = {
+  Array: _array2.default,
+  Collection: _collection2.default,
+  Dom: _dom2.default,
+  Object: _object2.default,
+  String: _string2.default
+};
+
+exports.default = Utils;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.UI = exports.Services = exports.Models = exports.Loco = exports.I18n = exports.Helpers = exports.Env = exports.Controllers = undefined;
 
 var _locoJsModel = __webpack_require__(1);
 
-var _controllers = __webpack_require__(3);
+var _controllers = __webpack_require__(4);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -809,15 +852,15 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _helpers = __webpack_require__(12);
+var _helpers = __webpack_require__(13);
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
-var _i18n = __webpack_require__(6);
+var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _loco = __webpack_require__(15);
+var _loco = __webpack_require__(16);
 
 var _loco2 = _interopRequireDefault(_loco);
 
@@ -825,15 +868,19 @@ var _models = __webpack_require__(9);
 
 var _models2 = _interopRequireDefault(_models);
 
-var _services = __webpack_require__(18);
+var _services = __webpack_require__(19);
 
 var _services2 = _interopRequireDefault(_services);
 
-var _utils = __webpack_require__(20);
+var _ui = __webpack_require__(21);
+
+var _ui2 = _interopRequireDefault(_ui);
+
+var _utils = __webpack_require__(10);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _views = __webpack_require__(24);
+var _views = __webpack_require__(27);
 
 var _views2 = _interopRequireDefault(_views);
 
@@ -850,13 +897,14 @@ exports.I18n = _i18n2.default;
 exports.Loco = _loco2.default;
 exports.Models = _models2.default;
 exports.Services = _services2.default;
+exports.UI = _ui2.default;
 exports.Utils = _utils2.default;
 exports.Validators = _locoJsModel.Validators;
 exports.Views = _views2.default;
 exports.Wire = _wire2.default;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -868,11 +916,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(4);
+var _mix = __webpack_require__(5);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(5);
+var _connectivity = __webpack_require__(6);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
@@ -992,7 +1040,7 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1002,7 +1050,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _text = __webpack_require__(13);
+var _text = __webpack_require__(14);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -1015,7 +1063,7 @@ var Helpers = {
 exports.default = Helpers;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1058,7 +1106,7 @@ Text = function () {
 exports.default = Text;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1133,7 +1181,7 @@ en = {
 exports.default = en;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1151,7 +1199,7 @@ var _wire = __webpack_require__(7);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _line = __webpack_require__(16);
+var _line = __webpack_require__(17);
 
 var _line2 = _interopRequireDefault(_line);
 
@@ -1159,7 +1207,7 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _controllers = __webpack_require__(3);
+var _controllers = __webpack_require__(4);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -1382,7 +1430,7 @@ Loco = function () {
 exports.default = Loco;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1394,7 +1442,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _channels = __webpack_require__(17);
+var _channels = __webpack_require__(18);
 
 var _channels2 = _interopRequireDefault(_channels);
 
@@ -1532,7 +1580,7 @@ Line = function () {
 exports.default = Line;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1548,7 +1596,7 @@ var Channels = {
 exports.default = Channels;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1558,7 +1606,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _date = __webpack_require__(19);
+var _date = __webpack_require__(20);
 
 var _date2 = _interopRequireDefault(_date);
 
@@ -1571,7 +1619,7 @@ var Services = {
 exports.default = Services;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1583,7 +1631,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _i18n = __webpack_require__(6);
+var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
@@ -1687,7 +1735,7 @@ Date = function () {
 exports.default = Date;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1697,40 +1745,502 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _array = __webpack_require__(2);
+var _form = __webpack_require__(22);
 
-var _array2 = _interopRequireDefault(_array);
+var _form2 = _interopRequireDefault(_form);
 
-var _collection = __webpack_require__(21);
+var _tabs = __webpack_require__(26);
 
-var _collection2 = _interopRequireDefault(_collection);
-
-var _dom = __webpack_require__(22);
-
-var _dom2 = _interopRequireDefault(_dom);
-
-var _object = __webpack_require__(8);
-
-var _object2 = _interopRequireDefault(_object);
-
-var _string = __webpack_require__(23);
-
-var _string2 = _interopRequireDefault(_string);
+var _tabs2 = _interopRequireDefault(_tabs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Utils = {
-  Array: _array2.default,
-  Collection: _collection2.default,
-  Dom: _dom2.default,
-  Object: _object2.default,
-  String: _string2.default
+var UI = {
+  Form: _form2.default,
+  Tabs: _tabs2.default
 };
 
-exports.default = Utils;
+exports.default = UI;
 
 /***/ }),
-/* 21 */
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _utils = __webpack_require__(10);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = __webpack_require__(3);
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _env = __webpack_require__(0);
+
+var _env2 = _interopRequireDefault(_env);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Form;
+
+Form = function () {
+  function Form() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Form);
+
+    this.formId = opts.id;
+    this.obj = opts.for;
+    this.initObj = opts.initObj != null && opts.initObj ? true : false;
+    this.delegator = opts.delegator;
+    this.callbackSuccess = opts.callbackSuccess;
+    this.callbackFailure = opts.callbackFailure;
+    this.callbackActive = opts.callbackActive;
+    this.form = this._findForm();
+    this.submit = null;
+    this.submitVal = null;
+    if (this.form != null) {
+      this.submit = this.form.querySelector('[type="submit"]');
+    }
+    if (this.submit != null) {
+      this.submitVal = this.submit.value;
+    }
+    this.locale = _env2.default.loco.getLocale();
+  }
+
+  _createClass(Form, [{
+    key: 'getObj',
+    value: function getObj() {
+      return this.obj;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      if (this.initObj) {
+        this._assignAttribs();
+        return this._handle();
+      } else if (this.form != null) {
+        this.fill();
+        return this._handle();
+      }
+    }
+  }, {
+    key: 'fill',
+    value: function fill() {
+      var _this = this;
+
+      var attr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      var _, attributes, formEl, name, query, radioEl, remoteName, results, uniqInputTypes;
+      if (this.obj == null) {
+        return null;
+      }
+      if (this.obj.constructor.attributes == null) {
+        return null;
+      }
+      attributes = {};
+      if (attr != null) {
+        attributes[attr] = null;
+      } else {
+        attributes = this.obj.constructor.attributes;
+      }
+      results = [];
+      for (name in attributes) {
+        _ = attributes[name];
+        remoteName = this.obj.getAttrRemoteName(name);
+        query = this.form.querySelector('[data-attr=' + remoteName + ']');
+        if (query === null) {
+          continue;
+        }
+        formEl = query.querySelectorAll("input,textarea,select");
+        if (formEl.length === 0) {
+          continue;
+        }
+        if (formEl.length === 1) {
+          formEl[0].value = this.obj[name];
+          continue;
+        }
+        uniqInputTypes = _utils2.default.Array.uniq(_utils2.default.Array.map(formEl, function (e) {
+          return e.getAttribute('type');
+        }));
+        if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
+          radioEl = _utils2.default.Collection.find(formEl, function (e) {
+            return e.value === String(_this.obj[name]);
+          });
+          if (radioEl != null) {
+            radioEl.checked = true;
+            continue;
+          }
+        }
+        if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
+          continue;
+        }
+        results.push(formEl[formEl.length - 1].checked = Boolean(this.obj[name]));
+      }
+      return results;
+    }
+  }, {
+    key: '_findForm',
+    value: function _findForm() {
+      var objName;
+      if (this.formId != null) {
+        return document.getElementById('' + this.formId);
+      }
+      if (this.obj != null) {
+        objName = this.obj.getIdentity().toLowerCase();
+        if (this.obj.id != null) {
+          return document.getElementById('edit_' + objName + '_' + this.obj.id);
+        } else {
+          return document.getElementById('new_' + objName);
+        }
+      }
+    }
+  }, {
+    key: '_handle',
+    value: function _handle() {
+      var _this2 = this;
+
+      return this.form.addEventListener('submit', function (e) {
+        var clearForm;
+        e.preventDefault();
+        if (!_this2._canBeSubmitted()) {
+          return;
+        }
+        if (_this2.obj == null) {
+          _this2._submitForm();
+          return;
+        }
+        _this2._assignAttribs();
+        _this2._hideErrors();
+        if (_this2.obj.isInvalid()) {
+          _this2._renderErrors();
+          if (_this2.callbackFailure != null) {
+            _this2.delegator[_this2.callbackFailure]();
+          }
+          return;
+        }
+        _this2._submittingForm(false);
+        clearForm = _this2.obj.id != null ? false : true;
+        return _this2.obj.save().then(function (data) {
+          _this2._alwaysAfterRequest();
+          if (data.success) {
+            return _this2._handleSuccess(data, clearForm);
+          } else {
+            if (_this2.callbackFailure != null) {
+              _this2.delegator[_this2.callbackFailure]();
+            }
+            return _this2._renderErrors();
+          }
+        }).catch(function (err) {
+          return _this2._connectionError();
+        });
+      });
+    }
+  }, {
+    key: '_canBeSubmitted',
+    value: function _canBeSubmitted() {
+      if (this.submit == null) {
+        return true;
+      }
+      if (_utils2.default.Dom.hasClass(this.submit, 'active')) {
+        return false;
+      }
+      if (_utils2.default.Dom.hasClass(this.submit, 'success')) {
+        return false;
+      }
+      if (_utils2.default.Dom.hasClass(this.submit, 'failure')) {
+        return false;
+      }
+      return true;
+    }
+  }, {
+    key: '_submitForm',
+    value: function _submitForm() {
+      var _this3 = this;
+
+      var data, ref, req, url;
+      this._submittingForm();
+      url = this.form.getAttribute('action') + '.json';
+      data = new FormData(this.form);
+      req = new XMLHttpRequest();
+      req.open('POST', url);
+      req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+      req.onload = function (e) {
+        _this3._alwaysAfterRequest();
+        if (_this3.submit != null) {
+          _this3.submit.blur();
+        }
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          if (data.success) {
+            return _this3._handleSuccess(data, _this3.form.getAttribute("method") === "POST");
+          } else {
+            return _this3._renderErrors(data.errors);
+          }
+        } else if (e.target.status >= 500) {
+          return _this3._connectionError();
+        }
+      };
+      req.onerror = function () {
+        _this3._alwaysAfterRequest();
+        if (_this3.submit != null) {
+          _this3.submit.blur();
+        }
+        return _this3._connectionError();
+      };
+      return req.send(data);
+    }
+  }, {
+    key: '_handleSuccess',
+    value: function _handleSuccess(data) {
+      var _this4 = this;
+
+      var clearForm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+      var ref, ref1, val;
+      val = (ref = (ref1 = data.flash) != null ? ref1.success : void 0) != null ? ref : _i18n2.default[this.locale].ui.form.success;
+      if (this.submit != null) {
+        _utils2.default.Dom.addClass(this.submit, 'success');
+        this.submit.value = val;
+      }
+      if (data.access_token != null) {
+        _env2.default.loco.getWire().setToken(data.access_token);
+      }
+      if (this.callbackSuccess != null) {
+        if (data.data != null) {
+          this.delegator[this.callbackSuccess](data.data);
+        } else {
+          this.delegator[this.callbackSuccess]();
+        }
+        return;
+      }
+      return setTimeout(function () {
+        var i, len, node, nodes, results, selector;
+        if (_this4.submit != null) {
+          _this4.submit.disabled = false;
+          _utils2.default.Dom.removeClass(_this4.submit, 'success');
+          _this4.submit.value = _this4.submitVal;
+        }
+        selector = ":not([data-loco-not-clear=true])";
+        if (clearForm) {
+          nodes = _this4.form.querySelectorAll('input:not([type=\'submit\'])' + selector + ', textarea' + selector);
+          results = [];
+          for (i = 0, len = nodes.length; i < len; i++) {
+            node = nodes[i];
+            results.push(node.value = '');
+          }
+          return results;
+        }
+      }, 5000);
+    }
+  }, {
+    key: '_renderErrors',
+    value: function _renderErrors() {
+      var _this5 = this;
+
+      var remoteErrors = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      var attrib, data, errors, i, len, node, nodes, query, remoteName;
+      if (this.obj != null && this.obj.errors == null) {
+        return;
+      }
+      if (this.obj == null && remoteErrors == null) {
+        return;
+      }
+      data = remoteErrors != null ? remoteErrors : this.obj.errors;
+      for (attrib in data) {
+        errors = data[attrib];
+        remoteName = this.obj != null ? this.obj.getAttrRemoteName(attrib) : attrib;
+        if (remoteName != null && attrib !== "base") {
+          // be aware of invalid elements's nesting e.g. "div" inside of "p"
+          query = this.form.querySelector('[data-attr=' + remoteName + ']');
+          if (query === null) {
+            continue;
+          }
+          nodes = query.querySelectorAll('.errors[data-for=' + remoteName + ']');
+          if (nodes.length === 0) {
+            continue;
+          }
+          for (i = 0, len = nodes.length; i < len; i++) {
+            node = nodes[i];
+            node.textContent = errors[0];
+          }
+          continue;
+        }
+        if (attrib === "base" && errors.length > 0) {
+          nodes = document.querySelectorAll(".errors[data-for='base']");
+          if (nodes.length === 1) {
+            nodes[0].textContent = errors[0];
+          } else if (this.submit != null) {
+            this.submit.value = errors[0];
+          }
+        }
+      }
+      if (this.submit != null) {
+        if (this.submit.value === this.submitVal || this.submit.value === _i18n2.default[this.locale].ui.form.sending) {
+          this.submit.value = _i18n2.default[this.locale].ui.form.errors.invalid_data;
+        }
+        _utils2.default.Dom.addClass(this.submit, 'failure');
+      }
+      this._showErrors();
+      return setTimeout(function () {
+        var j, len1, ref, results;
+        if (_this5.submit != null) {
+          _this5.submit.disabled = false;
+          _utils2.default.Dom.removeClass(_this5.submit, 'failure');
+          _this5.submit.val = _this5.submitVal;
+        }
+        ref = _this5.form.querySelectorAll('input.invalid, textarea.invalid, select.invalid');
+        results = [];
+        for (j = 0, len1 = ref.length; j < len1; j++) {
+          node = ref[j];
+          results.push(_utils2.default.Dom.removeClass(node, 'invalid'));
+        }
+        return results;
+      }, 1000);
+    }
+  }, {
+    key: '_assignAttribs',
+    value: function _assignAttribs() {
+      var _, formEl, name, query, radioEl, ref, remoteName, results, uniqInputTypes;
+      if (this.obj.constructor.attributes == null) {
+        return null;
+      }
+      ref = this.obj.constructor.attributes;
+      results = [];
+      for (name in ref) {
+        _ = ref[name];
+        remoteName = this.obj.getAttrRemoteName(name);
+        query = this.form.querySelector('[data-attr=' + remoteName + ']');
+        if (query === null) {
+          continue;
+        }
+        formEl = query.querySelectorAll("input,textarea,select");
+        if (formEl.length === 0) {
+          continue;
+        }
+        if (formEl.length === 1) {
+          this.obj.assignAttr(name, formEl[0].value);
+          continue;
+        }
+        uniqInputTypes = _utils2.default.Array.uniq(_utils2.default.Array.map(formEl, function (e) {
+          return e.getAttribute('type');
+        }));
+        if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
+          radioEl = _utils2.default.Collection.find(formEl, function (e) {
+            return e.checked === true;
+          });
+          if (radioEl != null) {
+            this.obj.assignAttr(name, radioEl.value);
+            continue;
+          }
+        }
+        if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
+          continue;
+        }
+        if (formEl[formEl.length - 1].checked === true) {
+          results.push(this.obj.assignAttr(name, formEl[formEl.length - 1].value));
+        } else {
+          results.push(this.obj.assignAttr(name, formEl[0].value));
+        }
+      }
+      return results;
+    }
+  }, {
+    key: '_hideErrors',
+    value: function _hideErrors() {
+      var e, i, len, ref, results;
+      ref = this.form.querySelectorAll('.errors');
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        e = ref[i];
+        if (e.textContent.trim().length > 0) {
+          e.textContent = '';
+          results.push(e.style.display = 'none');
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    }
+  }, {
+    key: '_showErrors',
+    value: function _showErrors() {
+      var e, i, len, ref, results;
+      ref = this.form.querySelectorAll('.errors');
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        e = ref[i];
+        if (e.textContent.trim().length > 0) {
+          results.push(e.style.display = 'block');
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    }
+  }, {
+    key: '_submittingForm',
+    value: function _submittingForm() {
+      var hideErrors = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      if (this.submit != null) {
+        _utils2.default.Dom.removeClass(this.submit, 'success');
+        _utils2.default.Dom.removeClass(this.submit, 'failure');
+        _utils2.default.Dom.addClass(this.submit, 'active');
+        this.submit.value = _i18n2.default[this.locale].ui.form.sending;
+      }
+      if (this.callbackActive != null) {
+        this.delegator[this.callbackActive]();
+      }
+      if (hideErrors) {
+        return this._hideErrors();
+      }
+    }
+  }, {
+    key: '_connectionError',
+    value: function _connectionError() {
+      var _this6 = this;
+
+      if (this.submit == null) {
+        return;
+      }
+      _utils2.default.Dom.removeClass(this.submit, 'active');
+      _utils2.default.Dom.addClass(this.submit, 'failure');
+      this.submit.val = _i18n2.default[this.locale].ui.form.errors.connection;
+      return setTimeout(function () {
+        _this6.submit.disabled = false;
+        _utils2.default.Dom.removeClass(_this6.submit, 'failure');
+        return _this6.submit.val = _this6.submitVal;
+      }, 3000);
+    }
+  }, {
+    key: '_alwaysAfterRequest',
+    value: function _alwaysAfterRequest() {
+      if (this.submit == null) {
+        return;
+      }
+      return _utils2.default.Dom.removeClass(this.submit, 'active');
+    }
+  }]);
+
+  return Form;
+}();
+
+exports.default = Form;
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1770,7 +2280,7 @@ CollectionUtils = function () {
 exports.default = CollectionUtils;
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1826,7 +2336,7 @@ DomUtils = function () {
 exports.default = DomUtils;
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1860,7 +2370,7 @@ StringUtils = function () {
 exports.default = StringUtils;
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1870,7 +2380,76 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _base = __webpack_require__(25);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Tabs;
+
+Tabs = function () {
+  function Tabs(node, delegator) {
+    var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    _classCallCheck(this, Tabs);
+
+    var ref;
+    this.sel = $(node);
+    this.delegator = delegator;
+    this.animFunc = (ref = opts.animFunc) != null ? ref : 'animate';
+    this.handle();
+  }
+
+  _createClass(Tabs, [{
+    key: 'handle',
+    value: function handle() {
+      var _this = this;
+
+      var elementsSize;
+      elementsSize = this.sel.find('a').size();
+      return this.sel.find('a').click(function (e) {
+        var child, i, index, left, len, ref, width;
+        e.preventDefault();
+        if ($(e.target).hasClass("active")) {
+          return;
+        }
+        index = 0;
+        ref = $(e.target).parent().children('a');
+        for (i = 0, len = ref.length; i < len; i++) {
+          child = ref[i];
+          if ($(child).text() === $(e.target).text()) {
+            break;
+          }
+          index += 1;
+        }
+        width = parseInt(_this.sel.css('width'));
+        left = width / elementsSize * index;
+        _this.sel.find('a.active').removeClass('active');
+        $(e.target).addClass('active');
+        _this.sel.find('div.background')[_this.animFunc]({
+          left: left
+        }, 200);
+        return _this.delegator[$(e.target).data("action")]();
+      });
+    }
+  }]);
+
+  return Tabs;
+}();
+
+exports.default = Tabs;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = __webpack_require__(28);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -1883,7 +2462,7 @@ var Views = {
 exports.default = Views;
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1895,11 +2474,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(4);
+var _mix = __webpack_require__(5);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(5);
+var _connectivity = __webpack_require__(6);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
