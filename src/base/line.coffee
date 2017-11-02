@@ -1,22 +1,25 @@
-class App.Line
+import Channels from '../channels';
+import Env from '../env';
+
+class Line
   constructor: (opts = {}) ->
     @connected = false
 
   connect: ->
-    App.Channels.Loco.NotificationCenter = App.cable.subscriptions.create
+    Channels.Loco.NotificationCenter = App.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
         console.log 'ws connected'
         @connected = true
-        wire = App.Env.loco.getWire()
+        wire = Env.loco.getWire()
         if wire?
           wire.setDelayedDisconnection()
         this._sendNotification loco: 'connected'
       disconnected: =>
         console.log 'ws disconnected'
         @connected = false
-        wire = App.Env.loco.getWire()
+        wire = Env.loco.getWire()
         if wire?
           wire.setUuid null
           wire.fetchSyncTime after: 'connect'
@@ -33,12 +36,12 @@ class App.Line
 
   isWireAllowed: -> not @connected
 
-  send: (data) -> App.Channels.Loco.NotificationCenter.send data
+  send: (data) -> Channels.Loco.NotificationCenter.send data
 
   _processSystemNotification: (data) ->
     if data.connection_check?
       this.send loco: {connection_check: true}
-    wire = App.Env.loco.getWire()
+    wire = Env.loco.getWire()
     return if not wire?
     if data.sync_time?
       wire.setSyncTime data.sync_time
@@ -58,3 +61,5 @@ class App.Line
   _sendNotification: (data) ->
     notificationCenter = new App.Services.NotificationCenter
     notificationCenter.receivedSignal data
+
+export default Line

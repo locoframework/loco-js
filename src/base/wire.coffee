@@ -1,4 +1,8 @@
-class App.Wire
+import Env from '../env'
+import {IdentityMap} from 'loco-js-model'
+import ObjectUtils from '../utils/object.coffee'
+
+class Wire
   constructor: (opts = {}) ->
     @syncTime = null
     @token = null
@@ -46,7 +50,7 @@ class App.Wire
   setDelayedDisconnection: -> @delayedDisconnection = true
 
   connect: ->
-    line = App.Env.loco.getLine()
+    line = Env.loco.getLine()
     if line? and !line.isWireAllowed()
       return
     @pollingInterval = setInterval =>
@@ -59,32 +63,32 @@ class App.Wire
   disconnect: -> window.clearInterval @pollingInterval
 
   disableNotifications: ->
-    console.log 'App.Wire#disableNotifications - DEPRECATED'
+    console.log 'Wire#disableNotifications - DEPRECATED'
     this.disconnect()
 
   processNotification: (notification) ->
     console.log notification if @log
     [className, id, signal, payload] = notification
-    model = App.Env.loco.getModelForRemoteName className
+    model = Env.loco.getModelForRemoteName className
     identity = model.getIdentity()
-    return if not App.IdentityMap.imap[identity]?
-    if App.IdentityMap.imap[identity][id]?
-      obj = App.IdentityMap.find identity, id
+    return if not IdentityMap.imap[identity]?
+    if IdentityMap.imap[identity][id]?
+      obj = IdentityMap.find identity, id
       if obj["receivedSignal"]?
         obj.receivedSignal signal, payload
       this._emitSignalToMembers id, signal, payload, model, identity
     if model["receivedSignal"]?
       model.receivedSignal signal, payload
-    return if not App.IdentityMap.imap[identity]["collection"]?
-    return if App.IdentityMap.imap[identity]["collection"].length is 0
+    return if not IdentityMap.imap[identity]["collection"]?
+    return if IdentityMap.imap[identity]["collection"].length is 0
     this._emitSignalToCollection signal, payload, identity
 
   processSignal: (notification) -> this.processNotification notification
 
   check: ->
-    return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
+    return if Object.keys(IdentityMap.imap).length is 0 and not @token? and @syncTime?
     request = new XMLHttpRequest()
-    request.open 'GET', this._getURL() + '?' + App.Utils.Object.toURIParams(this._requestParams())
+    request.open 'GET', this._getURL() + '?' + ObjectUtils.toURIParams(this._requestParams())
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
@@ -117,14 +121,14 @@ class App.Wire
   _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
     if not obj?
       obj = new model id: id
-    for connObj in App.IdentityMap.findConnected identity, id
+    for connObj in IdentityMap.findConnected identity, id
       if connObj.receiverFor(obj)?
         connObj[connObj.receiverFor(obj)] signal, payload
       else if connObj["receivedSignal"]?
         connObj.receivedSignal signal, payload
 
   _emitSignalToCollection: (signal, payload, identity) ->
-    for obj in App.IdentityMap.imap[identity]["collection"]
+    for obj in IdentityMap.imap[identity]["collection"]
       if obj.receiverFor(identity)?
         obj[obj.receiverFor(identity)] "#{identity} #{signal}", payload
       else if obj["receivedSignal"]?
@@ -148,6 +152,8 @@ class App.Wire
     if not @disconnectedSinceTime?
       @disconnectedSinceTime = new Date()
     diffInSec = (new Date() - @disconnectedSinceTime) / 1000
-    ctrl = App.Env.namespaceController ? App.Env.controller
+    ctrl = Env.namespaceController ? Env.controller
     if diffInSec > @allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
       ctrl.disconnectedForTooLong @disconnectedSinceTime
+
+export default Wire

@@ -1,4 +1,4 @@
-App.I18n.en =
+en =
   variants: {}
   models: {}
   attributes: {}
@@ -47,3 +47,5 @@ App.I18n.en =
         one: "is the wrong length (should be 1 character)"
         other: "is the wrong length (should be %{count} characters)"
       other_than: "must be other than %{count}"
+
+export default en

@@ -1,4 +1,4 @@
-class App.Utils.Object
+class ObjectUtils
   @toURIParams: (obj) ->
     str = ""
     for key, val of obj
@@ -6,3 +6,5 @@ class App.Utils.Object
         str += "&"
       str += (key + "=" + encodeURIComponent(val))
     str
+
+export default ObjectUtils

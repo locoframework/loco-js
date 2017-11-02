@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,24 +89,15 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Views = exports.Validators = exports.Models = exports.Controllers = undefined;
+var Env = {
+  loco: null,
+  namespaceController: null,
+  controller: null,
+  action: null,
+  scope: null
+};
 
-var _locoJsModel = __webpack_require__(0);
-
-var _base = __webpack_require__(2);
-
-var _base2 = _interopRequireDefault(_base);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Controllers = {};
-var Models = { Base: _locoJsModel.Base };
-var Views = { Base: _base2.default };
-
-exports.Controllers = Controllers;
-exports.Models = Models;
-exports.Validators = _locoJsModel.Validators;
-exports.Views = Views;
+exports.default = Env;
 
 /***/ }),
 /* 2 */
@@ -118,14 +109,490 @@ exports.Views = Views;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var Controllers = {};
+
+exports.default = Controllers;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(3);
+var _env = __webpack_require__(1);
+
+var _env2 = _interopRequireDefault(_env);
+
+var _locoJsModel = __webpack_require__(0);
+
+var _object = __webpack_require__(11);
+
+var _object2 = _interopRequireDefault(_object);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Wire;
+
+Wire = function () {
+  function Wire() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Wire);
+
+    var ref, ref1, ref2, ref3;
+    this.syncTime = null;
+    this.token = null;
+    this.pollingInterval = null;
+    this.pollingTime = (ref = opts.pollingTime) != null ? ref : 3000;
+    this.log = opts.log != null && opts.log ? true : false;
+    this.ssl = opts.ssl;
+    this.location = (ref1 = opts.location) != null ? ref1 : 'notification-center';
+    this.size = (ref2 = opts.size) != null ? ref2 : 100;
+    this.protocolWithHost = opts.protocolWithHost;
+    this.allowedDisconnectionTime = (ref3 = opts.allowedDisconnectionTime) != null ? ref3 : 10;
+    this.disconnectedSinceTime = null;
+    this.uuid = null;
+    this.delayedDisconnection = false;
+  }
+
+  _createClass(Wire, [{
+    key: 'setToken',
+    value: function setToken(token) {
+      return this.token = token;
+    }
+  }, {
+    key: 'getSyncTime',
+    value: function getSyncTime() {
+      return this.syncTime;
+    }
+  }, {
+    key: 'setSyncTime',
+    value: function setSyncTime(val) {
+      return this.syncTime = val;
+    }
+  }, {
+    key: 'resetSyncTime',
+    value: function resetSyncTime() {
+      return this.syncTime = null;
+    }
+  }, {
+    key: 'getPollingTime',
+    value: function getPollingTime() {
+      return this.pollingTime;
+    }
+  }, {
+    key: 'setPollingTime',
+    value: function setPollingTime(val) {
+      this.pollingTime = val;
+      this.disconnect();
+      return this.connect();
+    }
+  }, {
+    key: 'getPollingInterval',
+    value: function getPollingInterval() {
+      return this.pollingInterval;
+    }
+  }, {
+    key: 'getSSL',
+    value: function getSSL() {
+      return this.ssl;
+    }
+  }, {
+    key: 'setSSL',
+    value: function setSSL(val) {
+      return this.ssl = val;
+    }
+  }, {
+    key: 'getLocation',
+    value: function getLocation() {
+      return this.location;
+    }
+  }, {
+    key: 'setLocation',
+    value: function setLocation(val) {
+      return this.location = val;
+    }
+  }, {
+    key: 'getSize',
+    value: function getSize() {
+      return this.size;
+    }
+  }, {
+    key: 'setSize',
+    value: function setSize(val) {
+      return this.size = val;
+    }
+  }, {
+    key: 'getAllowedDisconnectionTime',
+    value: function getAllowedDisconnectionTime() {
+      return this.allowedDisconnectionTime;
+    }
+  }, {
+    key: 'setAllowedDisconnectionTime',
+    value: function setAllowedDisconnectionTime(val) {
+      return this.allowedDisconnectionTime = val;
+    }
+  }, {
+    key: 'getUuid',
+    value: function getUuid() {
+      return this.uuid;
+    }
+  }, {
+    key: 'setUuid',
+    value: function setUuid(val) {
+      return this.uuid = val;
+    }
+  }, {
+    key: 'setDelayedDisconnection',
+    value: function setDelayedDisconnection() {
+      return this.delayedDisconnection = true;
+    }
+  }, {
+    key: 'connect',
+    value: function connect() {
+      var _this = this;
+
+      var line;
+      line = _env2.default.loco.getLine();
+      if (line != null && !line.isWireAllowed()) {
+        return;
+      }
+      return this.pollingInterval = setInterval(function () {
+        _this.check();
+        if (_this.delayedDisconnection) {
+          _this.delayedDisconnection = false;
+          return _this.disconnect();
+        }
+      }, this.pollingTime);
+    }
+  }, {
+    key: 'disconnect',
+    value: function disconnect() {
+      return window.clearInterval(this.pollingInterval);
+    }
+  }, {
+    key: 'disableNotifications',
+    value: function disableNotifications() {
+      console.log('Wire#disableNotifications - DEPRECATED');
+      return this.disconnect();
+    }
+  }, {
+    key: 'processNotification',
+    value: function processNotification(notification) {
+      var className, id, identity, model, obj, payload, signal;
+      if (this.log) {
+        console.log(notification);
+      }
+
+      var _notification = _slicedToArray(notification, 4);
+
+      className = _notification[0];
+      id = _notification[1];
+      signal = _notification[2];
+      payload = _notification[3];
+
+      model = _env2.default.loco.getModelForRemoteName(className);
+      identity = model.getIdentity();
+      if (_locoJsModel.IdentityMap.imap[identity] == null) {
+        return;
+      }
+      if (_locoJsModel.IdentityMap.imap[identity][id] != null) {
+        obj = _locoJsModel.IdentityMap.find(identity, id);
+        if (obj["receivedSignal"] != null) {
+          obj.receivedSignal(signal, payload);
+        }
+        this._emitSignalToMembers(id, signal, payload, model, identity);
+      }
+      if (model["receivedSignal"] != null) {
+        model.receivedSignal(signal, payload);
+      }
+      if (_locoJsModel.IdentityMap.imap[identity]["collection"] == null) {
+        return;
+      }
+      if (_locoJsModel.IdentityMap.imap[identity]["collection"].length === 0) {
+        return;
+      }
+      return this._emitSignalToCollection(signal, payload, identity);
+    }
+  }, {
+    key: 'processSignal',
+    value: function processSignal(notification) {
+      return this.processNotification(notification);
+    }
+  }, {
+    key: 'check',
+    value: function check() {
+      var _this2 = this;
+
+      var request;
+      if (Object.keys(_locoJsModel.IdentityMap.imap).length === 0 && this.token == null && this.syncTime != null) {
+        return;
+      }
+      request = new XMLHttpRequest();
+      request.open('GET', this._getURL() + '?' + _object2.default.toURIParams(this._requestParams()));
+      request.onload = function (e) {
+        var data, i, len, notification, notifications;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this2.disconnectedSinceTime = null;
+          _this2.syncTime = data[1];
+          notifications = data[0];
+          if (notifications.length === 0) {
+            return;
+          }
+          for (i = 0, len = notifications.length; i < len; i++) {
+            notification = notifications[i];
+            _this2.processNotification(notification);
+          }
+          if (notifications.length === _this2.size) {
+            return _this2.check();
+          }
+        } else if (e.target.status >= 500) {
+          return _this2._handleDisconnection();
+        }
+      };
+      request.onerror = function () {
+        return _this2._handleDisconnection();
+      };
+      return request.send();
+    }
+  }, {
+    key: 'fetchSyncTime',
+    value: function fetchSyncTime() {
+      var _this3 = this;
+
+      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var request;
+      request = new XMLHttpRequest();
+      request.open('GET', this._getURL() + '/sync-time');
+      request.onerror = function () {
+        if (opts.after != null) {
+          return _this3[opts.after]();
+        }
+      };
+      request.onload = function (e) {
+        var data;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this3.syncTime = data.sync_time;
+          if (opts.after != null) {
+            return _this3[opts.after]();
+          }
+        } else if (e.target.status >= 500) {
+          if (opts.after != null) {
+            return _this3[opts.after]();
+          }
+        }
+      };
+      return request.send();
+    }
+  }, {
+    key: '_emitSignalToMembers',
+    value: function _emitSignalToMembers(id, signal, payload, model, identity) {
+      var obj = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
+
+      var connObj, i, len, ref, results;
+      if (obj == null) {
+        obj = new model({
+          id: id
+        });
+      }
+      ref = _locoJsModel.IdentityMap.findConnected(identity, id);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        connObj = ref[i];
+        if (connObj.receiverFor(obj) != null) {
+          results.push(connObj[connObj.receiverFor(obj)](signal, payload));
+        } else if (connObj["receivedSignal"] != null) {
+          results.push(connObj.receivedSignal(signal, payload));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    }
+  }, {
+    key: '_emitSignalToCollection',
+    value: function _emitSignalToCollection(signal, payload, identity) {
+      var i, len, obj, ref, results;
+      ref = _locoJsModel.IdentityMap.imap[identity]["collection"];
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        obj = ref[i];
+        if (obj.receiverFor(identity) != null) {
+          results.push(obj[obj.receiverFor(identity)](identity + ' ' + signal, payload));
+        } else if (obj["receivedSignal"] != null) {
+          results.push(obj.receivedSignal(identity + ' ' + signal, payload));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    }
+  }, {
+    key: '_requestParams',
+    value: function _requestParams() {
+      var params;
+      params = {
+        synced_at: this.syncTime
+      };
+      if (this.token != null) {
+        params.token = this.token;
+      }
+      if (this.uuid != null) {
+        params.uuid = this.uuid;
+      }
+      return params;
+    }
+  }, {
+    key: '_getURL',
+    value: function _getURL() {
+      var _, host, protocol;
+
+      var _window$location$href = window.location.href.split('/');
+
+      var _window$location$href2 = _slicedToArray(_window$location$href, 3);
+
+      protocol = _window$location$href2[0];
+      _ = _window$location$href2[1];
+      host = _window$location$href2[2];
+
+      if (this.protocolWithHost != null) {
+        var _protocolWithHost$spl = this.protocolWithHost.split('//');
+
+        var _protocolWithHost$spl2 = _slicedToArray(_protocolWithHost$spl, 2);
+
+        protocol = _protocolWithHost$spl2[0];
+        host = _protocolWithHost$spl2[1];
+      }
+      if (this.ssl != null) {
+        protocol = this.ssl ? 'https:' : "http:";
+      }
+      return protocol + '//' + host + '/' + this.location;
+    }
+  }, {
+    key: '_handleDisconnection',
+    value: function _handleDisconnection() {
+      var ctrl, diffInSec, ref;
+      if (this.disconnectedSinceTime == null) {
+        this.disconnectedSinceTime = new Date();
+      }
+      diffInSec = (new Date() - this.disconnectedSinceTime) / 1000;
+      ctrl = (ref = _env2.default.namespaceController) != null ? ref : _env2.default.controller;
+      if (diffInSec > this.allowedDisconnectionTime && ctrl['disconnectedForTooLong'] != null) {
+        return ctrl.disconnectedForTooLong(this.disconnectedSinceTime);
+      }
+    }
+  }]);
+
+  return Wire;
+}();
+
+exports.default = Wire;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _locoJsModel = __webpack_require__(0);
+
+var Models = { Base: _locoJsModel.Base };
+
+exports.default = Models;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Wire = exports.Views = exports.Validators = exports.Models = exports.Loco = exports.I18n = exports.Env = exports.Controllers = undefined;
+
+var _locoJsModel = __webpack_require__(0);
+
+var _base = __webpack_require__(6);
+
+var _base2 = _interopRequireDefault(_base);
+
+var _controllers = __webpack_require__(2);
+
+var _controllers2 = _interopRequireDefault(_controllers);
+
+var _env = __webpack_require__(1);
+
+var _env2 = _interopRequireDefault(_env);
+
+var _loco = __webpack_require__(10);
+
+var _loco2 = _interopRequireDefault(_loco);
+
+var _models = __webpack_require__(4);
+
+var _models2 = _interopRequireDefault(_models);
+
+var _wire = __webpack_require__(3);
+
+var _wire2 = _interopRequireDefault(_wire);
+
+var _en = __webpack_require__(14);
+
+var _en2 = _interopRequireDefault(_en);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var I18n = { en: _en2.default };
+var Views = { Base: _base2.default };
+
+exports.Controllers = _controllers2.default;
+exports.Env = _env2.default;
+exports.I18n = I18n;
+exports.Loco = _loco2.default;
+exports.Models = _models2.default;
+exports.Validators = _locoJsModel.Validators;
+exports.Views = Views;
+exports.Wire = _wire2.default;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _mix = __webpack_require__(7);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(4);
+var _connectivity = __webpack_require__(8);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
@@ -206,7 +673,7 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 3 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -257,7 +724,7 @@ Mix = function Mix(base) {
 exports.default = Mix;
 
 /***/ }),
-/* 4 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -271,7 +738,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _locoJsModel = __webpack_require__(0);
 
-var _array = __webpack_require__(5);
+var _array = __webpack_require__(9);
 
 var _array2 = _interopRequireDefault(_array);
 
@@ -348,7 +815,7 @@ Connectivity = function () {
 exports.default = Connectivity;
 
 /***/ }),
-/* 5 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -399,6 +866,539 @@ ArrayUtils = function () {
 }();
 
 exports.default = ArrayUtils;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _locoJsModel = __webpack_require__(0);
+
+var _wire = __webpack_require__(3);
+
+var _wire2 = _interopRequireDefault(_wire);
+
+var _line = __webpack_require__(12);
+
+var _line2 = _interopRequireDefault(_line);
+
+var _env = __webpack_require__(1);
+
+var _env2 = _interopRequireDefault(_env);
+
+var _controllers = __webpack_require__(2);
+
+var _controllers2 = _interopRequireDefault(_controllers);
+
+var _models = __webpack_require__(4);
+
+var _models2 = _interopRequireDefault(_models);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Loco;
+
+Loco = function () {
+  function Loco() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Loco);
+
+    var notificationsParams, ref, ref1, ref2, ref3;
+    this.wire = null;
+    this.line = null;
+    this.locale = null;
+    this.turbolinks = (ref = opts.turbolinks) != null ? ref : false;
+    this.startWire = ((ref1 = opts.notifications) != null ? ref1.enable : void 0) ? true : false;
+    this.postInit = opts.postInit;
+    this.setLocale((ref2 = opts.locale) != null ? ref2 : 'en');
+    this.setProtocolWithHost(opts.protocolWithHost);
+    notificationsParams = (ref3 = opts.notifications) != null ? ref3 : {};
+    notificationsParams.protocolWithHost = this.protocolWithHost;
+    this.notificationsParams = notificationsParams;
+  }
+
+  _createClass(Loco, [{
+    key: 'getWire',
+    value: function getWire() {
+      return this.wire;
+    }
+  }, {
+    key: 'getLine',
+    value: function getLine() {
+      return this.line;
+    }
+  }, {
+    key: 'getLocale',
+    value: function getLocale() {
+      return this.locale;
+    }
+  }, {
+    key: 'setLocale',
+    value: function setLocale(locale) {
+      return this.locale = locale;
+    }
+  }, {
+    key: 'getProtocolWithHost',
+    value: function getProtocolWithHost() {
+      return this.protocolWithHost;
+    }
+  }, {
+    key: 'setProtocolWithHost',
+    value: function setProtocolWithHost(val) {
+      if (val == null) {
+        this.protocolWithHost = null;
+        return;
+      }
+      if (val[val.length - 1] === '/') {
+        val = val.slice(0, +(val.length - 2) + 1 || 9e9);
+      }
+      return this.protocolWithHost = val;
+    }
+  }, {
+    key: 'init',
+    value: function init() {
+      var _this = this;
+
+      var event;
+      _env2.default.loco = this;
+      this.initWire();
+      this.initLine();
+      if (this.turbolinks) {
+        event = Number(this.turbolinks) >= 5 ? "turbolinks:load" : "page:change";
+        return document.addEventListener(event, function () {
+          _this.flow();
+          if (_this.postInit != null) {
+            return _this.postInit();
+          }
+        });
+      } else {
+        return this.ready(function () {
+          _this.flow();
+          if (_this.postInit != null) {
+            return _this.postInit();
+          }
+        });
+      }
+    }
+  }, {
+    key: 'ready',
+    value: function ready(fn) {
+      var cond;
+      cond = document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading";
+      if (cond) {
+        return fn();
+      } else {
+        return document.addEventListener('DOMContentLoaded', fn);
+      }
+    }
+  }, {
+    key: 'initWire',
+    value: function initWire() {
+      if (!this.startWire) {
+        return;
+      }
+      this.wire = new _wire2.default(this.notificationsParams);
+      return this.wire.fetchSyncTime({
+        after: 'connect'
+      });
+    }
+  }, {
+    key: 'initLine',
+    value: function initLine() {
+      if (App.cable == null) {
+        return;
+      }
+      this.line = new _line2.default();
+      return this.line.connect();
+    }
+  }, {
+    key: 'flow',
+    value: function flow() {
+      var action_name, controller_name, namespace_name;
+      _locoJsModel.IdentityMap.clear();
+      namespace_name = document.getElementsByTagName('body')[0].getAttribute('data-namespace');
+      controller_name = document.getElementsByTagName('body')[0].getAttribute('data-controller');
+      action_name = document.getElementsByTagName('body')[0].getAttribute('data-action');
+      _env2.default.action = action_name;
+      if (_controllers2.default[namespace_name] != null) {
+        _env2.default.namespaceController = new _controllers2.default[namespace_name]();
+        if (_controllers2.default[namespace_name][controller_name] != null) {
+          _env2.default.controller = new _controllers2.default[namespace_name][controller_name]();
+        }
+        if (_env2.default.namespaceController.initialize != null) {
+          _env2.default.namespaceController.initialize();
+        }
+        if (_env2.default.controller != null) {
+          _env2.default.namespaceController.setSubController(_env2.default.controller);
+          _env2.default.controller.setSuperController(_env2.default.namespaceController);
+          if (_env2.default.controller.initialize != null) {
+            _env2.default.controller.initialize();
+          }
+          if (_env2.default.controller[action_name] != null) {
+            _env2.default.controller[action_name]();
+          }
+        }
+      } else if (_controllers2.default[controller_name]) {
+        _env2.default.controller = new _controllers2.default[controller_name]();
+        if (_env2.default.controller.initialize != null) {
+          _env2.default.controller.initialize();
+        }
+        if (_env2.default.controller[action_name] != null) {
+          _env2.default.controller[action_name]();
+        }
+      }
+      if (this.wire != null) {
+        this.wire.resetSyncTime();
+        return this.wire.fetchSyncTime();
+      }
+    }
+  }, {
+    key: 'emit',
+    value: function emit(data) {
+      return this.line.send(data);
+    }
+  }, {
+    key: 'getModels',
+    value: function getModels() {
+      var _, func, innerFunc, models, ref, regExp;
+      models = [];
+      regExp = /^[A-Z]/;
+      for (func in _models2.default) {
+        _ = _models2.default[func];
+        if (!regExp.exec(func) || func === "Base") {
+          continue;
+        }
+        models.push(func);
+        ref = _models2.default[func];
+        for (innerFunc in ref) {
+          _ = ref[innerFunc];
+          if (regExp.exec(innerFunc)) {
+            models.push(func + '.' + innerFunc);
+          }
+        }
+      }
+      return models;
+    }
+  }, {
+    key: 'getModelForRemoteName',
+    value: function getModelForRemoteName(remoteName) {
+      var i, len, model, parts, ref;
+      ref = this.getModels();
+      for (i = 0, len = ref.length; i < len; i++) {
+        model = ref[i];
+        parts = model.split(".");
+        if (parts.length === 1) {
+          if (_models2.default[parts[0]].getRemoteName() === remoteName) {
+            return _models2.default[parts[0]];
+          }
+        } else if (parts.length === 2) {
+          if (_models2.default[parts[0]][parts[1]].getRemoteName() === remoteName) {
+            return _models2.default[parts[0]][parts[1]];
+          }
+        }
+      }
+    }
+  }]);
+
+  return Loco;
+}();
+
+exports.default = Loco;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ObjectUtils;
+
+ObjectUtils = function () {
+  function ObjectUtils() {
+    _classCallCheck(this, ObjectUtils);
+  }
+
+  _createClass(ObjectUtils, null, [{
+    key: "toURIParams",
+    value: function toURIParams(obj) {
+      var key, str, val;
+      str = "";
+      for (key in obj) {
+        val = obj[key];
+        if (str !== "") {
+          str += "&";
+        }
+        str += key + "=" + encodeURIComponent(val);
+      }
+      return str;
+    }
+  }]);
+
+  return ObjectUtils;
+}();
+
+exports.default = ObjectUtils;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _channels = __webpack_require__(13);
+
+var _channels2 = _interopRequireDefault(_channels);
+
+var _env = __webpack_require__(1);
+
+var _env2 = _interopRequireDefault(_env);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Line;
+
+Line = function () {
+  function Line() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Line);
+
+    this.connected = false;
+  }
+
+  _createClass(Line, [{
+    key: 'connect',
+    value: function connect() {
+      var _this = this;
+
+      return _channels2.default.Loco.NotificationCenter = App.cable.subscriptions.create({
+        channel: "Loco::NotificationCenterChannel"
+      }, {
+        connected: function connected() {
+          var wire;
+          console.log('ws connected');
+          _this.connected = true;
+          wire = _env2.default.loco.getWire();
+          if (wire != null) {
+            wire.setDelayedDisconnection();
+          }
+          return _this._sendNotification({
+            loco: 'connected'
+          });
+        },
+        disconnected: function disconnected() {
+          var wire;
+          console.log('ws disconnected');
+          _this.connected = false;
+          wire = _env2.default.loco.getWire();
+          if (wire != null) {
+            wire.setUuid(null);
+            wire.fetchSyncTime({
+              after: 'connect'
+            });
+          }
+          return _this._sendNotification({
+            loco: 'disconnected'
+          });
+        },
+        rejected: function rejected() {
+          console.log('ws rejected');
+          return _this._sendNotification({
+            loco: 'rejected'
+          });
+        },
+        received: function received(data) {
+          if (data.loco != null) {
+            _this._processSystemNotification(data.loco);
+            delete data.loco;
+          }
+          if (Object.keys(data).length === 0) {
+            return;
+          }
+          return _this._sendNotification(data);
+        }
+      });
+    }
+  }, {
+    key: 'isWireAllowed',
+    value: function isWireAllowed() {
+      return !this.connected;
+    }
+  }, {
+    key: 'send',
+    value: function send(data) {
+      return _channels2.default.Loco.NotificationCenter.send(data);
+    }
+  }, {
+    key: '_processSystemNotification',
+    value: function _processSystemNotification(data) {
+      var wire;
+      if (data.connection_check != null) {
+        this.send({
+          loco: {
+            connection_check: true
+          }
+        });
+      }
+      wire = _env2.default.loco.getWire();
+      if (wire == null) {
+        return;
+      }
+      if (data.sync_time != null) {
+        wire.setSyncTime(data.sync_time);
+      }
+      if (data.uuid != null) {
+        console.log('uuid: ' + data.uuid);
+        wire.setUuid(data.uuid);
+      }
+      if (data.notification != null) {
+        wire.processNotification(data.notification);
+      }
+      if (data.xhr_notifications != null) {
+        wire.check();
+      }
+      if (data.start_ajax_polling) {
+        console.log("wire connected");
+        this.connected = null;
+        wire.setUuid(null);
+        return wire.fetchSyncTime({
+          after: 'connect'
+        });
+      }
+    }
+  }, {
+    key: '_sendNotification',
+    value: function _sendNotification(data) {
+      var notificationCenter;
+      notificationCenter = new App.Services.NotificationCenter();
+      return notificationCenter.receivedSignal(data);
+    }
+  }]);
+
+  return Line;
+}();
+
+exports.default = Line;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var Channels = {
+  Loco: {}
+};
+
+exports.default = Channels;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var en;
+
+en = {
+  variants: {},
+  models: {},
+  attributes: {},
+  ui: {
+    form: {
+      sending: "Sending...",
+      success: "Success",
+      errors: {
+        connection: "Connection Error",
+        invalid_data: "Invalid data"
+      }
+    }
+  },
+  date: {
+    formats: {
+      default: "%Y-%m-%d",
+      short: "%b %d",
+      long: "%B %d, %Y"
+    },
+    day_names: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    abbr_day_names: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    abbr_month_names: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  errors: {
+    messages: {
+      accepted: "must be accepted",
+      blank: "can't be blank",
+      confirmation: "doesn't match %{attribute}",
+      empty: "can't be empty",
+      equal_to: "must be equal to %{count}",
+      even: "must be even",
+      exclusion: "is reserved",
+      greater_than: "must be greater than %{count}",
+      greater_than_or_equal_to: "must be greater than or equal to %{count}",
+      inclusion: "is not included in the list",
+      invalid: "is invalid",
+      less_than: "must be less than %{count}",
+      less_than_or_equal_to: "must be less than or equal to %{count}",
+      not_a_number: "is not a number",
+      not_an_integer: "must be an integer",
+      odd: "must be odd",
+      present: "must be blank",
+      too_long: {
+        one: "is too long (maximum is 1 character)",
+        other: "is too long (maximum is %{count} characters)"
+      },
+      too_short: {
+        one: "is too short (minimum is 1 character)",
+        other: "is too short (minimum is %{count} characters)"
+      },
+      wrong_length: {
+        one: "is the wrong length (should be 1 character)",
+        other: "is the wrong length (should be %{count} characters)"
+      },
+      other_than: "must be other than %{count}"
+    }
+  }
+};
+
+exports.default = en;
 
 /***/ })
 /******/ ]);
