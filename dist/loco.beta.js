@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -109,12 +109,214 @@ exports.default = Env;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var Controllers = {};
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Mix;
+
+Mix = function Mix(base) {
+  var Mixed, i, method, mixin, name, ref;
+  Mixed = function (_base) {
+    _inherits(Mixed, _base);
+
+    function Mixed() {
+      _classCallCheck(this, Mixed);
+
+      return _possibleConstructorReturn(this, (Mixed.__proto__ || Object.getPrototypeOf(Mixed)).apply(this, arguments));
+    }
+
+    return Mixed;
+  }(base);
+  //earlier mixins override later ones
+
+  for (var _len = arguments.length, mixins = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    mixins[_key - 1] = arguments[_key];
+  }
+
+  for (i = mixins.length - 1; i >= 0; i += -1) {
+    mixin = mixins[i];
+    ref = mixin.prototype;
+    for (name in ref) {
+      method = ref[name];
+      Mixed.prototype[name] = method;
+    }
+  }
+  return Mixed;
+};
+
+exports.default = Mix;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _locoJsModel = __webpack_require__(0);
+
+var _array = __webpack_require__(4);
+
+var _array2 = _interopRequireDefault(_array);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Connectivity;
+
+Connectivity = function () {
+  function Connectivity() {
+    _classCallCheck(this, Connectivity);
+  }
+
+  _createClass(Connectivity, [{
+    key: 'connectWith',
+    value: function connectWith(data) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var i, identity, len, resource, results;
+      if (data == null) {
+        return null;
+      }
+      if (data.constructor.name !== "Array") {
+        data = [data];
+      }
+      data = _array2.default.uniq(data);
+      results = [];
+      for (i = 0, len = data.length; i < len; i++) {
+        resource = data[i];
+        if (resource.constructor.name === "Function") {
+          identity = resource.getIdentity();
+          _locoJsModel.IdentityMap.addCollection(identity, {
+            to: this
+          });
+          if (opts.receiver != null) {
+            results.push(this.receivers[identity] = opts.receiver);
+          } else {
+            results.push(void 0);
+          }
+        } else {
+          _locoJsModel.IdentityMap.connect(this, {
+            with: resource
+          });
+          if (opts.receiver != null) {
+            results.push(this.receivers[resource.toKey()] = opts.receiver);
+          } else {
+            results.push(void 0);
+          }
+        }
+      }
+      return results;
+    }
+  }, {
+    key: 'receiverFor',
+    value: function receiverFor(data) {
+      if (data.constructor.name === "String") {
+        if (this.receivers[data] != null) {
+          return this.receivers[data];
+        } else {
+          return null;
+        }
+      }
+      if (this.receivers[data.toKey()] != null) {
+        return this.receivers[data.toKey()];
+      }
+      return null;
+    }
+  }]);
+
+  return Connectivity;
+}();
+
+exports.default = Connectivity;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ArrayUtils;
+
+ArrayUtils = function () {
+  function ArrayUtils() {
+    _classCallCheck(this, ArrayUtils);
+  }
+
+  _createClass(ArrayUtils, null, [{
+    key: "map",
+    value: function map(arr, func) {
+      var i, len, newArr, o;
+      newArr = [];
+      for (i = 0, len = arr.length; i < len; i++) {
+        o = arr[i];
+        newArr.push(func(o));
+      }
+      return newArr;
+    }
+  }, {
+    key: "uniq",
+    value: function uniq(arr) {
+      var i, len, newArr, o;
+      newArr = [];
+      for (i = 0, len = arr.length; i < len; i++) {
+        o = arr[i];
+        if (newArr.indexOf(o) === -1) {
+          newArr.push(o);
+        }
+      }
+      return newArr;
+    }
+  }]);
+
+  return ArrayUtils;
+}();
+
+exports.default = ArrayUtils;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = __webpack_require__(10);
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Controllers = { Base: _base2.default };
 
 exports.default = Controllers;
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -134,7 +336,7 @@ var _env2 = _interopRequireDefault(_env);
 
 var _locoJsModel = __webpack_require__(0);
 
-var _object = __webpack_require__(11);
+var _object = __webpack_require__(12);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -503,7 +705,7 @@ Wire = function () {
 exports.default = Wire;
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,7 +722,7 @@ var Models = { Base: _locoJsModel.Base };
 exports.default = Models;
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -533,11 +735,11 @@ exports.Wire = exports.Views = exports.Validators = exports.Models = exports.Loc
 
 var _locoJsModel = __webpack_require__(0);
 
-var _base = __webpack_require__(6);
+var _base = __webpack_require__(9);
 
 var _base2 = _interopRequireDefault(_base);
 
-var _controllers = __webpack_require__(2);
+var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -545,19 +747,19 @@ var _env = __webpack_require__(1);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _loco = __webpack_require__(10);
+var _loco = __webpack_require__(11);
 
 var _loco2 = _interopRequireDefault(_loco);
 
-var _models = __webpack_require__(4);
+var _models = __webpack_require__(7);
 
 var _models2 = _interopRequireDefault(_models);
 
-var _wire = __webpack_require__(3);
+var _wire = __webpack_require__(6);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _en = __webpack_require__(14);
+var _en = __webpack_require__(15);
 
 var _en2 = _interopRequireDefault(_en);
 
@@ -576,7 +778,7 @@ exports.Views = Views;
 exports.Wire = _wire2.default;
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -588,11 +790,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(7);
+var _mix = __webpack_require__(2);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(8);
+var _connectivity = __webpack_require__(3);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
@@ -673,201 +875,6 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Mix;
-
-Mix = function Mix(base) {
-  var Mixed, i, method, mixin, name, ref;
-  Mixed = function (_base) {
-    _inherits(Mixed, _base);
-
-    function Mixed() {
-      _classCallCheck(this, Mixed);
-
-      return _possibleConstructorReturn(this, (Mixed.__proto__ || Object.getPrototypeOf(Mixed)).apply(this, arguments));
-    }
-
-    return Mixed;
-  }(base);
-  //earlier mixins override later ones
-
-  for (var _len = arguments.length, mixins = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    mixins[_key - 1] = arguments[_key];
-  }
-
-  for (i = mixins.length - 1; i >= 0; i += -1) {
-    mixin = mixins[i];
-    ref = mixin.prototype;
-    for (name in ref) {
-      method = ref[name];
-      Mixed.prototype[name] = method;
-    }
-  }
-  return Mixed;
-};
-
-exports.default = Mix;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _locoJsModel = __webpack_require__(0);
-
-var _array = __webpack_require__(9);
-
-var _array2 = _interopRequireDefault(_array);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Connectivity;
-
-Connectivity = function () {
-  function Connectivity() {
-    _classCallCheck(this, Connectivity);
-  }
-
-  _createClass(Connectivity, [{
-    key: 'connectWith',
-    value: function connectWith(data) {
-      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      var i, identity, len, resource, results;
-      if (data == null) {
-        return null;
-      }
-      if (data.constructor.name !== "Array") {
-        data = [data];
-      }
-      data = _array2.default.uniq(data);
-      results = [];
-      for (i = 0, len = data.length; i < len; i++) {
-        resource = data[i];
-        if (resource.constructor.name === "Function") {
-          identity = resource.getIdentity();
-          _locoJsModel.IdentityMap.addCollection(identity, {
-            to: this
-          });
-          if (opts.receiver != null) {
-            results.push(this.receivers[identity] = opts.receiver);
-          } else {
-            results.push(void 0);
-          }
-        } else {
-          _locoJsModel.IdentityMap.connect(this, {
-            with: resource
-          });
-          if (opts.receiver != null) {
-            results.push(this.receivers[resource.toKey()] = opts.receiver);
-          } else {
-            results.push(void 0);
-          }
-        }
-      }
-      return results;
-    }
-  }, {
-    key: 'receiverFor',
-    value: function receiverFor(data) {
-      if (data.constructor.name === "String") {
-        if (this.receivers[data] != null) {
-          return this.receivers[data];
-        } else {
-          return null;
-        }
-      }
-      if (this.receivers[data.toKey()] != null) {
-        return this.receivers[data.toKey()];
-      }
-      return null;
-    }
-  }]);
-
-  return Connectivity;
-}();
-
-exports.default = Connectivity;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ArrayUtils;
-
-ArrayUtils = function () {
-  function ArrayUtils() {
-    _classCallCheck(this, ArrayUtils);
-  }
-
-  _createClass(ArrayUtils, null, [{
-    key: "map",
-    value: function map(arr, func) {
-      var i, len, newArr, o;
-      newArr = [];
-      for (i = 0, len = arr.length; i < len; i++) {
-        o = arr[i];
-        newArr.push(func(o));
-      }
-      return newArr;
-    }
-  }, {
-    key: "uniq",
-    value: function uniq(arr) {
-      var i, len, newArr, o;
-      newArr = [];
-      for (i = 0, len = arr.length; i < len; i++) {
-        o = arr[i];
-        if (newArr.indexOf(o) === -1) {
-          newArr.push(o);
-        }
-      }
-      return newArr;
-    }
-  }]);
-
-  return ArrayUtils;
-}();
-
-exports.default = ArrayUtils;
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -880,13 +887,149 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _mix = __webpack_require__(2);
+
+var _mix2 = _interopRequireDefault(_mix);
+
+var _connectivity = __webpack_require__(3);
+
+var _connectivity2 = _interopRequireDefault(_connectivity);
+
+var _env = __webpack_require__(1);
+
+var _env2 = _interopRequireDefault(_env);
+
+var _array = __webpack_require__(4);
+
+var _array2 = _interopRequireDefault(_array);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Base;
+
+Base = function (_Mix) {
+  _inherits(Base, _Mix);
+
+  function Base() {
+    _classCallCheck(this, Base);
+
+    var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this));
+
+    _this.views = {};
+    _this.receivers = {};
+    _this.subController = null;
+    _this.superController = null;
+    _this.params = _this.__fetchParams();
+    return _this;
+  }
+
+  _createClass(Base, [{
+    key: 'setView',
+    value: function setView(key, view) {
+      return this.views[key] = view;
+    }
+  }, {
+    key: 'getView',
+    value: function getView(key) {
+      return this.views[key];
+    }
+  }, {
+    key: 'getViews',
+    value: function getViews() {
+      return this.views;
+    }
+  }, {
+    key: 'setSubController',
+    value: function setSubController(cntrlr) {
+      return this.subController = cntrlr;
+    }
+  }, {
+    key: 'getSubController',
+    value: function getSubController() {
+      return this.subController;
+    }
+  }, {
+    key: 'setSuperController',
+    value: function setSuperController(cntrlr) {
+      return this.superController = cntrlr;
+    }
+  }, {
+    key: 'getSuperController',
+    value: function getSuperController() {
+      return this.superController;
+    }
+  }, {
+    key: 'setResource',
+    value: function setResource(name) {
+      return this.setScope(name);
+    }
+  }, {
+    key: 'setScope',
+    value: function setScope(name) {
+      return App.Env.scope = name;
+    }
+  }, {
+    key: '__fetchParams',
+    value: function __fetchParams() {
+      var arr, i, id, key, len, match, params, paramsArray, paramsString, splitUrl, val;
+      params = {};
+      match = /https?:\/\/.+\/\w+\/(\d+)/.exec(window.location.href);
+      id = match != null ? match[1] : null;
+      if (id != null) {
+        params["id"] = parseInt(id);
+      }
+      splitUrl = window.location.href.split('?');
+      if (splitUrl.length === 1) {
+        return params;
+      }
+      paramsString = splitUrl[splitUrl.length - 1];
+      paramsArray = _array2.default.map(paramsString.split('&'), function (s) {
+        return s.split('=');
+      });
+      for (i = 0, len = paramsArray.length; i < len; i++) {
+        arr = paramsArray[i];
+        key = decodeURIComponent(arr[0]);
+        val = decodeURIComponent(arr[1]);
+        if (val != null) {
+          val = val.replace(/\+/g, " ");
+        }
+        params[key] = val;
+      }
+      return params;
+    }
+  }]);
+
+  return Base;
+}((0, _mix2.default)(_connectivity2.default));
+
+exports.default = Base;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _locoJsModel = __webpack_require__(0);
 
-var _wire = __webpack_require__(3);
+var _wire = __webpack_require__(6);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _line = __webpack_require__(12);
+var _line = __webpack_require__(13);
 
 var _line2 = _interopRequireDefault(_line);
 
@@ -894,11 +1037,11 @@ var _env = __webpack_require__(1);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _controllers = __webpack_require__(2);
+var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
-var _models = __webpack_require__(4);
+var _models = __webpack_require__(7);
 
 var _models2 = _interopRequireDefault(_models);
 
@@ -1117,7 +1260,7 @@ Loco = function () {
 exports.default = Loco;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1160,7 +1303,7 @@ ObjectUtils = function () {
 exports.default = ObjectUtils;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1172,7 +1315,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _channels = __webpack_require__(13);
+var _channels = __webpack_require__(14);
 
 var _channels2 = _interopRequireDefault(_channels);
 
@@ -1310,7 +1453,7 @@ Line = function () {
 exports.default = Line;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1326,7 +1469,7 @@ var Channels = {
 exports.default = Channels;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

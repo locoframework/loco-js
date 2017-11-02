@@ -1,5 +1,11 @@
-class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
+import Mix from '../base/mix.coffee'
+import Connectivity from '../base/mixins/connectivity.coffee'
+import Env from '../env'
+import ArrayUtils from '../utils/array.coffee'
+
+class Base extends Mix Connectivity
   constructor: ->
+    super()
     @views = {}
     @receivers = {}
     @subController = null
@@ -28,7 +34,7 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
     if splitUrl.length is 1
       return params
     paramsString = splitUrl[splitUrl.length - 1]
-    paramsArray = App.Utils.Array.map paramsString.split('&'), (s) -> s.split '='
+    paramsArray = ArrayUtils.map paramsString.split('&'), (s) -> s.split '='
     for arr in paramsArray
       key = decodeURIComponent arr[0]
       val = decodeURIComponent arr[1]
@@ -36,3 +42,5 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
         val = val.replace /\+/g, " "
       params[key] = val
     params
+
+export default Base
