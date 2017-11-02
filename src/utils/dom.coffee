@@ -1,4 +1,4 @@
-class App.Utils.Dom
+class DomUtils
   @hasClass: (el, className) ->
     if el.classList
       el.classList.contains(className)
@@ -16,3 +16,5 @@ class App.Utils.Dom
       el.classList.remove(className)
     else
       el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
+
+export default DomUtils

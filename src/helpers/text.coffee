@@ -1,4 +1,4 @@
-class App.Helpers.Text
+class Text
   constructor: (opts = {}) ->
 
   simpleFormat: (str) ->
@@ -9,3 +9,5 @@ class App.Helpers.Text
       str = str.replace /\n/g, '<br>'
       str = '<p>' + str + '</p>'
     str
+
+export default Text
