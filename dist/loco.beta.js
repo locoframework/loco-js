@@ -110,6 +110,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _base = __webpack_require__(10);
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Controllers = { Base: _base2.default };
+
+exports.default = Controllers;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -151,7 +172,7 @@ Mix = function Mix(base) {
 exports.default = Mix;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -165,7 +186,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _locoJsModel = __webpack_require__(1);
 
-var _array = __webpack_require__(4);
+var _array = __webpack_require__(5);
 
 var _array2 = _interopRequireDefault(_array);
 
@@ -242,7 +263,7 @@ Connectivity = function () {
 exports.default = Connectivity;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,27 +316,6 @@ ArrayUtils = function () {
 exports.default = ArrayUtils;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _base = __webpack_require__(11);
-
-var _base2 = _interopRequireDefault(_base);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Controllers = { Base: _base2.default };
-
-exports.default = Controllers;
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -326,7 +326,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _en = __webpack_require__(12);
+var _en = __webpack_require__(11);
 
 var _en2 = _interopRequireDefault(_en);
 
@@ -359,7 +359,7 @@ var _env2 = _interopRequireDefault(_env);
 
 var _locoJsModel = __webpack_require__(1);
 
-var _object = __webpack_require__(14);
+var _object = __webpack_require__(13);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -758,11 +758,7 @@ exports.Wire = exports.Views = exports.Validators = exports.Services = exports.M
 
 var _locoJsModel = __webpack_require__(1);
 
-var _base = __webpack_require__(10);
-
-var _base2 = _interopRequireDefault(_base);
-
-var _controllers = __webpack_require__(5);
+var _controllers = __webpack_require__(2);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -774,7 +770,7 @@ var _i18n = __webpack_require__(6);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _loco = __webpack_require__(13);
+var _loco = __webpack_require__(12);
 
 var _loco2 = _interopRequireDefault(_loco);
 
@@ -782,17 +778,19 @@ var _models = __webpack_require__(8);
 
 var _models2 = _interopRequireDefault(_models);
 
-var _services = __webpack_require__(17);
+var _services = __webpack_require__(16);
 
 var _services2 = _interopRequireDefault(_services);
+
+var _views = __webpack_require__(18);
+
+var _views2 = _interopRequireDefault(_views);
 
 var _wire = __webpack_require__(7);
 
 var _wire2 = _interopRequireDefault(_wire);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Views = { Base: _base2.default };
 
 exports.Controllers = _controllers2.default;
 exports.Env = _env2.default;
@@ -801,7 +799,7 @@ exports.Loco = _loco2.default;
 exports.Models = _models2.default;
 exports.Services = _services2.default;
 exports.Validators = _locoJsModel.Validators;
-exports.Views = Views;
+exports.Views = _views2.default;
 exports.Wire = _wire2.default;
 
 /***/ }),
@@ -817,108 +815,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(2);
+var _mix = __webpack_require__(3);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(3);
-
-var _connectivity2 = _interopRequireDefault(_connectivity);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Base;
-
-Base = function (_Mix) {
-  _inherits(Base, _Mix);
-
-  function Base() {
-    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, Base);
-
-    var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this, opts));
-
-    _this.views = {};
-    _this.intervals = {};
-    _this.receivers = {};
-    _this.controller = null;
-    _this.delegator = null;
-    if (opts.controller != null) {
-      _this.setController(opts.controller);
-    }
-    if (opts.delegator != null) {
-      _this.setDelegator(opts.delegator);
-    }
-    return _this;
-  }
-
-  _createClass(Base, [{
-    key: 'setController',
-    value: function setController(cntr) {
-      return this.controller = cntr;
-    }
-  }, {
-    key: 'getController',
-    value: function getController() {
-      return this.controller;
-    }
-  }, {
-    key: 'setView',
-    value: function setView(key, view) {
-      return this.views[key] = view;
-    }
-  }, {
-    key: 'getView',
-    value: function getView(key) {
-      return this.views[key];
-    }
-  }, {
-    key: 'getViews',
-    value: function getViews() {
-      return this.views;
-    }
-  }, {
-    key: 'setDelegator',
-    value: function setDelegator(delegator) {
-      return this.delegator = delegator;
-    }
-  }, {
-    key: 'getDelegator',
-    value: function getDelegator(delegator) {
-      return this.delegator;
-    }
-  }]);
-
-  return Base;
-}((0, _mix2.default)(_connectivity2.default));
-
-exports.default = Base;
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _mix = __webpack_require__(2);
-
-var _mix2 = _interopRequireDefault(_mix);
-
-var _connectivity = __webpack_require__(3);
+var _connectivity = __webpack_require__(4);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
@@ -926,7 +827,7 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _array = __webpack_require__(4);
+var _array = __webpack_require__(5);
 
 var _array2 = _interopRequireDefault(_array);
 
@@ -1038,7 +939,7 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1113,7 +1014,7 @@ en = {
 exports.default = en;
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1131,7 +1032,7 @@ var _wire = __webpack_require__(7);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _line = __webpack_require__(15);
+var _line = __webpack_require__(14);
 
 var _line2 = _interopRequireDefault(_line);
 
@@ -1139,7 +1040,7 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _controllers = __webpack_require__(5);
+var _controllers = __webpack_require__(2);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -1362,7 +1263,7 @@ Loco = function () {
 exports.default = Loco;
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1405,7 +1306,7 @@ ObjectUtils = function () {
 exports.default = ObjectUtils;
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1417,7 +1318,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _channels = __webpack_require__(16);
+var _channels = __webpack_require__(15);
 
 var _channels2 = _interopRequireDefault(_channels);
 
@@ -1555,7 +1456,7 @@ Line = function () {
 exports.default = Line;
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1571,7 +1472,7 @@ var Channels = {
 exports.default = Channels;
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1581,7 +1482,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _date = __webpack_require__(18);
+var _date = __webpack_require__(17);
 
 var _date2 = _interopRequireDefault(_date);
 
@@ -1594,7 +1495,7 @@ var Services = {
 exports.default = Services;
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1708,6 +1609,126 @@ Date = function () {
 }();
 
 exports.default = Date;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = __webpack_require__(19);
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Views = {
+  Base: _base2.default
+};
+
+exports.default = Views;
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _mix = __webpack_require__(3);
+
+var _mix2 = _interopRequireDefault(_mix);
+
+var _connectivity = __webpack_require__(4);
+
+var _connectivity2 = _interopRequireDefault(_connectivity);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Base;
+
+Base = function (_Mix) {
+  _inherits(Base, _Mix);
+
+  function Base() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Base);
+
+    var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this, opts));
+
+    _this.views = {};
+    _this.intervals = {};
+    _this.receivers = {};
+    _this.controller = null;
+    _this.delegator = null;
+    if (opts.controller != null) {
+      _this.setController(opts.controller);
+    }
+    if (opts.delegator != null) {
+      _this.setDelegator(opts.delegator);
+    }
+    return _this;
+  }
+
+  _createClass(Base, [{
+    key: 'setController',
+    value: function setController(cntr) {
+      return this.controller = cntr;
+    }
+  }, {
+    key: 'getController',
+    value: function getController() {
+      return this.controller;
+    }
+  }, {
+    key: 'setView',
+    value: function setView(key, view) {
+      return this.views[key] = view;
+    }
+  }, {
+    key: 'getView',
+    value: function getView(key) {
+      return this.views[key];
+    }
+  }, {
+    key: 'getViews',
+    value: function getViews() {
+      return this.views;
+    }
+  }, {
+    key: 'setDelegator',
+    value: function setDelegator(delegator) {
+      return this.delegator = delegator;
+    }
+  }, {
+    key: 'getDelegator',
+    value: function getDelegator(delegator) {
+      return this.delegator;
+    }
+  }]);
+
+  return Base;
+}((0, _mix2.default)(_connectivity2.default));
+
+exports.default = Base;
 
 /***/ })
 /******/ ]);
