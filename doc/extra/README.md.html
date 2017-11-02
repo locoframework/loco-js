@@ -37,7 +37,11 @@
         <p><img src="https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/loco_logo_trans_sqr-300px.png" alt="logo"></p><h1 id="welcome-to-loco-js">Welcome to Loco-JS</h1><p><strong>Loco</strong> is a framework that works on top of <a href="http://rubyonrails.org">Rails</a>. It consists of 2 parts:</p><ul>
 <li><a href="http://github.com/locoframework/loco-rails"><strong>Loco-Rails</strong></a> - a back-end part</li>
 <li><strong>Loco-JS</strong> - a front-end part</li>
-</ul><p>Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS&#39; role in the <strong>Loco</strong> framework is described on the <a href="http://github.com/locoframework/loco-rails">Loco-Rails page</a>.</p><h2 id="coffeescript-naming-convention">CoffeeScript naming convention</h2><p>Loco-JS uses the following naming convention. It&#39;s worth to notice that &quot;<strong>@</strong>&quot; sign is used only to define and call class variables and class methods. Although <strong>this</strong> and <strong>@</strong> are equivalent, this convention improves readability of code imo.</p><pre><code class="lang-coffeescript">class Example
+</ul><p>Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS&#39; role in the <strong>Loco</strong> framework is described on the <a href="http://github.com/locoframework/loco-rails">Loco-Rails page</a>.</p><h2 id="major-releases">Major releases</h2><p>Informations about all releases are published on <a href="https://twitter.com/artofcode_co">Twitter</a></p><h3 id="1-5">1.5</h3>
+<ul>
+<li>Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉</li>
+</ul>
+<h2 id="coffeescript-naming-convention">CoffeeScript naming convention</h2><p>Loco-JS uses the following naming convention. It&#39;s worth to notice that &quot;<strong>@</strong>&quot; sign is used only to define and call class variables and class methods. Although <strong>this</strong> and <strong>@</strong> are equivalent, this convention improves readability of code imo.</p><pre><code class="lang-coffeescript">class Example
   @classVar = 50
 
   @classMethod: -&gt;
