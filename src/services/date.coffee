@@ -1,17 +1,20 @@
-class App.Services.Date
+import I18n from '../i18n'
+import Env from '../env'
+
+class Date
   constructor: (date) -> @date = date
 
   toString: (format = 'default') ->
-    skope = App.I18n[App.Env.loco.getLocale()].date.formats
+    skope = I18n[Env.loco.getLocale()].date.formats
     switch format
       when 'default' then this.strftime skope.default
       when 'short' then this.strftime skope.short
       when 'long' then this.strftime skope.long
       else
-        console.log 'App.Services.Date#toString: unknown format.'
+        console.log 'Services.Date#toString: unknown format.'
 
   strftime: (str) ->
-    skope = App.I18n[App.Env.loco.getLocale()]
+    skope = I18n[Env.loco.getLocale()]
     str = str.replace '%Y', (x) => @date.getFullYear()
     str = str.replace '%y', (x) => @date.getFullYear().toString()[-2..-1]
     str = str.replace '%m', (x) =>
@@ -23,3 +26,5 @@ class App.Services.Date
     str = str.replace '%H', (x) => if @date.getHours() >= 10 then @date.getHours() else "0#{@date.getHours()}"
     str = str.replace '%M', (x) => if @date.getMinutes() >= 10 then @date.getMinutes() else "0#{@date.getMinutes()}"
     str = str.replace '%S', (x) => if @date.getSeconds() >= 10 then @date.getSeconds() else "0#{@date.getSeconds()}"
+
+export default Date

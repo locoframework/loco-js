@@ -7,7 +7,7 @@
 		exports["App"] = factory(require("loco-js-model"));
 	else
 		root["App"] = factory(root["LocoModel"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,17 +70,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98,6 +92,12 @@ var Env = {
 };
 
 exports.default = Env;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 /* 2 */
@@ -163,7 +163,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _locoJsModel = __webpack_require__(0);
+var _locoJsModel = __webpack_require__(1);
 
 var _array = __webpack_require__(4);
 
@@ -305,7 +305,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _base = __webpack_require__(10);
+var _base = __webpack_require__(11);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -326,17 +326,40 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _en = __webpack_require__(12);
+
+var _en2 = _interopRequireDefault(_en);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var I18n = {
+  en: _en2.default
+};
+
+exports.default = I18n;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _env = __webpack_require__(1);
+var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _locoJsModel = __webpack_require__(0);
+var _locoJsModel = __webpack_require__(1);
 
-var _object = __webpack_require__(12);
+var _object = __webpack_require__(14);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -705,23 +728,6 @@ Wire = function () {
 exports.default = Wire;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _locoJsModel = __webpack_require__(0);
-
-var Models = { Base: _locoJsModel.Base };
-
-exports.default = Models;
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -731,11 +737,28 @@ exports.default = Models;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Wire = exports.Views = exports.Validators = exports.Models = exports.Loco = exports.I18n = exports.Env = exports.Controllers = undefined;
 
-var _locoJsModel = __webpack_require__(0);
+var _locoJsModel = __webpack_require__(1);
 
-var _base = __webpack_require__(9);
+var Models = { Base: _locoJsModel.Base };
+
+exports.default = Models;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Wire = exports.Views = exports.Validators = exports.Services = exports.Models = exports.Loco = exports.I18n = exports.Env = exports.Controllers = undefined;
+
+var _locoJsModel = __webpack_require__(1);
+
+var _base = __webpack_require__(10);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -743,42 +766,46 @@ var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
-var _env = __webpack_require__(1);
+var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _loco = __webpack_require__(11);
+var _i18n = __webpack_require__(6);
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _loco = __webpack_require__(13);
 
 var _loco2 = _interopRequireDefault(_loco);
 
-var _models = __webpack_require__(7);
+var _models = __webpack_require__(8);
 
 var _models2 = _interopRequireDefault(_models);
 
-var _wire = __webpack_require__(6);
+var _services = __webpack_require__(17);
+
+var _services2 = _interopRequireDefault(_services);
+
+var _wire = __webpack_require__(7);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _en = __webpack_require__(15);
-
-var _en2 = _interopRequireDefault(_en);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var I18n = { en: _en2.default };
 var Views = { Base: _base2.default };
 
 exports.Controllers = _controllers2.default;
 exports.Env = _env2.default;
-exports.I18n = I18n;
+exports.I18n = _i18n2.default;
 exports.Loco = _loco2.default;
 exports.Models = _models2.default;
+exports.Services = _services2.default;
 exports.Validators = _locoJsModel.Validators;
 exports.Views = Views;
 exports.Wire = _wire2.default;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -875,7 +902,7 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -895,7 +922,7 @@ var _connectivity = __webpack_require__(3);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
-var _env = __webpack_require__(1);
+var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
@@ -1011,7 +1038,82 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 11 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var en;
+
+en = {
+  variants: {},
+  models: {},
+  attributes: {},
+  ui: {
+    form: {
+      sending: "Sending...",
+      success: "Success",
+      errors: {
+        connection: "Connection Error",
+        invalid_data: "Invalid data"
+      }
+    }
+  },
+  date: {
+    formats: {
+      default: "%Y-%m-%d",
+      short: "%b %d",
+      long: "%B %d, %Y"
+    },
+    day_names: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    abbr_day_names: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    abbr_month_names: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  errors: {
+    messages: {
+      accepted: "must be accepted",
+      blank: "can't be blank",
+      confirmation: "doesn't match %{attribute}",
+      empty: "can't be empty",
+      equal_to: "must be equal to %{count}",
+      even: "must be even",
+      exclusion: "is reserved",
+      greater_than: "must be greater than %{count}",
+      greater_than_or_equal_to: "must be greater than or equal to %{count}",
+      inclusion: "is not included in the list",
+      invalid: "is invalid",
+      less_than: "must be less than %{count}",
+      less_than_or_equal_to: "must be less than or equal to %{count}",
+      not_a_number: "is not a number",
+      not_an_integer: "must be an integer",
+      odd: "must be odd",
+      present: "must be blank",
+      too_long: {
+        one: "is too long (maximum is 1 character)",
+        other: "is too long (maximum is %{count} characters)"
+      },
+      too_short: {
+        one: "is too short (minimum is 1 character)",
+        other: "is too short (minimum is %{count} characters)"
+      },
+      wrong_length: {
+        one: "is the wrong length (should be 1 character)",
+        other: "is the wrong length (should be %{count} characters)"
+      },
+      other_than: "must be other than %{count}"
+    }
+  }
+};
+
+exports.default = en;
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1023,17 +1125,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _locoJsModel = __webpack_require__(0);
+var _locoJsModel = __webpack_require__(1);
 
-var _wire = __webpack_require__(6);
+var _wire = __webpack_require__(7);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _line = __webpack_require__(13);
+var _line = __webpack_require__(15);
 
 var _line2 = _interopRequireDefault(_line);
 
-var _env = __webpack_require__(1);
+var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
@@ -1041,7 +1143,7 @@ var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
-var _models = __webpack_require__(7);
+var _models = __webpack_require__(8);
 
 var _models2 = _interopRequireDefault(_models);
 
@@ -1260,7 +1362,7 @@ Loco = function () {
 exports.default = Loco;
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1303,7 +1405,7 @@ ObjectUtils = function () {
 exports.default = ObjectUtils;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1315,11 +1417,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _channels = __webpack_require__(14);
+var _channels = __webpack_require__(16);
 
 var _channels2 = _interopRequireDefault(_channels);
 
-var _env = __webpack_require__(1);
+var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
@@ -1453,7 +1555,7 @@ Line = function () {
 exports.default = Line;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1469,7 +1571,7 @@ var Channels = {
 exports.default = Channels;
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1478,70 +1580,134 @@ exports.default = Channels;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var en;
 
-en = {
-  variants: {},
-  models: {},
-  attributes: {},
-  ui: {
-    form: {
-      sending: "Sending...",
-      success: "Success",
-      errors: {
-        connection: "Connection Error",
-        invalid_data: "Invalid data"
-      }
-    }
-  },
-  date: {
-    formats: {
-      default: "%Y-%m-%d",
-      short: "%b %d",
-      long: "%B %d, %Y"
-    },
-    day_names: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    abbr_day_names: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    abbr_month_names: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  },
-  errors: {
-    messages: {
-      accepted: "must be accepted",
-      blank: "can't be blank",
-      confirmation: "doesn't match %{attribute}",
-      empty: "can't be empty",
-      equal_to: "must be equal to %{count}",
-      even: "must be even",
-      exclusion: "is reserved",
-      greater_than: "must be greater than %{count}",
-      greater_than_or_equal_to: "must be greater than or equal to %{count}",
-      inclusion: "is not included in the list",
-      invalid: "is invalid",
-      less_than: "must be less than %{count}",
-      less_than_or_equal_to: "must be less than or equal to %{count}",
-      not_a_number: "is not a number",
-      not_an_integer: "must be an integer",
-      odd: "must be odd",
-      present: "must be blank",
-      too_long: {
-        one: "is too long (maximum is 1 character)",
-        other: "is too long (maximum is %{count} characters)"
-      },
-      too_short: {
-        one: "is too short (minimum is 1 character)",
-        other: "is too short (minimum is %{count} characters)"
-      },
-      wrong_length: {
-        one: "is the wrong length (should be 1 character)",
-        other: "is the wrong length (should be %{count} characters)"
-      },
-      other_than: "must be other than %{count}"
-    }
-  }
+var _date = __webpack_require__(18);
+
+var _date2 = _interopRequireDefault(_date);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Services = {
+  Date: _date2.default
 };
 
-exports.default = en;
+exports.default = Services;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _i18n = __webpack_require__(6);
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _env = __webpack_require__(0);
+
+var _env2 = _interopRequireDefault(_env);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Date;
+
+Date = function () {
+  function Date(date) {
+    _classCallCheck(this, Date);
+
+    this.date = date;
+  }
+
+  _createClass(Date, [{
+    key: 'toString',
+    value: function toString() {
+      var format = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+
+      var skope;
+      skope = _i18n2.default[_env2.default.loco.getLocale()].date.formats;
+      switch (format) {
+        case 'default':
+          return this.strftime(skope.default);
+        case 'short':
+          return this.strftime(skope.short);
+        case 'long':
+          return this.strftime(skope.long);
+        default:
+          return console.log('Services.Date#toString: unknown format.');
+      }
+    }
+  }, {
+    key: 'strftime',
+    value: function strftime(str) {
+      var _this = this;
+
+      var skope;
+      skope = _i18n2.default[_env2.default.loco.getLocale()];
+      str = str.replace('%Y', function (x) {
+        return _this.date.getFullYear();
+      });
+      str = str.replace('%y', function (x) {
+        return _this.date.getFullYear().toString().slice(-2);
+      });
+      str = str.replace('%m', function (x) {
+        var month;
+        month = _this.date.getMonth() + 1;
+        if (month >= 10) {
+          return month;
+        } else {
+          return '0' + month;
+        }
+      });
+      str = str.replace('%b', function (x) {
+        return skope.date.abbr_month_names[_this.date.getMonth()];
+      });
+      str = str.replace('%B', function (x) {
+        return skope.date.month_names[_this.date.getMonth()];
+      });
+      str = str.replace('%d', function (x) {
+        if (_this.date.getDate() >= 10) {
+          return _this.date.getDate();
+        } else {
+          return '0' + _this.date.getDate();
+        }
+      });
+      str = str.replace('%H', function (x) {
+        if (_this.date.getHours() >= 10) {
+          return _this.date.getHours();
+        } else {
+          return '0' + _this.date.getHours();
+        }
+      });
+      str = str.replace('%M', function (x) {
+        if (_this.date.getMinutes() >= 10) {
+          return _this.date.getMinutes();
+        } else {
+          return '0' + _this.date.getMinutes();
+        }
+      });
+      return str = str.replace('%S', function (x) {
+        if (_this.date.getSeconds() >= 10) {
+          return _this.date.getSeconds();
+        } else {
+          return '0' + _this.date.getSeconds();
+        }
+      });
+    }
+  }]);
+
+  return Date;
+}();
+
+exports.default = Date;
 
 /***/ })
 /******/ ]);
