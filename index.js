@@ -6,6 +6,8 @@ import Helpers from './src/helpers';
 import I18n from './src/i18n';
 import Line from './src/base/line.coffee';
 import Loco from './src/base/loco.coffee';
+import Mix from './src/base/mix.coffee';
+import Mixins from './src/mixins';
 import Models from './src/models';
 import Services from './src/services';
 import UI from './src/ui';
@@ -23,6 +25,8 @@ export {
   I18n,
   Line,
   Loco,
+  Mix,
+  Mixins,
   Models,
   Presenters,
   Services,
