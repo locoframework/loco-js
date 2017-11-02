@@ -23,7 +23,7 @@ class Base extends Mix Connectivity
   getSuperController: -> @superController
 
   setResource: (name) -> this.setScope name
-  setScope: (name) -> App.Env.scope = name
+  setScope: (name) -> Env.scope = name
 
   __fetchParams: ->
     params = {}

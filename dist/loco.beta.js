@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -163,7 +163,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _en = __webpack_require__(15);
+var _en = __webpack_require__(17);
 
 var _en2 = _interopRequireDefault(_en);
 
@@ -185,8 +185,24 @@ exports.default = I18n;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var Channels = {
+  Loco: {}
+};
 
-var _base = __webpack_require__(12);
+exports.default = Channels;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = __webpack_require__(14);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -197,7 +213,7 @@ var Controllers = { Base: _base2.default };
 exports.default = Controllers;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -248,7 +264,7 @@ Mix = function Mix(base) {
 exports.default = Mix;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -339,7 +355,157 @@ Connectivity = function () {
 exports.default = Connectivity;
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _channels = __webpack_require__(4);
+
+var _channels2 = _interopRequireDefault(_channels);
+
+var _env = __webpack_require__(0);
+
+var _env2 = _interopRequireDefault(_env);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Line;
+
+Line = function () {
+  function Line() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Line);
+
+    this.connected = false;
+  }
+
+  _createClass(Line, [{
+    key: 'connect',
+    value: function connect() {
+      var _this = this;
+
+      return _channels2.default.Loco.NotificationCenter = App.cable.subscriptions.create({
+        channel: "Loco::NotificationCenterChannel"
+      }, {
+        connected: function connected() {
+          var wire;
+          console.log('ws connected');
+          _this.connected = true;
+          wire = _env2.default.loco.getWire();
+          if (wire != null) {
+            wire.setDelayedDisconnection();
+          }
+          return _this._sendNotification({
+            loco: 'connected'
+          });
+        },
+        disconnected: function disconnected() {
+          var wire;
+          console.log('ws disconnected');
+          _this.connected = false;
+          wire = _env2.default.loco.getWire();
+          if (wire != null) {
+            wire.setUuid(null);
+            wire.fetchSyncTime({
+              after: 'connect'
+            });
+          }
+          return _this._sendNotification({
+            loco: 'disconnected'
+          });
+        },
+        rejected: function rejected() {
+          console.log('ws rejected');
+          return _this._sendNotification({
+            loco: 'rejected'
+          });
+        },
+        received: function received(data) {
+          if (data.loco != null) {
+            _this._processSystemNotification(data.loco);
+            delete data.loco;
+          }
+          if (Object.keys(data).length === 0) {
+            return;
+          }
+          return _this._sendNotification(data);
+        }
+      });
+    }
+  }, {
+    key: 'isWireAllowed',
+    value: function isWireAllowed() {
+      return !this.connected;
+    }
+  }, {
+    key: 'send',
+    value: function send(data) {
+      return _channels2.default.Loco.NotificationCenter.send(data);
+    }
+  }, {
+    key: '_processSystemNotification',
+    value: function _processSystemNotification(data) {
+      var wire;
+      if (data.connection_check != null) {
+        this.send({
+          loco: {
+            connection_check: true
+          }
+        });
+      }
+      wire = _env2.default.loco.getWire();
+      if (wire == null) {
+        return;
+      }
+      if (data.sync_time != null) {
+        wire.setSyncTime(data.sync_time);
+      }
+      if (data.uuid != null) {
+        console.log('uuid: ' + data.uuid);
+        wire.setUuid(data.uuid);
+      }
+      if (data.notification != null) {
+        wire.processNotification(data.notification);
+      }
+      if (data.xhr_notifications != null) {
+        wire.check();
+      }
+      if (data.start_ajax_polling) {
+        console.log("wire connected");
+        this.connected = null;
+        wire.setUuid(null);
+        return wire.fetchSyncTime({
+          after: 'connect'
+        });
+      }
+    }
+  }, {
+    key: '_sendNotification',
+    value: function _sendNotification(data) {
+      var notificationCenter;
+      notificationCenter = new App.Services.NotificationCenter();
+      return notificationCenter.receivedSignal(data);
+    }
+  }]);
+
+  return Line;
+}();
+
+exports.default = Line;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -359,7 +525,7 @@ var _env2 = _interopRequireDefault(_env);
 
 var _locoJsModel = __webpack_require__(1);
 
-var _object = __webpack_require__(8);
+var _object = __webpack_require__(10);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -728,7 +894,7 @@ Wire = function () {
 exports.default = Wire;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -771,7 +937,7 @@ ObjectUtils = function () {
 exports.default = ObjectUtils;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -788,7 +954,7 @@ var Models = { Base: _locoJsModel.Base };
 exports.default = Models;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -810,7 +976,7 @@ var _dom = __webpack_require__(24);
 
 var _dom2 = _interopRequireDefault(_dom);
 
-var _object = __webpack_require__(8);
+var _object = __webpack_require__(10);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -831,7 +997,7 @@ var Utils = {
 exports.default = Utils;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -840,11 +1006,15 @@ exports.default = Utils;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.UI = exports.Services = exports.Models = exports.Loco = exports.I18n = exports.Helpers = exports.Env = exports.Controllers = undefined;
+exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.UI = exports.Services = exports.Presenters = exports.Models = exports.Loco = exports.Line = exports.I18n = exports.Helpers = exports.Env = exports.Controllers = exports.Channels = undefined;
 
 var _locoJsModel = __webpack_require__(1);
 
-var _controllers = __webpack_require__(4);
+var _channels = __webpack_require__(4);
+
+var _channels2 = _interopRequireDefault(_channels);
+
+var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
@@ -852,7 +1022,7 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _helpers = __webpack_require__(13);
+var _helpers = __webpack_require__(15);
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
@@ -860,11 +1030,15 @@ var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _loco = __webpack_require__(16);
+var _line = __webpack_require__(8);
+
+var _line2 = _interopRequireDefault(_line);
+
+var _loco = __webpack_require__(18);
 
 var _loco2 = _interopRequireDefault(_loco);
 
-var _models = __webpack_require__(9);
+var _models = __webpack_require__(11);
 
 var _models2 = _interopRequireDefault(_models);
 
@@ -876,7 +1050,7 @@ var _ui = __webpack_require__(21);
 
 var _ui2 = _interopRequireDefault(_ui);
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(12);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -884,18 +1058,23 @@ var _views = __webpack_require__(27);
 
 var _views2 = _interopRequireDefault(_views);
 
-var _wire = __webpack_require__(7);
+var _wire = __webpack_require__(9);
 
 var _wire2 = _interopRequireDefault(_wire);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var Presenters = {};
+
+exports.Channels = _channels2.default;
 exports.Controllers = _controllers2.default;
 exports.Env = _env2.default;
 exports.Helpers = _helpers2.default;
 exports.I18n = _i18n2.default;
+exports.Line = _line2.default;
 exports.Loco = _loco2.default;
 exports.Models = _models2.default;
+exports.Presenters = Presenters;
 exports.Services = _services2.default;
 exports.UI = _ui2.default;
 exports.Utils = _utils2.default;
@@ -904,7 +1083,7 @@ exports.Views = _views2.default;
 exports.Wire = _wire2.default;
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -916,11 +1095,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(5);
+var _mix = __webpack_require__(6);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(6);
+var _connectivity = __webpack_require__(7);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
@@ -1001,7 +1180,7 @@ Base = function (_Mix) {
   }, {
     key: 'setScope',
     value: function setScope(name) {
-      return App.Env.scope = name;
+      return _env2.default.scope = name;
     }
   }, {
     key: '__fetchParams',
@@ -1040,7 +1219,7 @@ Base = function (_Mix) {
 exports.default = Base;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1050,7 +1229,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _text = __webpack_require__(14);
+var _text = __webpack_require__(16);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -1063,7 +1242,7 @@ var Helpers = {
 exports.default = Helpers;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1106,7 +1285,7 @@ Text = function () {
 exports.default = Text;
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1181,7 +1360,7 @@ en = {
 exports.default = en;
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1195,11 +1374,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _locoJsModel = __webpack_require__(1);
 
-var _wire = __webpack_require__(7);
+var _wire = __webpack_require__(9);
 
 var _wire2 = _interopRequireDefault(_wire);
 
-var _line = __webpack_require__(17);
+var _line = __webpack_require__(8);
 
 var _line2 = _interopRequireDefault(_line);
 
@@ -1207,11 +1386,11 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
-var _controllers = __webpack_require__(4);
+var _controllers = __webpack_require__(5);
 
 var _controllers2 = _interopRequireDefault(_controllers);
 
-var _models = __webpack_require__(9);
+var _models = __webpack_require__(11);
 
 var _models2 = _interopRequireDefault(_models);
 
@@ -1430,172 +1609,6 @@ Loco = function () {
 exports.default = Loco;
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _channels = __webpack_require__(18);
-
-var _channels2 = _interopRequireDefault(_channels);
-
-var _env = __webpack_require__(0);
-
-var _env2 = _interopRequireDefault(_env);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Line;
-
-Line = function () {
-  function Line() {
-    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, Line);
-
-    this.connected = false;
-  }
-
-  _createClass(Line, [{
-    key: 'connect',
-    value: function connect() {
-      var _this = this;
-
-      return _channels2.default.Loco.NotificationCenter = App.cable.subscriptions.create({
-        channel: "Loco::NotificationCenterChannel"
-      }, {
-        connected: function connected() {
-          var wire;
-          console.log('ws connected');
-          _this.connected = true;
-          wire = _env2.default.loco.getWire();
-          if (wire != null) {
-            wire.setDelayedDisconnection();
-          }
-          return _this._sendNotification({
-            loco: 'connected'
-          });
-        },
-        disconnected: function disconnected() {
-          var wire;
-          console.log('ws disconnected');
-          _this.connected = false;
-          wire = _env2.default.loco.getWire();
-          if (wire != null) {
-            wire.setUuid(null);
-            wire.fetchSyncTime({
-              after: 'connect'
-            });
-          }
-          return _this._sendNotification({
-            loco: 'disconnected'
-          });
-        },
-        rejected: function rejected() {
-          console.log('ws rejected');
-          return _this._sendNotification({
-            loco: 'rejected'
-          });
-        },
-        received: function received(data) {
-          if (data.loco != null) {
-            _this._processSystemNotification(data.loco);
-            delete data.loco;
-          }
-          if (Object.keys(data).length === 0) {
-            return;
-          }
-          return _this._sendNotification(data);
-        }
-      });
-    }
-  }, {
-    key: 'isWireAllowed',
-    value: function isWireAllowed() {
-      return !this.connected;
-    }
-  }, {
-    key: 'send',
-    value: function send(data) {
-      return _channels2.default.Loco.NotificationCenter.send(data);
-    }
-  }, {
-    key: '_processSystemNotification',
-    value: function _processSystemNotification(data) {
-      var wire;
-      if (data.connection_check != null) {
-        this.send({
-          loco: {
-            connection_check: true
-          }
-        });
-      }
-      wire = _env2.default.loco.getWire();
-      if (wire == null) {
-        return;
-      }
-      if (data.sync_time != null) {
-        wire.setSyncTime(data.sync_time);
-      }
-      if (data.uuid != null) {
-        console.log('uuid: ' + data.uuid);
-        wire.setUuid(data.uuid);
-      }
-      if (data.notification != null) {
-        wire.processNotification(data.notification);
-      }
-      if (data.xhr_notifications != null) {
-        wire.check();
-      }
-      if (data.start_ajax_polling) {
-        console.log("wire connected");
-        this.connected = null;
-        wire.setUuid(null);
-        return wire.fetchSyncTime({
-          after: 'connect'
-        });
-      }
-    }
-  }, {
-    key: '_sendNotification',
-    value: function _sendNotification(data) {
-      var notificationCenter;
-      notificationCenter = new App.Services.NotificationCenter();
-      return notificationCenter.receivedSignal(data);
-    }
-  }]);
-
-  return Line;
-}();
-
-exports.default = Line;
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var Channels = {
-  Loco: {}
-};
-
-exports.default = Channels;
-
-/***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1775,7 +1788,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(12);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -2474,11 +2487,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mix = __webpack_require__(5);
+var _mix = __webpack_require__(6);
 
 var _mix2 = _interopRequireDefault(_mix);
 
-var _connectivity = __webpack_require__(6);
+var _connectivity = __webpack_require__(7);
 
 var _connectivity2 = _interopRequireDefault(_connectivity);
 
