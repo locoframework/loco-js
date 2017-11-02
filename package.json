@@ -5,7 +5,7 @@
   "main": "dist/loco.js",
   "scripts": {
     "start": "node dev/server.js",
-    "test": "gulp jasmine",
+    "test": "gulp",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {

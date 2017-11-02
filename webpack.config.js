@@ -22,7 +22,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'loco.beta.js',
+    filename: 'loco.js',
     library: 'App',
     libraryTarget: 'umd'
   },

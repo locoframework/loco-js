@@ -1,11 +1,3 @@
-/*
-  $ gulp         - start jasmine & watch tasks
-  $ gulp watch   - watch .coffee files for changes
-  $ gulp build   - build
-  $ gulp jasmine - run jasmine server
-*/
-
-// Load plugins
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
     concat = require('gulp-concat'),
@@ -16,55 +8,14 @@ var gulp = require('gulp'),
     watch = require('gulp-watch');
 
 // Default task
-gulp.task('default', ['build'], function() {
+gulp.task('default', function() {
   gulp.start('watch');
   gulp.start('jasmine');
 });
 
-// Build task
-gulp.task('build', function() {
-  gulp.start('scripts');
-});
-
 // Watch
 gulp.task('watch', function() {
-  gulp.watch(['./src_coffee/**/*.coffee'], ['scripts']);
   gulp.watch(['./spec_coffee/loco/**/*.coffee'], ['build_specs']);
-});
-
-// Clean
-gulp.task('clean', function() {
-  return del(['src/*', 'dist/*']);
-});
-
-// Coffee
-gulp.task('coffee', ['clean'], function() {
-  return gulp.src('./src_coffee/**/*.coffee')
-    .pipe(coffee({bare: true}).on('error', gutil.log))
-    .pipe(gulp.dest('./src/'));
-});
-
-// Scripts
-gulp.task('scripts', ['coffee'], function() {
-  var manifest = [
-    './src/base/objects.js',
-    './src/base/mix.js',
-    './src/base/wire.js',
-    './src/base/line.js',
-    './src/base/loco.js',
-    './src/base/mixins/**/*.js',
-    './src/utils/**/*.js',
-    './src/controllers/**/*.js',
-    './src/views/**/*.js',
-    './src/ui/**/*.js',
-    './src/services/**/*.js',
-    './src/helpers/**/*.js',
-    './src/locales/**/*.js'
-  ];
-  return gulp.src(manifest)
-    .pipe(concat('loco.js'))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(notify({ message: 'Scripts task complete' }));
 });
 
 // Spec
@@ -121,7 +72,7 @@ gulp.task('jasmine', ['concat_dummy_app'], function() {
     'spec/helpers/**/*.js',
     'spec/loco/**/*.js',
     'node_modules/loco-js-model/dist/loco-model.js',
-    'dist/loco.beta.js',
+    'dist/loco.js',
     'spec/dummy/application.js'
   ];
   return gulp.src(filesForTest)
