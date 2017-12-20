@@ -1,4 +1,4 @@
-import {IdentityMap} from 'loco-js-model'
+import {IdentityMap} from '../../deps'
 import ArrayUtils from '../../utils/array.coffee'
 
 class Connectivity

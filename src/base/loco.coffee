@@ -1,4 +1,4 @@
-import {IdentityMap} from 'loco-js-model'
+import {IdentityMap} from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'

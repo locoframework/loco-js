@@ -1,5 +1,5 @@
 import Env from '../env'
-import {IdentityMap} from 'loco-js-model'
+import {IdentityMap} from '../deps'
 import ObjectUtils from '../utils/object.coffee'
 
 class Wire
