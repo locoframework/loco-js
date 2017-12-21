@@ -103,11 +103,17 @@ exports.default = Env;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Validators = exports.IdentityMap = exports.Base = undefined;
+exports.Validators = exports.IdentityMap = exports.Deps = exports.Base = undefined;
 
 var _locoJsModel = __webpack_require__(15);
 
+var Deps = {
+  cable: null,
+  NotificationCenter: null
+};
+
 exports.Base = _locoJsModel.Base;
+exports.Deps = Deps;
 exports.IdentityMap = _locoJsModel.IdentityMap;
 exports.Validators = _locoJsModel.Validators;
 
@@ -387,6 +393,8 @@ var _env = __webpack_require__(0);
 
 var _env2 = _interopRequireDefault(_env);
 
+var _deps = __webpack_require__(1);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -407,7 +415,7 @@ Line = function () {
     value: function connect() {
       var _this = this;
 
-      return _channels2.default.Loco.NotificationCenter = App.cable.subscriptions.create({
+      return _channels2.default.Loco.NotificationCenter = (_deps.Deps.cable || App.cable).subscriptions.create({
         channel: "Loco::NotificationCenterChannel"
       }, {
         connected: function connected() {
@@ -506,7 +514,7 @@ Line = function () {
     key: '_sendNotification',
     value: function _sendNotification(data) {
       var notificationCenter;
-      notificationCenter = new App.Services.NotificationCenter();
+      notificationCenter = _deps.Deps.NotificationCenter != null ? new _deps.Deps.NotificationCenter() : new App.Services.NotificationCenter();
       return notificationCenter.receivedSignal(data);
     }
   }]);
@@ -1018,7 +1026,7 @@ exports.default = Utils;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.UI = exports.Services = exports.Presenters = exports.Models = exports.Mixins = exports.Mix = exports.Loco = exports.Line = exports.I18n = exports.Helpers = exports.Env = exports.Controllers = exports.Channels = undefined;
+exports.Wire = exports.Views = exports.Validators = exports.Utils = exports.UI = exports.Services = exports.Presenters = exports.Models = exports.Mixins = exports.Mix = exports.Loco = exports.Line = exports.I18n = exports.Helpers = exports.Env = exports.Deps = exports.Controllers = exports.Channels = undefined;
 
 var _channels = __webpack_require__(6);
 
@@ -1088,6 +1096,7 @@ var Presenters = {};
 
 exports.Channels = _channels2.default;
 exports.Controllers = _controllers2.default;
+exports.Deps = _deps.Deps;
 exports.Env = _env2.default;
 exports.Helpers = _helpers2.default;
 exports.I18n = _i18n2.default;
@@ -1536,10 +1545,7 @@ Loco = function () {
   }, {
     key: 'initLine',
     value: function initLine() {
-      if (typeof App === "undefined" || App === null) {
-        return;
-      }
-      if (App.cable == null) {
+      if (!(_deps.Deps.cable != null || (typeof App !== "undefined" && App !== null ? App.cable : void 0) != null)) {
         return;
       }
       this.line = new _line2.default();

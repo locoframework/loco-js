@@ -13,13 +13,14 @@ import UI from './src/ui';
 import Utils from './src/utils';
 import Views from './src/views';
 import Wire from './src/base/wire.coffee';
-import {Validators} from './src/deps';
+import {Deps, Validators} from './src/deps';
 
 const Presenters = {};
 
 export {
   Channels,
   Controllers,
+  Deps,
   Env,
   Helpers,
   I18n,
