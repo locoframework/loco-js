@@ -1,4 +1,4 @@
-import {IdentityMap} from 'loco-js-model'
+import {Deps, IdentityMap} from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
@@ -62,8 +62,7 @@ class Loco
     @wire.fetchSyncTime after: 'connect'
 
   initLine: ->
-    return unless App?
-    return unless App.cable?
+    return unless Deps.cable? || App?.cable?
     @line = new Line
     @line.connect()
 

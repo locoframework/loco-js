@@ -1,12 +1,13 @@
 import Channels from '../channels';
 import Env from '../env';
+import {Deps} from '../deps';
 
 class Line
   constructor: (opts = {}) ->
     @connected = false
 
   connect: ->
-    Channels.Loco.NotificationCenter = App.cable.subscriptions.create
+    Channels.Loco.NotificationCenter = (Deps.cable || App.cable).subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
@@ -59,7 +60,10 @@ class Line
       wire.fetchSyncTime after: 'connect'
 
   _sendNotification: (data) ->
-    notificationCenter = new App.Services.NotificationCenter
+    notificationCenter = if Deps.NotificationCenter?
+      new Deps.NotificationCenter
+    else
+      new App.Services.NotificationCenter
     notificationCenter.receivedSignal data
 
 export default Line

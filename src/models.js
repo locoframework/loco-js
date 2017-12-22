@@ -1,4 +1,4 @@
-import {Base} from 'loco-js-model';
+import {Base} from './deps';
 
 const Models = {Base};
 
