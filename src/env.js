@@ -1,9 +1,11 @@
+import {Env as LocoModelEnv} from './deps';
+
 const Env = {
-  loco: null,
+  loco: LocoModelEnv.loco,
   namespaceController: null,
   controller: null,
   action: null,
-  scope: null
+  scope: LocoModelEnv.scope
 };
 
 export default Env;

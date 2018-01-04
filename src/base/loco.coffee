@@ -3,7 +3,7 @@ import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
 import Controllers from '../controllers'
-import Models from '../models'
+import {Models} from '../deps'
 
 class Loco
   constructor: (opts={}) ->

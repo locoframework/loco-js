@@ -1,7 +1,6 @@
+import {I18n} from './deps';
 import en from './locales/en.coffee';
 
-const I18n = {
-  en
-};
+I18n.en = en;
 
 export default I18n;
