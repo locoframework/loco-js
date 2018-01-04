@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dev/server.js",
     "test": "gulp",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack -p --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "license": "MIT",
   "homepage": "http://locoframework.org",
   "dependencies": {
-    "loco-js-model": "0.0.3"
+    "loco-js-model": "^0.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -39,7 +39,7 @@
     "gulp-notify": "^2.2.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.6",
-    "webpack": "^3.8.1",
-    "webpack-dev-middleware": "^1.12.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-middleware": "^2.0.3"
   }
 }

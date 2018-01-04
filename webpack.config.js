@@ -1,15 +1,13 @@
 var path = require('path');
 
 module.exports = {
-  entry: './index.js',
+  entry: './src/index.js',
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
-      {
-        test: /\.coffee$/,
+      { test: /\.coffee$/,
         use: [
-          {
-            loader: 'coffee-loader',
+          { loader: 'coffee-loader',
             options: {
               transpile: {
                 presets: ['env']
