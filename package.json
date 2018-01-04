@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dev/server.js",
     "test": "gulp",
-    "build": "webpack -p --config webpack.config.js"
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
