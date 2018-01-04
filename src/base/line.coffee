@@ -1,6 +1,6 @@
-import Channels from '../channels';
-import Env from '../env';
-import {Deps} from '../deps';
+import Channels from '../channels'
+import Env from '../env'
+import {Deps} from '../deps'
 
 class Line
   constructor: (opts = {}) ->
