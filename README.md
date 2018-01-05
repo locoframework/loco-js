@@ -505,12 +505,6 @@ Every time a message is sent from the server, `receivedSignal` instance method i
 
 Look inside `gulpfile.js` for more details.
 
-### Generating documentation
-
-```bash
-$ codo src_coffee
-```
-
 ## Examples
 
 * examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
