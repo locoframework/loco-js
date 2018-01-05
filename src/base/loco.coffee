@@ -21,11 +21,11 @@ class Loco
 
   getLine: -> @line
 
-  getLocale: -> Config.getLocale()
-  setLocale: (locale) -> Config.setLocale(locale)
+  getLocale: -> Config.locale
+  setLocale: (locale) -> Config.locale = locale
 
-  getProtocolWithHost: -> Config.getProtocolWithHost()
-  setProtocolWithHost: (val) -> Config.setProtocolWithHost(val)
+  getProtocolWithHost: -> Config.protocolWithHost
+  setProtocolWithHost: (val) -> Config.protocolWithHost = val
 
   init: ->
     Env.loco = this
