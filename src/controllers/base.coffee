@@ -1,6 +1,6 @@
 import Mix from '../base/mix.coffee'
 import Connectivity from '../base/mixins/connectivity.coffee'
-import Env from '../env'
+import {Env} from '../deps';
 import ArrayUtils from '../utils/array.coffee'
 
 class Base extends Mix Connectivity

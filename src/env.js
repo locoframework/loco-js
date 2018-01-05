@@ -5,7 +5,7 @@ const Env = {
   namespaceController: null,
   controller: null,
   action: null,
-  scope: LocoModelEnv.scope
+  //scope: LocoModelEnv.scope
 };
 
 export default Env;
