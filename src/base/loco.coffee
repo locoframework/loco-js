@@ -1,4 +1,4 @@
-import {Deps, Env as LocoModelEnv, IdentityMap, Models} from '../deps'
+import {Config, Deps, IdentityMap, Models} from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
@@ -21,11 +21,11 @@ class Loco
 
   getLine: -> @line
 
-  getLocale: -> LocoModelEnv.loco.getLocale()
-  setLocale: (locale) -> LocoModelEnv.loco.setLocale(locale)
+  getLocale: -> Config.getLocale()
+  setLocale: (locale) -> Config.setLocale(locale)
 
-  getProtocolWithHost: -> LocoModelEnv.loco.getProtocolWithHost()
-  setProtocolWithHost: (val) -> LocoModelEnv.loco.setProtocolWithHost(val)
+  getProtocolWithHost: -> Config.getProtocolWithHost()
+  setProtocolWithHost: (val) -> Config.setProtocolWithHost(val)
 
   init: ->
     Env.loco = this
