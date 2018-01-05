@@ -1,6 +1,6 @@
 import Mix from '../base/mix.coffee'
 import Connectivity from '../base/mixins/connectivity.coffee'
-import Env from '../env'
+import {Config} from '../deps';
 import ArrayUtils from '../utils/array.coffee'
 
 class Base extends Mix Connectivity
@@ -23,7 +23,7 @@ class Base extends Mix Connectivity
   getSuperController: -> @superController
 
   setResource: (name) -> this.setScope name
-  setScope: (name) -> Env.scope = name
+  setScope: (name) -> Config.scope = name
 
   __fetchParams: ->
     params = {}

@@ -1,4 +1,4 @@
-import {Base, IdentityMap, Validators} from 'loco-js-model';
+import {Base, Config, I18n, IdentityMap, Models, Validators} from 'loco-js-model';
 
 const Deps = {
   cable: null,
@@ -7,7 +7,10 @@ const Deps = {
 
 export {
   Base,
+  Config,
   Deps,
+  I18n,
   IdentityMap,
+  Models,
   Validators
 };

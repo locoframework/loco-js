@@ -1,39 +1,31 @@
-import {Deps, IdentityMap} from '../deps'
+import {Config, Deps, IdentityMap, Models} from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
 import Controllers from '../controllers'
-import Models from '../models'
 
 class Loco
   constructor: (opts={}) ->
     @wire = null
     @line = null
-    @locale = null
     @turbolinks = opts.turbolinks ? false
     @startWire = if opts.notifications?.enable then true else false
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
     this.setProtocolWithHost opts.protocolWithHost
     notificationsParams = opts.notifications ? {}
-    notificationsParams.protocolWithHost = @protocolWithHost
+    notificationsParams.protocolWithHost = this.getProtocolWithHost()
     @notificationsParams = notificationsParams
 
   getWire: -> @wire
 
   getLine: -> @line
 
-  getLocale: -> @locale
-  setLocale: (locale) -> @locale = locale
+  getLocale: -> Config.locale
+  setLocale: (locale) -> Config.locale = locale
 
-  getProtocolWithHost: -> @protocolWithHost
-  setProtocolWithHost: (val) ->
-    if not val?
-      @protocolWithHost = null
-      return
-    if val[val.length - 1] is '/'
-      val = val[0..val.length - 2]
-    @protocolWithHost = val
+  getProtocolWithHost: -> Config.protocolWithHost
+  setProtocolWithHost: (val) -> Config.protocolWithHost = val
 
   init: ->
     Env.loco = this

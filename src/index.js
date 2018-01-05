@@ -7,13 +7,12 @@ import Line from './base/line.coffee';
 import Loco from './base/loco.coffee';
 import Mix from './base/mix.coffee';
 import Mixins from './mixins';
-import Models from './models';
 import Services from './services';
 import UI from './ui';
 import Utils from './utils';
 import Views from './views';
 import Wire from './base/wire.coffee';
-import {Deps, Validators} from './deps';
+import {Deps, Models, Validators} from './deps';
 
 const Presenters = {};
 

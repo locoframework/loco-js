@@ -2,8 +2,7 @@ const Env = {
   loco: null,
   namespaceController: null,
   controller: null,
-  action: null,
-  scope: null
+  action: null
 };
 
 export default Env;
