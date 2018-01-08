@@ -60,10 +60,15 @@ class Line
       wire.fetchSyncTime after: 'connect'
 
   _sendNotification: (data) ->
-    notificationCenter = if Deps.NotificationCenter?
-      new Deps.NotificationCenter
+    if Deps.NotificationCenter?
+      if Deps.NotificationCenter['receivedSignal']?
+        Deps.NotificationCenter.receivedSignal data
+      else
+        (new Deps.NotificationCenter).receivedSignal data
     else
-      new App.Services.NotificationCenter
-    notificationCenter.receivedSignal data
+      if App.Services.NotificationCenter['receivedSignal']?
+        App.Services.NotificationCenter.receivedSignal data
+      else
+        (new App.Services.NotificationCenter).receivedSignal data
 
 export default Line
