@@ -189,50 +189,6 @@ App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
 ```
 
-### Fetching a single resource
-
-Loco-JS provides `find` class method for fetching a single resource. The response from the server should be in a plain JSON format with remote names of attributes as keys. Examples:
-
-```coffeescript
-App.Models.Article.find(123).then (article) ->
-# or
-App.Models.Article.find(id: 123).then (article) ->
-# GET "/user/articles/123"
-
-App.Models.Article.Comment.find(id: 33, articleId: 123).then (comment) ->
-# GET "/user/articles/123/comments/33"
-
-# adding additional parameters
-App.Models.Article.Comment.find({
-  id: 33,
-  articleId: 123,
-  foo: 'bar',
-  baz: 'buz'
-}).then (comment) ->
-# GET "/user/articles/123/comments/33?foo=bar&baz=buz"
-```
-
-### Sending requests
-
-Each model has inherited from `App.Models.Base` methods for sending requests of given type to the server. All methods that send requests of the equivalent type are listed below:
-
-* instance methods: `get` `post` `put` `delete`
-* class methods: `@get` `@post` `@put` `@delete`
-
-Examples:
-
-```coffeescript
-# usually you use class methods for fetching resources. It's just an example here:
-# App.Models.Article.post('published', resource: 'admin', page: 2)
-# POST "/admin/articles/published"
-# Parameters: {"page"=>2}
-
-App.Models.Article.find(id: 43).then (article) ->
-  article.put "publish", foo: 'bar', buz: 1
-# PUT "/user/articles/43/publish"
-# Parameters: {"foo"=>"bar", "buz"=>"1", "id"=>"43"}
-```
-
 ### Validation
 
 If you have specified validations for attributes, you can use `isValid` / `isInvalid` methods to check whether an instance of a model is valid or not.
