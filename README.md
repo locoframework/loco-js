@@ -189,22 +189,6 @@ App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
 ```
 
-### Validation
-
-If you have specified validations for attributes, you can use `isValid` / `isInvalid` methods to check whether an instance of a model is valid or not.
-
-Example:
-
-```coffeescript
-article = new App.Models.Article title: 'f'
-article.isValid()  # false
-article.errors  # {title: ["is too short (minimum is 3 characters)"], content: ["can't be blank"]}
-```
-
-When you use `App.UI.Form` for handling forms, validation is done automatically and errors are shown if object is invalid.
-
-Loco-JS implements almost all built-in [Rails](http://guides.rubyonrails.org/active_record_validations.html) validators, except *uniqueness*. And you can use them nearly identically. For more use cases and examples look at the source code (*/validators*), *Examples* section and specs.
-
 ### Dirty object
 
 *Dirty object* is an ability of models' instances to express how values of attributes have been changed between 2 moments in time - when an object was initialized and their current value on the server. The most common use case is a reaction to the **update** signal, presented below. You can apply all changes (`applyChanges` method) and re-render the article. Or just present them to the user and apply manually selected ones - for example.
@@ -287,6 +271,8 @@ Example:
   </div>
 </form>
 ```
+
+TODO: JS example + how it works desc
 
 ## App.Wire
 
