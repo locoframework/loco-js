@@ -189,20 +189,6 @@ App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
 ```
 
-### Dirty object
-
-*Dirty object* is an ability of models' instances to express how values of attributes have been changed between 2 moments in time - when an object was initialized and their current value on the server. The most common use case is a reaction to the **update** signal, presented below. You can apply all changes (`applyChanges` method) and re-render the article. Or just present them to the user and apply manually selected ones - for example.
-
-```coffeescript
-receivedSignal: (signal, data) ->
-  switch signal
-    when 'updated'
-      @article.reload().then =>
-        @article.changes()  # {title: {is: 'bar', was: 'foo'}, content: {is: 'buz', was: 'baz'}}
-        @article.applyChanges()
-        this.renderArticle()
-```
-
 ## Connectivity
 
 `App.Mixins.Connectivity` is a mixin, which is included in `App.Controllers.Base` and `App.Views.Base` base classes. It has very important instance method `connectWith`. You will use this method probably always inside instance methods of controllers and views. `connectWith` accepts 2 arguments. The first one can be an object or an array. Allowed are instances of models and class names of models. Example:
@@ -311,6 +297,14 @@ class App.Services.NotificationCenter
 ```
 
 Every time a message is sent from the server, `receivedSignal` instance method is called.
+
+## 🔩 Merging 
+
+...
+
+## Nesting models 🏺
+
+...
 
 ## Development
 
