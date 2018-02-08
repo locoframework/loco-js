@@ -2,22 +2,42 @@
 
 # 🚧 This documentation is under construction. Come back soon! 🚧
 
-# Welcome to Loco-JS
+# 🧐 What is Loco-JS?
 
-**Loco** is a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts:
+**Loco-JS** is a front-end part of [**Loco-Rails**](http://github.com/locoframework/loco-rails), which can be used separately (with limited functionality).
 
-* [**Loco-Rails**](http://github.com/locoframework/loco-rails) - a back-end part
-* **Loco-JS** - a front-end part
+And **Loco-Rails** is a back-end part of the whole [**Loco**](http://github.com/locoframework) framework and it requires **Loco-JS** to work.
 
-Loco-JS can work separately with limited functionality and is maintained in this repository. Following sections contain more detailed description of its internals and API. Loco-JS' role in the **Loco** framework is described on the [Loco-Rails page](http://github.com/locoframework/loco-rails).
+**Loco-Rails** is just a concept that simplifies communication between front-end and back-end code. You can implement it in other languages or frameworks as well.  
+I am a Rails programmer that's why I created **Loco** for **Rails**.
 
-## Major releases
+This is how it can be visualized:
 
-Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+```
+Loco Framework
+|
+|--- Loco-Rails (back-end part)
+|
+|--- Loco-JS (front-end part / can be used separately)
+        |
+        |--- Loco-JS-Model (model part / can be used separately)
+        |
+        |--- other parts of Loco-JS
+```
 
-### 1.5
+Following sections contain more detailed description of its internals and API.
 
-* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
+# ⛑ But how is Loco supposed to help?
+
+* by providing logical structure for JavaScript code. You exactly know where to start, when looking for JavaScript code that runs current page (**Loco-JS**)
+* you have models that protect from sending invalid data to API endpoints. They also facilitate fetching objects of given type from the server (**Loco-JS-Model**)
+* you can easily assign a model to the form what will enrich it with fields' validation (**Loco-JS**)
+* you can connect models with controllers and views, so they will be notified about every change made to a given model on the server side. This change is going to be emitted as a signal to the front-end code. And signal is just a fancy name for JS object (**Loco**)
+* allows you to send messages over WebSockets in both directions with just a one line of code on each side (**Loco**)
+* respects permissions (you can send messages only to specified, signed in on the server, models _e.g. given admin or user_) (**Loco**)
+* solves other common problems
+
+# ⬇️ Previous doc
 
 ## Dependencies
 
@@ -316,9 +336,19 @@ Look inside `gulpfile.js` for more details.
 
 * examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
 
-## License
+# 📈 Changelog
+
+## Major releases 🎙
+
+### 1.5
+
+* Loco-JS dropped the dependency on jQuery. So it has no external dependencies officially 🎉
+
+Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+
+# License 📜
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
 
-## Author
+# Author 👨‍🏭
 
 Zbigniew Humeniuk from [Art of Code](http://artofcode.co)
