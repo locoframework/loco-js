@@ -30,107 +30,139 @@ Following sections contain more detailed description of its internals and API.
 # ⛑ But how is Loco supposed to help?
 
 * by providing logical structure for JavaScript code. You exactly know where to start, when looking for JavaScript code that runs current page (**Loco-JS**)
-* you have models that protect from sending invalid data to API endpoints. They also facilitate fetching objects of given type from the server (**Loco-JS-Model**)
+* you have models that protect from sending invalid data to API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to the form what will enrich it with fields' validation (**Loco-JS**)
 * you can connect models with controllers and views, so they will be notified about every change made to a given model on the server side. This change is going to be emitted as a signal to the front-end code. And signal is just a fancy name for JS object (**Loco**)
 * allows you to send messages over WebSockets in both directions with just a one line of code on each side (**Loco**)
 * respects permissions (you can send messages only to specified, signed in on the server, models _e.g. given admin or user_) (**Loco**)
 * solves other common problems
 
-# ⬇️ Previous doc
+# 🦕 Origins
 
-## Dependencies
+**Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
+I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
 
-Loco-JS has no dependencies. But it's based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) and promises are not supported natively in [IE](http://caniuse.com/#feat=promises). So, if you care, I recommend to use [lie](https://github.com/calvinmetcalf/lie).
+I still use **Rails** but my front-end toolbox has changed a bit. Now I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
 
-## Getting started
+**Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
 
-Include [`dist/loco.js`](dist/loco.js) in your application’s JavaScript bundle.
+But **Loco-JS** can be used standalone to give a structure to a JavaScript code, for example.  
+[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
 
-### Installation using Ruby on Rails
+# 🔬 Tech stack of Loco-JS
 
-Loco-JS is included inside the [`loco-rails`](https://github.com/locoframework/loco-rails) gem. To install:
+The Origins explain why some parts of **Loco-JS** are still written in CoffeeScript.	 It shouldn't worry you though unless you want to contribute.
 
-1. Add `loco-rails` to your Gemfile: `gem 'loco-rails'`
-2. Run `bundle install`.
-3. Add `//= require loco-rails` to your JavaScript manifest file (usually at `app/assets/javascripts/application.js`).
+What's more important is that all Loco-JS' modules are transpiled and bundled using modern tools such as **Babel** and **Webpack** accordingly. Loco-JS works well as a part of modern JavaScript ecosystem alongside libraries such as React.  
+In the future, while adding features, all modules will be rewritten to Javascript.
 
-### Installation using NPM
+# 🤝 Dependencies
+
+🎊 Loco-JS has no external dependencies. 🎉  
+It dependents only on Loco-JS-Model which is a part of Loco-JS but can be used separately as well.
+Although, [class properties transform](https://babeljs.io/docs/plugins/transform-class-properties/) Babel plugin may be helpful to support static class properties, which are useful in defining models.
+
+# 📥 Installation
 
 ```bash
 $ npm install --save loco-js
 ```
 
-### Initalization
+# 🎬 Initialization
 
-```coffeescript
-loco = new App.Loco
-  # set to your Turbolinks version if you have enabled Turbolinks
-  turbolinks: 5                       # false by default
+```javascript
+import { Loco } from "loco-js";
 
-  # your browser's app will be checking for new notifications periodically via ajax polling
-  notifications:
-    enable: true                      # false by default
-    #pollingTime: 3000                # 3000 ms by default
+const loco = new Loco({
+  // set to your Turbolinks version if you use Loco-JS with Loco-Rails
+  // and have enabled Turbolinks
+  turbolinks: false,                   // false by default
+  
+  // the browser's app will start to receive signals / notifications from
+  // the server either via WebSockets or AJAX polling (if WebSocket connection
+  // can't be established). Loco-JS can even switch between WebSockets and AJAX
+  // polling depending on the momentary availability. This works if you use
+  // Loco-JS with Loco-Rails.
+  notifications: {
+    enable: true,                      // false by default
+    //pollingTime: 3000,               // 3000 ms by default (for AJAX polling)
+    
+    // display upcoming notifications in browser's console e.g. for debugging
+    //log: true,                       // false by default
+    
+    //ssl: false,                      // your current protocol by default
+    
+    // location must be the same as where you mounted Loco-Rails in routes.rb
+    //location: "notification-center", // 'notification-center' by default
+    
+    // max number of notifications that is fetched at once via ajax pooling
+    // must be the same as notifications_size defined in initializers/loco.rb
+    // next batch of notifications will be fetched immediately after 
+    // max size is reached
+    //size: 100,                       // 100 by default
+    
+    // after specified time your current (namespace) controller instance method
+    // disconnectedForTooLong will be called with the "time since disconnection"
+    // passed as an argument
+    //allowedDisconnectionTime: 10     // 10 by default [sec]
+  },
+  
+  //locale: "en",                      // "en" by default
+  
+  // if provided - Loco-JS will be using absolute path 
+  // instead of site-root-relative path in all xhr requests
+  //protocolWithHost: "https://example.com",
+  
+  // this method is called at the end, after given controller's
+  // method has been called. At this moment Loco's instance is initialized 
+  // and you can use it to change some settings of the browser's app
+  // e.g. polling interval -> Env.loco.getWire().setPollingTime(<time>);
+  postInit: () => {}
+});
 
-    # display upcoming notifications in browser's console e.g. for debugging
-    #log: true                        # false by default
-
-    #ssl: false                       # your current protocol by default
-
-    # location must the same as where you mount Loco in routes.rb
-    #location: 'notification-center'  # 'notification-center' by default
-
-    # max number of notifications that is fetched at once via ajax pooling
-    # must be the same as notifications_size defined in initializers/loco.rb
-    # next batch of notifications will be fetched immediately after max size is reached
-    #size: 100                        # 100 by default
-
-    # after this time your current namespace controller / controller instance method
-    # disconnectedForTooLong: will be called with the 'time since disconnection' passed as an argument
-    #allowedDisconnectionTime: 10     # 10 by default [sec]
-  #locale: 'en'                       # 'en' by default
-
-  # if provided - loco will be using absolute path instead of site-root-relative path in all xhr requests
-  #protocolWithHost: 'https://example.com'
-
-  # this method is called at the end, after given controller methods has been called
-  # at this time Loco's instance is initialized and you can use it to change behaviour of your browser app
-  # e.g. polling interval -> App.Env.loco.getWire().setPollingTime <time>
-  #postInit: ->
-
-loco.init()
+loco.init();
 ```
 
-## Usage
+# 👷🏻‍♂️ How does it work?
 
-After calling `init()` Loco-JS' instance checks following `<body>`'s data attributes:
+After document is loaded, Loco-JS' instance checks following `<body>`'s data attributes:
 
 * data-namespace
 * data-controller
 * data-action
 
-Then, based on their values, it initializes given controller and calls given methods. Example:
+Then, based on their values, it initializes given controllers and calls given methods. Example:
 
 ```html
 <body data-namespace="Main" data-controller="Pages" data-action="index">
 </body>
 ```
 
-Loco-JS will act like this:
+Loco-JS will act like this (simplified version):
 
-```coffeescript
-namespaceController = new App.Controllers.Main
-namespaceController.initialize()
+```javascript
+import { Controllers } from "loco-js";
 
-controller = new App.Controllers.Main.Pages
-controller.initialize()
-controller.index()
+namespaceController = new Controllers.Main;
+namespaceController.initialize();
+
+controller = new Controllers.Main.Pages;
+controller.initialize();
+controller.index();
 ```
 
-All methods will be called, if are defined. If namespace controller is not defined, Loco will assume `App.Controllers.Pages` as controller.
+What's important is that Loco-JS looks not only for instance methods but static ones as well. If some controller is not defined, Loco-JS skips it. The same situation is with methods. You don't have to create controllers for every page that you have too. You can use Loco-JS only on desired ones. It does not want to take over your front-end. Augment with JavaScript only those pages that you want instead.
 
-If you've enabled notifications, Loco will begin checking for them periodically.
+If namespace controller is not defined, Loco-JS will assume `Controllers.Pages` as a controller.
+
+If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS will try to establish WebSocket connection with the server and will be waiting for signals / notifications.  
+If WebSocket connection can't be established, Loco-JS will start periodically checking for new notifications via AJAX polling.
+
+# 🔩 Merging classes
+
+...
+
+# ⬇️ Previous doc
 
 ## Structure
 
@@ -317,10 +349,6 @@ class App.Services.NotificationCenter
 ```
 
 Every time a message is sent from the server, `receivedSignal` instance method is called.
-
-## 🔩 Merging 
-
-...
 
 ## Nesting models 🏺
 
