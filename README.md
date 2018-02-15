@@ -4,7 +4,10 @@
 
 # 🧐 What is Loco-JS?
 
-**Loco-JS** is a front-end part of [**Loco-Rails**](http://github.com/locoframework/loco-rails), which can be used separately (with limited functionality).
+**Loco-JS** is a front-end framework similar to recently released [Stimulus](https://stimulusjs.org) in a fact that it doesn't want to take over your entire front-end.  
+The difference is that **Loco-JS** was originally designed in 2016 and it works in more generic fashion. **Loco-JS** teams up well with tools like [React](https://reactjs.org) or [Vue](https://reactjs.org) for crafting a view layer.
+
+Architecturally - Loco-JS is a front-end part of [**Loco-Rails**](http://github.com/locoframework/loco-rails), which can be used separately (with limited functionality).
 
 And **Loco-Rails** is a back-end part of the whole [**Loco**](http://github.com/locoframework) framework and it requires **Loco-JS** to work.
 
@@ -58,15 +61,19 @@ In the future, while adding features, all modules will be rewritten to Javascrip
 
 # 🤝 Dependencies
 
-🎊 Loco-JS has no external dependencies. 🎉  
-It dependents only on Loco-JS-Model which is a part of Loco-JS but can be used separately as well.
-Although, [class properties transform](https://babeljs.io/docs/plugins/transform-class-properties/) Babel plugin may be helpful to support static class properties, which are useful in defining models.
+🎊 Loco-JS has no external dependencies. 🎉
+
+It depends only on Loco-JS-Model which is an internal part of Loco-JS but can be used separately as well.  
+Although, [class properties transform](https://babeljs.io/docs/plugins/transform-class-properties/) Babel plugin may be helpful to support static class properties, which are useful in defining models.  
+Additionally, if you want to use Loco-JS with Loco-Rails and send or receive signals / messages over WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
 
 # 📥 Installation
 
 ```bash
 $ npm install --save loco-js
 ```
+
+If you want to use Loco-JS by a script tag, without the module bundler, it's exposed as an `App` global variable.
 
 # 🎬 Initialization
 
@@ -160,50 +167,93 @@ If WebSocket connection can't be established, Loco-JS will start periodically ch
 
 # 🔩 Merging classes
 
-...
+As you can see in the previous section, Loco-JS must have an access to all defined controllers to initialize them and to call given methods on them. Therefore, they have to be merged with `Controllers` object which Loco-JS exports.
+
+```javascript
+// javascripts/index.js (entry point)
+
+import { Controllers } from "loco-js";
+
+import Admin from "./controllers/admin"; // namespace controller
+import User from "./controllers/user";   // namespace controller
+
+Object.assign(Controllers, {
+  Admin,
+  User
+});
+```
+
+```javascript
+// javascripts/controllers/admin.js (namespace controller)
+
+import { Controllers } from "loco-js";
+
+import Coupons from "./admin/coupons"; // Coupons controller
+import Plans from "./admin/plans";     // Plans controller 
+
+class Admin extends Controllers.Base {}
+
+Object.assign(Admin, {
+  Coupons,
+  Plans
+});
+
+export default Admin;
+```
+
+You don't have to define namespace controllers. You can merge controllers directly to exported `Controllers` object.
+
+Remember to polyfill `Object.assign` or assign controllers using a different method.
+
+Loco-JS exports also, among others, the `Models` object. Remember to do the same with all defined models - merge them with this object.
+
+# 🏛 Structure
+
+Loco-JS exports following structure:
+
+```javascript
+export {
+  Channels,    // object                 - since ver. 1.3
+  Controllers, // object
+  Deps,        // object
+  Env,         // object
+  Helpers,     // object
+  I18n,        // object
+  Line,        // function (class)       - since ver. 1.3
+  Loco,        // function (class)
+  Mix,         // function (mixin class)
+  Mixins,      // object
+  Models,      // object
+  Presenters,  // object
+  Services,    // object
+  UI,          // object
+  Utils,       // object
+  Validators,  // object
+  Views,       // object
+  Wire         // function (class)
+};
+```
+
+Brief explanation of each element:
+
+* **Channels** - a namespace where `ActionCable`'s subscriptions are created
+* **Controllers** - an object which you have to merge all custom controllers to. It contains `Base` class for custom controllers
+* **Deps** - this is an abbreviation of "dependencies". This object has 2 properties:
+    * **cable** - if you want to send and receive signals / messages through WebSockets, assign consumer to this property by invoking `ActionCable.createConsumer();`
+    * **NotificationCenter** - you have to assign a custom class to this property that is going to receive notifications sent via WebSockets
+* **Env** - this object holds environmental informations. Its properties:
+    * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller.
+    * **controller** - an instance of the current controller
+    * **namespaceController** - an instance of the current namespace controller
+    * **loco** - an instance of `Loco` (see _Initialization_ section). Its most important instance methods are:
+        * `getWire` - returns the current instance of `Wire`
+        * `setLocale` / `getLocale` - allows to set / get current locale
+    
+        Look at [source code](https://github.com/locoframework/loco-js/blob/master/src/base/loco.coffee) for all.
+* **Helpers** - 
 
 # ⬇️ Previous doc
 
-## Structure
-
-Type `App` in the browser's console and you'll get:
-
-```javascript
-Object {
-  Channels: Object,                     // since ver. 1.3
-  Controllers: Object,
-  Env: Object,
-  Helpers: Object,
-  I18n: Object,
-  IdentityMap: function IdentityMap(),
-  Line: function Line(opts),            // since ver. 1.3
-  Loco: function Loco(opts),
-  Mix: function (),
-  Mixins: Object,
-  Models: Object,
-  Presenters: Object,
-  Services: Object,
-  UI: Object,
-  Utils: Object,
-  Validators: Object,
-  Views: Object,
-  Wire: function Wire(opts),
-  __proto__: Object
-}
-```
-
-Let's describe each object / function briefly. I'll be using CoffeeScript nomenclature.
-
-* **Channels** - a namespace where are defined `ActionCable`'s subscriptions
-* **Controllers** - a namespace where you define controllers
-* **Env** - an object that has following properties:
-	* **action** - a name of current action (method called on an instance of current controller)
-	* **controller** - an instance of current controller
-	* **loco** - an instance of `App.Loco`. It's the most important instance methods are:
-		* `getWire` - returns current instance of `App.Wire`
-		* `setLocale` / `getLocale` - allows you to set / get current locale
-	* **namespaceController** - an instance of current namespace controller
-	* **scope** - current scope (used by models to determine URL of resources)
 * **Helpers** - a namespace where you define helpers. Member classes:
 	* **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
 * **I18n** - an object that holds localizations. Localizations are objects too
