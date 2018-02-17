@@ -102,7 +102,7 @@ const loco = new Loco({
     // location must be the same as where you mounted Loco-Rails in routes.rb
     //location: "notification-center", // 'notification-center' by default
     
-    // max number of notifications that is fetched at once via ajax pooling
+    // max number of notifications fetched at once via ajax pooling
     // must be the same as notifications_size defined in initializers/loco.rb
     // next batch of notifications will be fetched immediately after 
     // max size is reached
@@ -201,7 +201,7 @@ Object.assign(Admin, {
 export default Admin;
 ```
 
-You don't have to define namespace controllers. You can merge controllers directly to exported `Controllers` object.
+You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
 
 Remember to polyfill `Object.assign` or assign controllers using a different method.
 
@@ -236,45 +236,40 @@ export {
 
 Brief explanation of each element:
 
-* **Channels** - a namespace where `ActionCable`'s subscriptions are created
-* **Controllers** - an object which you have to merge all custom controllers to. It contains `Base` class for custom controllers
+* **Channels** - the namespace where `ActionCable`'s subscriptions are created
+* **Controllers** - the object that you have to merge all custom controllers with. It contains `Base` class for custom controllers
 * **Deps** - this is an abbreviation of "dependencies". This object has 2 properties:
     * **cable** - if you want to send and receive signals / messages through WebSockets, assign consumer to this property by invoking `ActionCable.createConsumer();`
     * **NotificationCenter** - you have to assign a custom class to this property that is going to receive notifications sent via WebSockets
 * **Env** - this object holds environmental informations. Its properties:
-    * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller.
-    * **controller** - an instance of the current controller
-    * **namespaceController** - an instance of the current namespace controller
-    * **loco** - an instance of `Loco` (see _Initialization_ section). Its most important instance methods are:
+    * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
+    * **controller** - the instance of the current controller
+    * **namespaceController** - the instance of the current namespace controller
+    * **loco** - the instance of `Loco` (see _Initialization_ section). Its most important instance methods are:
         * `getWire` - returns the current instance of `Wire`
         * `setLocale` / `getLocale` - allows to set / get current locale
     
         Look at [source code](https://github.com/locoframework/loco-js/blob/master/src/base/loco.coffee) for all.
-* **Helpers** - 
+* **Helpers** - the namespace where helpers are defined. Helpers are classes facilitating things like transforming text, converting numbers to currencies etc. Members:
+    * **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
+* **I18n** - the object that holds localizations. Localizations are objects as well
+* **Line** - the class responsible for sending and receiving messages over WebSocket connection
+* **Loco** - this class rules everything ;)
+* **Mix** - the factory function that generates a `Mixed` superclass (used for implementing mixins)
+* **Mixins** - the namespace where mixins are defined
+* **Models** - the object which all custom models should be merged with. It contains `Base` class for custom models
+* **Presenters** - the empty object that you can merge your custom presenters with. Presenters can be used to hold functions used to present models or their attributes.  
+_Deprecated! It will be removed in the future. Store presenters on your own. This object doesn't have to be exported._ 
+* **Services** - the namespace where service classes are defined. Members:
+    * **Date** - its instance methods are useful for converting `Date` to a string
+* **UI** - the namespace where classes that interact with the HTML are defined. Members:
+    * **Form** - the class responsible for dealing with forms
+* **Utils** - the namespace in which the classes containing the utility methods for the given data type are defined. Members: `Array`, `Collection`, `Dom`, `Object`, `String`
+* **Validators** - the namespace where validators are defined and where custom validators should also be merged
+* **Views** - the namespace where `Base` class for custom Views is defined
+* **Wire** - the class responsible for fetching signals / notifications 
 
 # ⬇️ Previous doc
-
-* **Helpers** - a namespace where you define helpers. Member classes:
-	* **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
-* **I18n** - an object that holds localizations. Localizations are objects too
-* **IdentityMap** - a class that stores information about *connected* objects
-* **Line** - a class that is responsible for sending and receiving messages over WebSocket connection
-* **Loco** - this class rules everything ;)
-* **Mix** - a factory function that generates a `Mixed` superclass (used for implementing mixins)
-* **Mixins** - a namespace where mixins are defined
-* **Models** - a namespace where you define models
-* **Presenters** - an empty namespace where you define presenters
-* **Services** - a namespace where you define services. Member classes:
-	* **Date** - it's instance methods are useful for formatting `Date` as string
-* **UI** - a namespace where UI components are defined. Member classes:
-	* **Form** - a class responsible for dealing with forms
-* **Utils** - a namespace where utility classes are defined. Members:
-	* **Array** - utilities for arrays
-	* **Collection** - utilities for collections (arrays and objects)
-	* **String** - utilities for strings
-* **Validators** - a namespace where validators are defined
-* **Views** - a namespace where you define views
-* **Wire** - a class that is responsible for fetching notifications
 
 ## Models
 
