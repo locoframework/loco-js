@@ -269,22 +269,104 @@ _Deprecated! It will be removed in the future. Store presenters on your own. Thi
 * **Views** - the namespace where `Base` class for custom Views is defined
 * **Wire** - the class responsible for fetching signals / notifications 
 
-# ⬇️ Previous doc
+# 📡 Models
 
-## Models
+The model layer has been extracted to a separate [repository](https://github.com/locoframework/loco-js-model) and it can be used standalone as well. If you want to look at how to integrate [React](https://reactjs.org), [Redux](https://redux.js.org) and **Loco-JS-Model**, 🎁[**this repository**](https://github.com/artofcodelabs/front-end-boilerplate)🎁 may be a good starting point. 
 
-Loco-JS supports nested resources. Only single nesting is allowed. Example:
+## Nesting models 🏺
 
-```coffeescript
-class App.Models.Article.Comment extends App.Models.Base
-  @identity = "Article.Comment"
-  @remoteName = "Comment"
-  @resources =
-    url: '/user/articles/:articleId/comments', paginate: {per: 10}
+If you want to have two models with the same name or maybe you want to reflect a server architecture, you can even nest models. But only one-level nesting is allowed.
 
-App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
-# GET "/user/articles/321/comments?page=2"
+```javascript
+// models/Coupon/Unit.js
+
+import { Models } from "loco-js";
+
+class Unit extends Models.Base {
+  static identity = "Coupon.Unit";
+
+  static remoteName = "Coupon::Unit"; // the name of the corresponding model
+                                      // on the server side (Ruby syntax)
+
+  static resources = {
+    // ...
+  };
+
+  static attributes = {
+    // ...
+  };
+}
+
+export default Unit;
 ```
+
+Remember to merge all defined models with the exported `Models` object:
+
+```javascript
+// models/index.js
+
+import { Models } from "loco-js";
+
+import Coupon from "./Coupon";
+import Unit from "./Coupon/Unit";
+import Admin from "./Admin";
+
+Object.assign(Coupon, {
+  Unit
+});
+
+Object.assign(Models, {
+  Admin,
+  Coupon
+});
+```
+
+Loco-JS will be able to find the correct model in this situation if you emit a signal for the corresponding model on the server side.
+
+# 🕹 Controllers
+
+Like it's already been said - given method of given controller is called automatically based on HTML `<body>`'s attributes. 
+
+Exemplary controller:
+
+```javascript
+// controllers/admin/coupons.js
+
+import { Controllers } from "loco-js";
+
+import New from "views/admin/coupons/new";
+import List from "views/admin/coupons/list";
+
+class Coupons extends Controllers.Base {
+  static identity = "Coupons"; // persist the name of the class because
+                               // it is going to be minified in production
+                               // and knowing the name of the current controller
+                               // can be useful (see the section about Line)
+  
+  // Loco-JS supports static and instance methods
+  static index() {
+    new List().render();
+  }
+
+  new() {
+    const view = new New({ planId: this.params.id });
+    this.setView("new", view); // assigning the instance of currently rendered
+                               // view to the controller's property gives 
+                               // a possibility to call other methods on it
+                               // in the next life cycle
+                               // (see the section about Line)
+    view.render();
+  }
+}
+
+export default Coupons;
+```
+
+To see all convenient properties and methods of the base class, other than `params` presented above, look at the [source code](https://github.com/locoframework/loco-js/blob/master/src/controllers/base.coffee).
+
+Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models (`setResource` / `setScope`) methods.
+
+# ⬇️ Previous doc
 
 ## Connectivity
 
@@ -394,10 +476,6 @@ class App.Services.NotificationCenter
 ```
 
 Every time a message is sent from the server, `receivedSignal` instance method is called.
-
-## Nesting models 🏺
-
-...
 
 ## Development
 
