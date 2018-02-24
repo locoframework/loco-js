@@ -366,33 +366,109 @@ To see all convenient properties and methods of the base class, other than `para
 
 Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models (`setResource` / `setScope`) methods.
 
-# ⬇️ Previous doc
+# 🗺 Views
 
-## Connectivity
+View is a layer where you should interact with the DOM to keep separation of concerns.  
+[Base class](https://github.com/locoframework/loco-js/blob/master/src/views/base.coffee) delivers only a few methods, so it does not force you how to do so.  
+The good practice is to always call `render` method on a view and treat it as a starting point.  
+You can even render **React** components inside of view.
 
-`App.Mixins.Connectivity` is a mixin, which is included in `App.Controllers.Base` and `App.Views.Base` base classes. It has very important instance method `connectWith`. You will use this method probably always inside instance methods of controllers and views. `connectWith` accepts 2 arguments. The first one can be an object or an array. Allowed are instances of models and class names of models. Example:
+```javascript
+// views/admin/coupons/new.js
 
-```coffeescript
-this.connectWith [App.Models.Article, App.Models.Article.Comment, user]
-this.connectWith article, receiver: "_articleReceivedSignal"
+import { Views } from "loco-js";
+import React from "react";
+import { render as renderElement } from "react-dom";
+
+import CouponForm from "components/admin/CouponForm";
+import Coupon from "models/Coupon";
+
+class New extends Views.Base {
+  constructor(opts) {
+    super(opts);
+    this.planId = opts.planId;
+  }
+
+  render() {
+    this.renderCouponForm();
+  }
+
+  renderCouponForm() {
+    const coupon = new Coupon({ resource: "admin", planId: this.planId });
+    renderElement(
+      <CouponForm coupon={coupon} />,
+      document.getElementById("coupon-form")
+    );
+  }
+}
+
+export default New;
 ```
 
-The second argument is optional and should be an object with *receiver* property. It specifies which method will be called when notification / signal related to connected object / objects is received.
+# 🔌 Connectivity
 
-If you pass a class name (or names) as connected object then you will receive notifications / signals related to all instances of this class.
+`Connectivity` is a mixin that is included in the `Base` classes of `Views` and `Controllers`. It allows you to send signals / notifications to all instances of controllers and views that are connected with given model classes or specific model instances. Example:
 
-Check *Examples* section for real-life usage.
+```javascript
+// views/admin/coupons/list.js
 
-## Controllers
+import { Views } from "loco-js";
 
-`App.Controllers.Base` base class is pretty straightforward. Just look at the source code for more details about implemented methods. More important things are:
+import Coupon from "models/Coupon";
 
-* `params` property - an object with URL params
-* `setScope` / `setResource` method - sets default scope for all models (which URL is used for fetching resources)
+class List extends Views.Base {
+  constructor(opts) {
+    super(opts);
+  }
 
-## Views
+  async render() {
+    this.connectWith([Coupon]); // every time back-end emits signal for 
+                                // any coupon, receivedSignal method is called.
+                                // An array of more than 1 model class can
+                                // be passed as an argument. It is even possible
+                                // to mix models' classes and instances in this
+                                // array
+    const coupons = await Coupon.get("all", { resource: "admin" });
+    this.connectWith(coupons.slice(-1), {  // method lastCouponReceivedSignal
+      receiver: "lastCouponReceivedSignal" // is called only if a signal is
+    });                                    // emitted by the back-end for
+                                           // a specific Coupon instance 
+                                           // that is the last element in 
+                                           // "coupons" array at this moment
+  }
 
-`App.Views.Base` base class is also straightforward and source code is self-explanatory. For more use cases check *Examples* section.
+  receivedSignal(signal, data) {
+  }
+
+  lastCouponReceivedSignal(signal, data) {
+  }
+}
+
+export default List;
+```
+
+So if you use Loco-Rails on the back-end and emit a signal for the first coupon in the database, like this:
+
+```ruby
+// you can do it anywhere, in rails console for example
+include Loco::Emitter
+emit Coupon.first, 'updated', { data: { foo: 'bar' } }
+```
+
+On the front-end side:
+
+1. Loco-JS will receive a signal in the following format `["Coupon", 1, "updated", {foo: "bar", id: 1}]`
+2. `receivedSignal` method will be called for every instance of the above `List` class (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as arguments 
+
+If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, 'updated', { data: { foo: 'bar' } }`
+
+On the front-end side:
+
+1. Loco-JS will receive a signal `["Coupon", 27, "updated", {foo: "bar", id: 27}]`
+2. `lastCouponReceivedSignal` method will be called with `updated` and `{foo: "bar", id: 27}` as arguments
+3. `receivedSignal` method will be called with `Coupon updated` and `{foo: "bar", id: 27}` as arguments
+
+# ⬇️ Previous doc
 
 ## App.UI.Form
 
