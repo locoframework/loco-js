@@ -450,9 +450,9 @@ export default List;
 So if you use Loco-Rails on the back-end and emit a signal for the first coupon in the database, like this:
 
 ```ruby
-// you can do it anywhere, in rails console for example
+# you can do it anywhere, in rails console for example
 include Loco::Emitter
-emit Coupon.first, 'updated', { data: { foo: 'bar' } }
+emit Coupon.first, :updated, { data: { foo: 'bar' } }
 ```
 
 On the front-end side:
@@ -460,13 +460,37 @@ On the front-end side:
 1. Loco-JS will receive a signal in the following format `["Coupon", 1, "updated", {foo: "bar", id: 1}]`
 2. `receivedSignal` method will be called for every instance of the above `List` class (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as arguments 
 
-If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, 'updated', { data: { foo: 'bar' } }`
+If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, :updated, { data: { foo: 'bar' } }`
 
 On the front-end side:
 
 1. Loco-JS will receive a signal `["Coupon", 27, "updated", {foo: "bar", id: 27}]`
 2. `lastCouponReceivedSignal` method will be called with `updated` and `{foo: "bar", id: 27}` as arguments
 3. `receivedSignal` method will be called with `Coupon updated` and `{foo: "bar", id: 27}` as arguments
+
+# 🚠 Wire
+
+Instance of this class works internally and is responsible for fetching notifications.  
+The constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
+
+[All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `setToken`.
+
+* `setToken(token)` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
+
+```javascript
+import { Env } from "loco-js";
+const wire = Env.loco.getWire(); // this is how to grab a working instance
+                                 // of Wire during runtime and after
+                                 // initialization (see Initialization section)
+wire.setToken("foobarbaz");
+```
+
+On the back-end, you can now emit a signal to _"this token"_. And only _this_ user will receive the following signal.
+
+```ruby
+include Loco::Emitter
+emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
+```
 
 # ⬇️ Previous doc
 
@@ -514,16 +538,6 @@ Example:
 ```
 
 TODO: JS example + how it works desc
-
-## App.Wire
-
-Instance of this class works internally and is responsible for fetching notifications. Following code shows - how to get this instance during runtime:
-
-```coffeescript
-App.Env.loco.getWire()
-```
-
-The constructor takes an object whose many properties have been described in the *initialization* section, earlier. All methods are rather straightforward and self-explanatory, but you should pay attention to the `setToken` one. When `@token` is not null, it is automatically appended to the requests that are responsible for fetching notifications. So it allows to fetch notifications assigned to given token.
 
 ## App.Line (since ver. 1.3)
 
