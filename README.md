@@ -473,6 +473,9 @@ On the front-end side:
 Instance of this class works internally and is responsible for fetching notifications.  
 The constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
 
+💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it will stop polling and will be waiting for informations, transmitted through WebSockets, about new, emitted by the back-end signals (to fetch them).  
+In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
+
 [All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `setToken`.
 
 * `setToken(token)` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
@@ -490,6 +493,90 @@ On the back-end, you can now emit a signal to _"this token"_. And only _this_ us
 ```ruby
 include Loco::Emitter
 emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
+```
+
+# 〰 Line
+
+Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection.
+
+These messages are not what we call signals / notifications. Signals / notifications must be associated with instances of models on the back-end while messages sent via `Line` don't have this requirement and are directed directly to recipients.
+
+It is not required to use Line when using Loco-JS. It works currently only if you use Loco-Rails on the back-end and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency.
+
+Loco-JS automatically creates an instance of `Line` and it subscribes to `Loco::NotificationCenterChannel` if it discovers `ActionCable`'s consumer under `Deps.cable` exported by Loco-JS.
+
+## Configuration 🛠
+
+```javascript
+import { Deps } from "loco-js";
+import ActionCable from "actioncable";
+
+// you can use one global NotificationCenter or per "panel"
+import NotificationCenter from "services/admin/NotificationCenter";
+
+Deps.cable = ActionCable.createConsumer();
+Deps.NotificationCenter = NotificationCenter;
+```
+
+## Sending messages 🚚
+
+You can send messages over WebSocket connection after initializing Loco-JS (see _Initialization_ section).
+
+```javascript
+import { Env } from "loco-js";
+
+const line = Env.loco.getLine();
+line.send({ foo: "bar" });
+
+// or using shortcut
+Env.loco.emit({ baz: "buz"});
+```
+
+To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
+
+## Receiving messages 📩
+
+Every time the back-end emits a signal to the front-end like this:
+
+```ruby
+include Loco::Emitter
+# emit_to method emits message over WebSocket connection 
+# to all signed in admins (in this example)
+emit_to Admin.all, type: 'COUPON_CREATED', id: @coupon.id
+```
+
+`receivedSignal` static or instance method is called on `Deps.NotificationCenter` class.
+
+```javascript
+// services/admin/NotificationCenter.js
+
+import { Env } from "loco-js";
+
+class NotificationCenter {
+  static receivedSignal(data) {
+    switch (data.type) {
+      case "COUPON_CREATED":
+        this.couponCreated(data.id);
+        break;
+      default:
+    }
+  }
+
+  static couponCreated(couponId) {
+    // break if current controller is not Coupons
+    if (Env.controller.constructor.identity !== "Coupons") return;
+    
+    // break if current action is not "new"
+    if (Env.action !== "new") return;
+    
+    // call couponCreated method on the view - assigned to the current
+    // controller as "new" by using setView method inherited 
+    // from the Controllers.Base class
+    Env.controller.getView("new").couponCreated(couponId);
+  }
+}
+
+export default NotificationCenter;
 ```
 
 # ⬇️ Previous doc
@@ -539,34 +626,6 @@ Example:
 
 TODO: JS example + how it works desc
 
-## App.Line (since ver. 1.3)
-
-Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection. Loco-JS automatically creates instance of `App.Line` and subscribes to `Loco::NotificationCenterChannel` if discovers `ActionCable`'s consumer under `App.cable`. Following code shows - how to get this instance during runtime:
-
-```coffeescript
-App.Env.loco.getLine()
-```
-
-### Sending messages
-
-```coffeescript
-App.Env.loco.getLine().send({})
-
-# or using shortcut:
-App.Env.loco.emit({})
-```
-
-### Receiving messages
-
-Loco-Rails delivers `loco:install` generator that creates following class at *JS-ASSETS-ROOT/services/notification_center.coffee*
-
-```coffeescript
-class App.Services.NotificationCenter
-  receivedSignal: (data) ->
-```
-
-Every time a message is sent from the server, `receivedSignal` instance method is called.
-
 ## Development
 
 ### Development and testing
@@ -577,6 +636,10 @@ Look inside `gulpfile.js` for more details.
 
 * examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
 
+# 👩🏽‍🔬 Tests
+
+...
+
 # 📈 Changelog
 
 ## Major releases 🎙
@@ -586,6 +649,10 @@ Look inside `gulpfile.js` for more details.
 * Loco-JS dropped the dependency on jQuery. So it has no external dependencies officially 🎉
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+
+### 1.3
+
+* Line
 
 # License 📜
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
