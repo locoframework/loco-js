@@ -426,7 +426,7 @@ class List extends Views.Base {
                                 // any coupon, receivedSignal method is called.
                                 // An array of more than 1 model class can
                                 // be passed as an argument. It is even possible
-                                // to mix models' classes and instances in this
+                                // to mix model classes and instances in this
                                 // array
     const coupons = await Coupon.get("all", { resource: "admin" });
     this.connectWith(coupons.slice(-1), {  // method lastCouponReceivedSignal
