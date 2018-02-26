@@ -1,6 +1,6 @@
 {
   "name": "loco-js",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "MVC framework for building web apps with ease.",
   "main": "dist/loco.js",
   "scripts": {
