@@ -1,7 +1,5 @@
 ![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/loco_logo_trans_sqr-300px.png)
 
-# 🚧 This documentation is under construction. Come back soon! 🚧
-
 # 🧐 What is Loco-JS?
 
 **Loco-JS** is a front-end framework similar to recently released [Stimulus](https://stimulusjs.org) in a fact that it doesn't want to take over your entire front-end.  
@@ -758,35 +756,48 @@ The example of the failure response:
 }
 ```
 
-# ⬇️ Previous doc
-
-## Development
-
-### Development and testing
-
-Look inside `gulpfile.js` for more details.
-
-## Examples
-
-* examine `test/dummy` app inside [Loco-Rails project](http://github.com/locoframework/loco-rails) for real-life use cases of almost all Loco's features in various scenarios
-
 # 👩🏽‍🔬 Tests
 
-...
+```bash
+npm run test
+```
 
 # 📈 Changelog
 
 ## Major releases 🎙
 
+### 3.2
+
+* loco-js-model ver. 0.3
+
+### 3.1
+
+* Static methods in controllers are also called
+
+### 3.0
+
+* Relying on `App` global variable has been removed
+* Static `receivedSignal` is supported
+
+### 2.1
+
+* No need to assign to the `App` global variable
+
+### 2.0
+
+* Architectural changes (Webpack, ES6 modules etc.)
+
 ### 1.5
 
 * Loco-JS dropped the dependency on jQuery. So it has no external dependencies officially 🎉
 
-Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
-
 ### 1.3
 
 * Line
+
+🔥 Only version 3 is under support and development.
+
+Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
 # License 📜
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
