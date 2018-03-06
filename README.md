@@ -30,12 +30,12 @@ Following sections contain more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for JavaScript code. You exactly know where to start, when looking for JavaScript code that runs current page (**Loco-JS**)
-* you have models that protect from sending invalid data to API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
-* you can easily assign a model to the form what will enrich it with fields' validation (**Loco-JS**)
-* you can connect models with controllers and views, so they will be notified about every change made to a given model on the server side. This change is going to be emitted as a signal to the front-end code. And signal is just a fancy name for JS object (**Loco**)
-* allows you to send messages over WebSockets in both directions with just a one line of code on each side (**Loco**)
-* respects permissions (you can send messages only to specified, signed in on the server, models _e.g. given admin or user_) (**Loco**)
+* by providing logical structure for a JavaScript code. You exactly know where to start, when looking for a JavaScript code that runs current page (**Loco-JS**)
+* you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
+* you can easily assign a model to a form what will enrich it with fields' validation (**Loco-JS**)
+* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a connected model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
+* it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
+* respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
 * solves other common problems
 
 # 🦕 Origins
@@ -43,12 +43,12 @@ Following sections contain more detailed description of its internals and API.
 **Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
 I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
 
-I still use **Rails** but my front-end toolbox has changed a bit. Now I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
+I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
 
 **Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
 
-But **Loco-JS** can be used standalone to give a structure to a JavaScript code, for example.  
-[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
+But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.  
+[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.    
 
 # 🔬 Tech stack of Loco-JS
 
@@ -800,6 +800,7 @@ npm run test
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
 # License 📜
+
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
 
 # Author 👨‍🏭
