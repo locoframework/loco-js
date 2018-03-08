@@ -30,10 +30,10 @@ Following sections contain more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code. You exactly know where to start, when looking for a JavaScript code that runs current page (**Loco-JS**)
+* by providing logical structure for a JavaScript code (along with base classes for models, controllers and views). You exactly know where to start, when looking for a JavaScript code that runs current page (**Loco-JS**)
 * you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form what will enrich it with fields' validation (**Loco-JS**)
-* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a connected model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
+* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a corresponding model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
 * it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
 * respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
 * solves other common problems
@@ -48,7 +48,7 @@ I still use **Rails** but my front-end toolbox has changed a lot. Now, I work wi
 **Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
 
 But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.  
-[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.    
+[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
 
 # 🔬 Tech stack of Loco-JS
 
@@ -456,7 +456,7 @@ emit Coupon.first, :updated, { data: { foo: 'bar' } }
 On the front-end side:
 
 1. Loco-JS will receive a signal in the following format `["Coupon", 1, "updated", {foo: "bar", id: 1}]`
-2. `receivedSignal` method will be called for every instance of the above `List` class (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as arguments 
+2. `receivedSignal` method will be called for every instance of the `List` class above (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as the arguments 
 
 If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, :updated, { data: { foo: 'bar' } }`
 
@@ -754,6 +754,50 @@ The example of the failure response:
     "base": ["something wrong with the whole object"]
   }
 }
+```
+
+# 🇵🇱 i18n
+
+Loco-JS supports internationalization. Following example shows how to setup a different default language.
+
+First, create a translation of the [base English file](https://github.com/locoframework/loco-js/blob/master/src/locales/en.coffee).
+
+```javascript
+// locales/pl.js
+
+const pl = {
+  // ...
+  errors: {
+    messages: {
+      blank: "nie może być puste",
+      inclusion: "nie jest na liście dopuszczalnych wartości",
+      invalid: "jest nieprawidłowe",
+      // ...
+    }
+  }
+};
+
+export default pl;
+```
+
+Loco-JS must have all translations assigned to `I18n` object.
+
+```javascript
+import { I18n, Loco } from "loco-js";
+
+import pl from "locales/pl";
+
+// remember to polyfill Object.assign or assign it in a different way
+Object.assign(I18n, {
+  pl
+});
+
+const loco = new Loco({
+  // ...
+  locale: "pl"
+});
+
+loco.init();
 ```
 
 # 👩🏽‍🔬 Tests
