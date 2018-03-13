@@ -843,10 +843,10 @@ npm run test
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
-# License 📜
+# 📜 License
 
 Loco-JS is released under the [MIT License](https://opensource.org/licenses/MIT).
 
-# Author 👨‍🏭
+# 👨‍🏭 Author
 
 Zbigniew Humeniuk from [Art of Code](http://artofcode.co)
