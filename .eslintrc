@@ -6,13 +6,11 @@
   ],
 
   "plugins": [
-    "prettier",
-    "jest"
+    "prettier"
   ],
 
   "env": {
-    "browser": true,
-    "jest/globals": true
+    "browser": true
   },
 
   "rules": {
