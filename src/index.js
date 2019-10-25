@@ -5,7 +5,6 @@ import Helpers from "./helpers";
 import I18n from "./i18n";
 import Line from "./base/line.coffee";
 import Loco from "./base/loco.coffee";
-import Mixins from "./mixins";
 import Services from "./services";
 import UI from "./ui";
 import Utils from "./utils";
@@ -24,7 +23,6 @@ export {
   I18n,
   Line,
   Loco,
-  Mixins,
   Models,
   Presenters,
   Services,
