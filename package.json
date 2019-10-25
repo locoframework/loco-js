@@ -30,7 +30,6 @@
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "brace-expansion": ">=1.1.7",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.4.0",
     "del": "^3.0.0",
