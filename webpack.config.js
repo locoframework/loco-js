@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 const path = require("path");
 
 module.exports = {
@@ -13,7 +15,7 @@ module.exports = {
             loader: "coffee-loader",
             options: {
               transpile: {
-                presets: ["env"]
+                presets: ["@babel/preset-env"]
               }
             }
           }
