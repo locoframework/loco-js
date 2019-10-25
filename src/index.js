@@ -12,8 +12,6 @@ import Views from "./views";
 import Wire from "./base/wire.coffee";
 import { Deps, Models, Validators } from "./deps";
 
-const Presenters = {};
-
 export {
   Channels,
   Controllers,
@@ -24,7 +22,6 @@ export {
   Line,
   Loco,
   Models,
-  Presenters,
   Services,
   UI,
   Utils,
