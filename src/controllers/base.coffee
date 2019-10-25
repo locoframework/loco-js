@@ -1,11 +1,9 @@
-import Mix from '../base/mix.coffee'
 import Connectivity from '../base/mixins/connectivity.coffee'
 import {Config} from '../deps';
 import ArrayUtils from '../utils/array.coffee'
 
-class Base extends Mix Connectivity
+class Base
   constructor: ->
-    super()
     @views = {}
     @receivers = {}
     @subController = null
@@ -42,5 +40,7 @@ class Base extends Mix Connectivity
         val = val.replace /\+/g, " "
       params[key] = val
     params
+
+Object.assign(Base.prototype, Connectivity);
 
 export default Base

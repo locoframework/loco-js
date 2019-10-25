@@ -1,9 +1,7 @@
-import Mix from '../base/mix.coffee'
 import Connectivity from '../base/mixins/connectivity.coffee'
 
-class Base extends Mix Connectivity
+class Base
   constructor: (opts = {}) ->
-    super opts
     @views = {}
     @intervals = {}
     @receivers = {}
@@ -21,5 +19,7 @@ class Base extends Mix Connectivity
 
   setDelegator: (delegator) -> @delegator = delegator
   getDelegator: (delegator) -> @delegator
+
+Object.assign(Base.prototype, Connectivity);
 
 export default Base
