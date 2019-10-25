@@ -28,7 +28,6 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.4.0",
