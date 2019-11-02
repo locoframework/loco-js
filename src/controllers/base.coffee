@@ -1,4 +1,4 @@
-import Connectivity from '../base/mixins/connectivity.coffee'
+import Connectivity from '../base/mixins/Connectivity'
 import {Config} from '../deps';
 import ArrayUtils from '../utils/array.coffee'
 

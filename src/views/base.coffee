@@ -1,4 +1,4 @@
-import Connectivity from '../base/mixins/connectivity.coffee'
+import Connectivity from '../base/mixins/Connectivity'
 
 class Base
   constructor: (opts = {}) ->
