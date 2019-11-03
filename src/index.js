@@ -5,7 +5,6 @@ import I18n from "./i18n";
 import Line from "./base/line.coffee";
 import Loco from "./base/loco.coffee";
 import Services from "./services";
-import UI from "./ui";
 import Utils from "./utils";
 import Views from "./views";
 import Wire from "./base/wire.coffee";
@@ -21,7 +20,6 @@ export {
   Loco,
   Models,
   Services,
-  UI,
   Utils,
   Validators,
   Views,
