@@ -10,6 +10,8 @@ import Views from "./views";
 import Wire from "./base/wire.coffee";
 import { Deps, Models, Validators } from "./deps";
 
+const connector = { Env, I18n, Utils };
+
 export {
   Channels,
   Controllers,
@@ -23,5 +25,6 @@ export {
   Utils,
   Validators,
   Views,
-  Wire
+  Wire,
+  connector
 };
