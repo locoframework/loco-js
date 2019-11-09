@@ -1,4 +1,4 @@
-import {Config, Deps, IdentityMap, Models} from '../deps'
+import { Config, Deps, IdentityMap, Models } from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
@@ -16,6 +16,8 @@ class Loco
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = this.getProtocolWithHost()
     @notificationsParams = notificationsParams
+    Deps.cable = opts.cable
+    Deps.NotificationCenter = opts.notificationCenter
 
   getWire: -> @wire
 

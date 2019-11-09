@@ -8,14 +8,13 @@ import Services from "./services";
 import Utils from "./utils";
 import Views from "./views";
 import Wire from "./base/wire.coffee";
-import { Deps, Models, Validators } from "./deps";
+import { Models, Validators } from "./deps";
 
 const connector = { Env, I18n, Utils };
 
 export {
   Channels,
   Controllers,
-  Deps,
   Env,
   I18n,
   Line,

@@ -4,9 +4,10 @@
   "description": "MVC framework for building web apps with ease.",
   "main": "dist/loco.js",
   "scripts": {
-    "start": "node dev/server.js",
+    "server": "node dev/server.js",
+    "start": "webpack --watch --config webpack.config.js",
     "test": "gulp",
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack -p --config webpack.config.js",
     "lint-staged": "lint-staged"
   },
   "repository": {
