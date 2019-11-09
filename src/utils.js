@@ -1,9 +1,7 @@
 import ObjectUtils from "./utils/object.coffee";
-import StringUtils from "./utils/string.coffee";
 
 const Utils = {
-  Object: ObjectUtils,
-  String: StringUtils
+  Object: ObjectUtils
 };
 
 export default Utils;
