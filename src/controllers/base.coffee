@@ -1,6 +1,5 @@
-import Connectivity from '../base/mixins/Connectivity'
-import {Config} from '../deps';
-import ArrayUtils from '../utils/array.coffee'
+import Connectivity from '../base/mixins/Connectivity';
+import { Config } from '../deps';
 
 class Base
   constructor: ->
@@ -32,7 +31,7 @@ class Base
     if splitUrl.length is 1
       return params
     paramsString = splitUrl[splitUrl.length - 1]
-    paramsArray = ArrayUtils.map paramsString.split('&'), (s) -> s.split '='
+    paramsArray = paramsString.split('&').map (s) -> s.split '='
     for arr in paramsArray
       key = decodeURIComponent arr[0]
       val = decodeURIComponent arr[1]

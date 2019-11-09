@@ -1,11 +1,10 @@
 import { IdentityMap } from "../../deps";
-import ArrayUtils from "../../utils/array.coffee";
 
 const Connectivity = {
   connectWith(data, opts = {}) {
     if (data == null) return null;
     if (data.constructor.name !== "Array") data = [data];
-    data = ArrayUtils.uniq(data);
+    data = data.filter((v, i, a) => a.indexOf(v) === i);
     for (const resource of data) {
       if (resource.constructor.name === "Function") {
         const identity = resource.getIdentity();

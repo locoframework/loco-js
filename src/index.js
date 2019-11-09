@@ -10,7 +10,7 @@ import Views from "./views";
 import Wire from "./base/wire.coffee";
 import { Models, Validators } from "./deps";
 
-const connector = { Env, I18n, Utils };
+const connector = { Env, I18n };
 
 export {
   Channels,
