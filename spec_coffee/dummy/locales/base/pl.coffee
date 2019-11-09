@@ -1,7 +1,7 @@
 App.I18n.pl =
   variants:
     few: (i) ->
-      num = parseInt App.Utils.String.last String(i)
+      num = parseInt  String(i)[String(i).length - 1]
       [2,3,4].indexOf(num) isnt -1 and not(String(i).length is 2 && String(i)[0] is '1')
   models: {}
   attributes: {}
