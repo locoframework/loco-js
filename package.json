@@ -4,9 +4,10 @@
   "description": "MVC framework for building web apps with ease.",
   "main": "dist/loco.js",
   "scripts": {
+    "jasmine": "gulp",
     "server": "node dev/server.js",
     "start": "webpack --watch --config webpack.config.js",
-    "test": "gulp",
+    "test": "jest --no-cache",
     "build": "webpack -p --config webpack.config.js",
     "lint-staged": "lint-staged"
   },
@@ -34,6 +35,7 @@
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^1.12.7",
@@ -50,6 +52,7 @@
     "gulp-notify": "^3.2.0",
     "gulp-watch": "^5.0.1",
     "husky": "^3.0.9",
+    "jest": "^24.9.0",
     "lint-staged": "^9.4.0",
     "prettier": "^1.18.2",
     "webpack": "^4.41.0",
