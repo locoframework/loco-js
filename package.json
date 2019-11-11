@@ -7,7 +7,7 @@
     "jasmine": "gulp",
     "server": "node dev/server.js",
     "start": "webpack --watch --config webpack.config.js",
-    "test": "jest --no-cache",
+    "test": "jest",
     "build": "webpack -p --config webpack.config.js",
     "lint-staged": "lint-staged"
   },
