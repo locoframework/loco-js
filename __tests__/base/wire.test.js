@@ -9,14 +9,17 @@ test('setting token correctly', () => {
 
 describe('#setPollingTime', () => {
   it('can change polling time', () => {
-    const loco = new Loco({ notifications: { enable: true } });
-    loco.init();
-    const wire = loco.getWire();
-
+    const wire = getWire();
     expect(wire.getPollingTime()).toEqual(3000);
     const pollingInterval = wire.getPollingInterval();
     wire.setPollingTime(10000);
     expect(wire.getPollingTime()).toEqual(10000);
     expect(wire.getPollingInterval()).not.toEqual(pollingInterval);
   });
+
+  const getWire = () => {
+    const loco = new Loco({ notifications: { enable: true } });
+    loco.init();
+    return loco.getWire();
+  }
 });
