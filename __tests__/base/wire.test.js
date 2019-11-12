@@ -17,14 +17,19 @@ test("setting token correctly", () => {
   });
 });
 
-describe("#setPollingTime", () => {
-  it("can change polling time", () => {
+describe("#_getURL", () => {
+  it("returns url with choosen protocol", () => {
     const wire = getWire();
-    expect(wire.getPollingTime()).toEqual(3000);
-    const pollingInterval = wire.getPollingInterval();
-    wire.setPollingTime(10000);
-    expect(wire.getPollingTime()).toEqual(10000);
-    expect(wire.getPollingInterval()).not.toEqual(pollingInterval);
+    wire.setSSL(true);
+    const [protocol] = wire._getURL().split("/");
+    expect(protocol).toEqual("https:");
+  });
+
+  it("return correct notifications's location", () => {
+    const wire = getWire();
+    wire.setLocation("nc");
+    const [, , , location] = wire._getURL().split("/");
+    expect(location).toEqual("nc");
   });
 });
 
@@ -41,19 +46,22 @@ describe("#processNotification", () => {
   });
 });
 
-describe("#_getURL", () => {
-  it("returns url with choosen protocol", () => {
+describe("#setPollingTime", () => {
+  it("can change polling time", () => {
     const wire = getWire();
-    wire.setSSL(true);
-    const [protocol] = wire._getURL().split("/");
-    expect(protocol).toEqual("https:");
+    expect(wire.getPollingTime()).toEqual(3000);
+    const pollingInterval = wire.getPollingInterval();
+    wire.setPollingTime(10000);
+    expect(wire.getPollingTime()).toEqual(10000);
+    expect(wire.getPollingInterval()).not.toEqual(pollingInterval);
   });
+});
 
-  it("return correct notifications's location", () => {
+describe("#setSize", () => {
+  it("can set max size of notifications", () => {
     const wire = getWire();
-    wire.setLocation("nc");
-    const [, , , location] = wire._getURL().split("/");
-    expect(location).toEqual("nc");
+    wire.setSize(10);
+    expect(wire.getSize()).toEqual(10);
   });
 });
 
