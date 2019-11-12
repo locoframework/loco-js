@@ -5,11 +5,6 @@ describe "App.Wire", ->
   afterEach ->
     @wire.disconnect()
 
-  describe "#processNotification", ->
-    it "returns if imap is empty", ->
-      result = @wire.processNotification ["Article", 1, "created", {id: 1}]
-      expect(result).toBe undefined
-
   describe "#_getURL", ->
     it "returns url with choosen protocol", ->
       @wire.setSSL true
