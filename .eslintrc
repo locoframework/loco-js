@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "jest/globals": true
   },
 
   "extends": [
@@ -11,7 +12,8 @@
   "parser": "babel-eslint",
 
   "plugins": [
-    "prettier"
+    "prettier",
+    "jest"
   ],
 
   "rules": {
