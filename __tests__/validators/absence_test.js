@@ -13,6 +13,20 @@ class Dummy extends Models.Base {
   };
 }
 
+class DummyCustomMsg extends Models.Base {
+  static identity = "DummyCustomMsg";
+
+  static attributes = {
+    blankAttrib: {
+      validations: {
+        absence: {
+          message: "only blank dude"
+        }
+      }
+    }
+  };
+}
+
 I18n.pl = {
   errors: {
     messages: {
@@ -42,4 +56,10 @@ it("supports i18n", () => {
   const dummy = new Dummy({ blankAttrib: 0 });
   dummy.isValid();
   expect(dummy.errors.blankAttrib[0]).toEqual("musi być puste");
+});
+
+it("supports custom message", () => {
+  const dummy = new DummyCustomMsg({ blankAttrib: 0 });
+  dummy.isValid();
+  expect(dummy.errors.blankAttrib[0]).toEqual("only blank dude");
 });
