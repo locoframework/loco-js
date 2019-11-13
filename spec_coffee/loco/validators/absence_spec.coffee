@@ -3,11 +3,6 @@ describe 'App.Validators.Absence', ->
 
   describe 'attribute is a string', ->
 
-    it 'is invalid if has any characters', ->
-      dummy = new App.Models.Dummy blankAttrib: ' '
-      dummy.isValid()
-      expect(dummy.errors.blankAttrib[0]).toEqual "must be blank"
-
     it 'is valid if is blank', ->
       dummy = new App.Models.Dummy blankAttrib: ''
       dummy.isValid()
