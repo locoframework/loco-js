@@ -17,6 +17,18 @@ class User extends Models.Base {
   };
 }
 
+class DummyCustomMsg extends Models.Base {
+  static identity = "DummyCustomMsg";
+
+  static attributes = {
+    accessPassword: {
+      validations: {
+        confirmation: { message: "different than confirmation" }
+      }
+    }
+  };
+}
+
 I18n.pl = {
   attributes: {
     User: {
@@ -47,5 +59,13 @@ it("supports i18n", () => {
   user.isValid();
   expect(user.errors.passwordConfirmation[0]).toEqual(
     "nie zgadza się z polem Hasło"
+  );
+});
+
+it("supports custom message", () => {
+  const dummy = new DummyCustomMsg({ accessPassword: "secret" });
+  dummy.isValid();
+  expect(dummy.errors.accessPasswordConfirmation[0]).toEqual(
+    "different than confirmation"
   );
 });
