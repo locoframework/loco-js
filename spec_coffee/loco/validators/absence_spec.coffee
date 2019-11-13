@@ -1,13 +1,6 @@
 describe 'App.Validators.Absence', ->
   afterEach -> App.Env.loco.setLocale 'en'
 
-  describe 'attribute is a string', ->
-
-    it 'is valid if is blank', ->
-      dummy = new App.Models.Dummy blankAttrib: ''
-      dummy.isValid()
-      expect(dummy.errors.blankAttrib).toBe undefined
-
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'
     dummy = new App.Models.Dummy blankAttrib: 0
