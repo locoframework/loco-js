@@ -1,4 +1,5 @@
-import { Models } from "index";
+import Loco from "base/loco.coffee";
+import { I18n, Models } from "index";
 
 class Dummy extends Models.Base {
   static identity = "Dummy";
@@ -12,6 +13,14 @@ class Dummy extends Models.Base {
   };
 }
 
+I18n.pl = {
+  errors: {
+    messages: {
+      present: "musi być puste"
+    }
+  }
+};
+
 describe("attribute is a string", () => {
   it("is invalid if has any character", () => {
     const dummy = new Dummy({ blankAttrib: " " });
@@ -24,4 +33,13 @@ describe("attribute is a string", () => {
     dummy.isValid();
     expect(dummy.errors).toBe(null);
   });
+});
+
+it("supports i18n", () => {
+  const loco = new Loco();
+  loco.init();
+  loco.setLocale("pl");
+  const dummy = new Dummy({ blankAttrib: 0 });
+  dummy.isValid();
+  expect(dummy.errors.blankAttrib[0]).toEqual("musi być puste");
 });
