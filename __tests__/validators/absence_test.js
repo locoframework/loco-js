@@ -51,7 +51,6 @@ describe("attribute is a string", () => {
 
 it("supports i18n", () => {
   const loco = new Loco();
-  loco.init();
   loco.setLocale("pl");
   const dummy = new Dummy({ blankAttrib: 0 });
   dummy.isValid();

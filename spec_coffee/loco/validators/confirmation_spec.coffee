@@ -4,11 +4,6 @@ describe 'App.Validators.Confirmation', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'supports i18n', ->
-    App.Env.loco.setLocale 'pl'
-    @user.isValid()
-    expect(@user.errors.passwordConfirmation[0]).toEqual "nie zgadza się z polem Hasło"
-
   it 'supports custom message', ->
     dummy = new App.Models.DummyCustomMsg accessPassword: 'secret'
     dummy.isValid()
