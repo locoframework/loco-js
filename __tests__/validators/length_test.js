@@ -35,7 +35,7 @@ describe("i18n support (en)", () => {
       );
     });
 
-    it("has message on variant 'few'", () => {
+    it("has message on variant 'other'", () => {
       const article = new Article({ title: "ab" });
       article.isValid();
       expect(article.errors.title[0]).toEqual(

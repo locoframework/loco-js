@@ -7,16 +7,6 @@ describe 'App.Validators.Length', ->
 
   describe 'i18n support (en)', ->
 
-    describe 'too short', ->
-
-      it "has message on variant 'many'", ->
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "is too short (minimum is 3 characters)"
-
-      it "has message on variant 'other'", ->
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "is too short (minimum is 3 characters)"
-
     describe 'too long', ->
 
       it "has message on variant 'one'", ->
