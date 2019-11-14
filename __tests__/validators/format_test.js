@@ -14,6 +14,18 @@ class User extends Models.Base {
   };
 }
 
+class DummyCustomMsg extends Models.Base {
+  static identity = "DummyCustomMsg";
+
+  static attributes = {
+    countryCode: {
+      validations: {
+        format: { with: /^[A-Z]{2}$/, message: "invalid country code" }
+      }
+    }
+  };
+}
+
 I18n.pl = {
   errors: {
     messages: {
@@ -34,4 +46,10 @@ it("supports i18n", () => {
   const user = new User({ email: "joe.doe.com" });
   user.isValid();
   expect(user.errors.email[0]).toEqual("jest nieprawidłowe");
+});
+
+it("supports custom message", () => {
+  const dummy = new DummyCustomMsg({ countryCode: "PLN" });
+  dummy.isValid();
+  expect(dummy.errors.countryCode[0]).toEqual("invalid country code");
 });
