@@ -4,10 +4,6 @@ describe 'App.Validators.Format', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'validates format', ->
-    @user.isValid()
-    expect(@user.errors.email[0]).toEqual "is invalid"
-
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'
     @user.isValid()
