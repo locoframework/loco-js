@@ -9,6 +9,11 @@ class Dummy extends Models.Base {
         length: { within: [0, 1] }
       }
     },
+    lang: {
+      validations: {
+        length: { is: 2 }
+      }
+    },
     letter: {
       validations: {
         length: { is: 1 }
@@ -81,6 +86,14 @@ describe("i18n support (en)", () => {
       dummy.isValid();
       expect(dummy.errors.letter[0]).toEqual(
         "is the wrong length (should be 1 character)"
+      );
+    });
+
+    it("has message on variant 'other'", () => {
+      const dummy = new Dummy({ lang: "a" });
+      dummy.isValid();
+      expect(dummy.errors.lang[0]).toEqual(
+        "is the wrong length (should be 2 characters)"
       );
     });
   });

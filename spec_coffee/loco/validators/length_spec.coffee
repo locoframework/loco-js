@@ -5,25 +5,6 @@ describe 'App.Validators.Length', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  describe 'i18n support (en)', ->
-
-    describe 'wrong length', ->
-
-      it "has message on variant 'few'", ->
-        @dummy = new App.Models.Dummy lang: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.lang[0]).toEqual "is the wrong length (should be 2 characters)"
-
-      it "has message on variant 'many'", ->
-        @dummy = new App.Models.Dummy lang: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.lang[0]).toEqual "is the wrong length (should be 2 characters)"
-
-      it "has message on variant 'other'", ->
-        @dummy = new App.Models.Dummy lang: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.lang[0]).toEqual "is the wrong length (should be 2 characters)"
-
   describe 'i18n support (pl)', ->
 
     beforeEach -> App.Env.loco.setLocale 'pl'
