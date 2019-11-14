@@ -9,11 +9,6 @@ describe 'App.Validators.Length', ->
 
     describe 'wrong length', ->
 
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy letter: 'ab'
-        @dummy.isValid()
-        expect(@dummy.errors.letter[0]).toEqual "is the wrong length (should be 1 character)"
-
       it "has message on variant 'few'", ->
         @dummy = new App.Models.Dummy lang: 'a'
         @dummy.isValid()
