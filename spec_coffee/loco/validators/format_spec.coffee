@@ -4,11 +4,6 @@ describe 'App.Validators.Format', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'supports i18n', ->
-    App.Env.loco.setLocale 'pl'
-    @user.isValid()
-    expect(@user.errors.email[0]).toEqual "jest nieprawidłowe"
-
   it 'supports custom message', ->
     dummy = new App.Models.DummyCustomMsg countryCode: 'PLN'
     dummy.isValid()
