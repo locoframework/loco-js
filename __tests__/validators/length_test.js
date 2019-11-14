@@ -4,6 +4,11 @@ class Dummy extends Models.Base {
   static identity = "Dummy";
 
   static attributes = {
+    dumbAttrib: {
+      validations: {
+        length: { within: [0, 1] }
+      }
+    },
     title: {
       validations: {
         length: { minimum: 1, maximum: 255 }
@@ -40,6 +45,18 @@ describe("i18n support (en)", () => {
       article.isValid();
       expect(article.errors.title[0]).toEqual(
         "is too short (minimum is 3 characters)"
+      );
+    });
+  });
+});
+
+describe("i18n support (en)", () => {
+  describe("too long", () => {
+    it("has message on variant 'one'", () => {
+      const dummy = new Dummy({ dumbAttrib: "ab" });
+      dummy.isValid();
+      expect(dummy.errors.dumbAttrib[0]).toEqual(
+        "is too long (maximum is 1 character)"
       );
     });
   });

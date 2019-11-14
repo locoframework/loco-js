@@ -9,11 +9,6 @@ describe 'App.Validators.Length', ->
 
     describe 'too long', ->
 
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy dumbAttrib: 'ab'
-        @dummy.isValid()
-        expect(@dummy.errors.dumbAttrib[0]).toEqual "is too long (maximum is 1 character)"
-
       it "has message on variant 'few'", ->
         @article.title = @tooLongTitle
         @article.isValid()
