@@ -63,9 +63,8 @@ describe("i18n support (en)", () => {
       );
     });
 
-    it("has message on variant 'few'", () => {
-      const article = new Article();
-      article.title = tooLongTitle;
+    it("has message on variant 'other'", () => {
+      const article = new Article({ title: tooLongTitle });
       article.isValid();
       expect(article.errors.title[0]).toEqual(
         "is too long (maximum is 255 characters)"

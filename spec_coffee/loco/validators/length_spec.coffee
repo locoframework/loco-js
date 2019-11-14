@@ -7,18 +7,6 @@ describe 'App.Validators.Length', ->
 
   describe 'i18n support (en)', ->
 
-    describe 'too long', ->
-
-      it "has message on variant 'many'", ->
-        @article.title = @tooLongTitle
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "is too long (maximum is 255 characters)"
-
-      it "has message on variant 'other'", ->
-        @article.title = @tooLongTitle
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "is too long (maximum is 255 characters)"
-
     describe 'wrong length', ->
 
       it "has message on variant 'one'", ->
