@@ -9,11 +9,6 @@ describe 'App.Validators.Length', ->
 
     describe 'too long', ->
 
-      it "has message on variant 'few'", ->
-        @article.title = @tooLongTitle
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "is too long (maximum is 255 characters)"
-
       it "has message on variant 'many'", ->
         @article.title = @tooLongTitle
         @article.isValid()

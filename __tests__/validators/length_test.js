@@ -30,6 +30,9 @@ class Article extends Models.Base {
   };
 }
 
+const tooLongTitle =
+  "Migrations are stored as files in the db/migrate directory, one for each migration class. The name of the file is of the form YYYYMMDDHHMMSS_create_products.rb, that is to say a UTC timestamp identifying the migration followed by an underscore followed by the name of the migration.";
+
 describe("i18n support (en)", () => {
   describe("too short", () => {
     it("has message on variant 'one'", () => {
@@ -57,6 +60,15 @@ describe("i18n support (en)", () => {
       dummy.isValid();
       expect(dummy.errors.dumbAttrib[0]).toEqual(
         "is too long (maximum is 1 character)"
+      );
+    });
+
+    it("has message on variant 'few'", () => {
+      const article = new Article();
+      article.title = tooLongTitle;
+      article.isValid();
+      expect(article.errors.title[0]).toEqual(
+        "is too long (maximum is 255 characters)"
       );
     });
   });
