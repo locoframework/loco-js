@@ -9,11 +9,6 @@ describe 'App.Validators.Length', ->
 
     describe 'too short', ->
 
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy title: ''
-        @dummy.isValid()
-        expect(@dummy.errors.title[0]).toEqual "is too short (minimum is 1 character)"
-
       it "has message on variant 'few'", ->
         @article.isValid()
         expect(@article.errors.title[0]).toEqual "is too short (minimum is 3 characters)"
