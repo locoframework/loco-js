@@ -4,11 +4,6 @@ describe 'App.Validators.Inclusion', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'is valid if value is available in an array', ->
-    @dummy.rate = 'good'
-    @dummy.isValid()
-    expect(@dummy.errors.rate).toBe undefined
-
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'
     @dummy.isValid()
