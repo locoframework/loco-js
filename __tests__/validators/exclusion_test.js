@@ -1,4 +1,5 @@
-import { Models } from "index";
+import Loco from "base/loco.coffee";
+import { I18n, Models } from "index";
 
 class Dummy extends Models.Base {
   static identity = "Dummy";
@@ -12,6 +13,14 @@ class Dummy extends Models.Base {
   };
 }
 
+I18n.pl = {
+  errors: {
+    messages: {
+      exclusion: "jest zarezerwowane"
+    }
+  }
+};
+
 it("adds error if value is in an array", () => {
   const dummy = new Dummy({ author: "admin" });
   dummy.isValid();
@@ -23,4 +32,12 @@ it("is valid if value is not in an array", () => {
   dummy.author = "David";
   dummy.isValid();
   expect(dummy.errors).toBe(null);
+});
+
+it("supports i18n", () => {
+  const loco = new Loco();
+  loco.setLocale("pl");
+  const dummy = new Dummy({ author: "admin" });
+  dummy.isValid();
+  expect(dummy.errors.author[0]).toEqual("jest zarezerwowane");
 });
