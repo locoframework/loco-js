@@ -4,10 +4,6 @@ describe 'App.Validators.Inclusion', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'adds error if value is not available in an array', ->
-    @dummy.isValid()
-    expect(@dummy.errors.rate[0]).toEqual "is not included in the list"
-
   it 'is valid if value is available in an array', ->
     @dummy.rate = 'good'
     @dummy.isValid()
