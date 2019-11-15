@@ -10,6 +10,11 @@ class Dummy extends Models.Base {
         length: { within: [0, 1] }
       }
     },
+    dumbAttrib2: {
+      validations: {
+        length: { within: [2, 4] }
+      }
+    },
     lang: {
       validations: {
         length: { is: 2 }
@@ -146,35 +151,63 @@ describe("i18n support (pl)", () => {
     loco.setLocale("pl");
   });
 
-  it("has message on variant 'one'", () => {
-    const dummy = new Dummy({ title: "" });
-    dummy.isValid();
-    expect(dummy.errors.title[0]).toEqual(
-      "jest za krótkie (przynajmniej jeden znak)"
-    );
+  describe("too short", () => {
+    it("has message on variant 'one'", () => {
+      const dummy = new Dummy({ title: "" });
+      dummy.isValid();
+      expect(dummy.errors.title[0]).toEqual(
+        "jest za krótkie (przynajmniej jeden znak)"
+      );
+    });
+
+    it("has message on variant 'few'", () => {
+      const article = new Article({ title: "ab" });
+      article.isValid();
+      expect(article.errors.title[0]).toEqual(
+        "jest za krótkie (przynajmniej 3 znaki)"
+      );
+    });
+
+    it("has message on variant 'many'", () => {
+      const dummy = new Dummy({ shortDesc: "abc" });
+      dummy.isValid();
+      expect(dummy.errors.shortDesc[0]).toEqual(
+        "jest za krótkie (przynajmniej 10 znaków)"
+      );
+    });
+
+    it("has message on variant 'other'", () => {
+      const dummy = new Dummy({ shortDesc: "abc" });
+      dummy.isValid();
+      expect(dummy.errors.shortDesc[0]).toEqual(
+        "jest za krótkie (przynajmniej 10 znaków)"
+      );
+    });
   });
 
-  it("has message on variant 'few'", () => {
-    const article = new Article({ title: "ab" });
-    article.isValid();
-    expect(article.errors.title[0]).toEqual(
-      "jest za krótkie (przynajmniej 3 znaki)"
-    );
-  });
+  describe("too long", () => {
+    it("has message on variant 'one'", () => {
+      const dummy = new Dummy({ dumbAttrib: "ab" });
+      dummy.isValid();
+      expect(dummy.errors.dumbAttrib[0]).toEqual(
+        "jest za długie (maksymalnie jeden znak)"
+      );
+    });
 
-  it("has message on variant 'many'", () => {
-    const dummy = new Dummy({ shortDesc: "abc" });
-    dummy.isValid();
-    expect(dummy.errors.shortDesc[0]).toEqual(
-      "jest za krótkie (przynajmniej 10 znaków)"
-    );
-  });
+    it("has message on variant 'few'", () => {
+      const dummy = new Dummy({ dumbAttrib2: "cdefgah" });
+      dummy.isValid();
+      expect(dummy.errors.dumbAttrib2[0]).toEqual(
+        "jest za długie (maksymalnie 4 znaki)"
+      );
+    });
 
-  it("has message on variant 'other'", () => {
-    const dummy = new Dummy({ shortDesc: "abc" });
-    dummy.isValid();
-    expect(dummy.errors.shortDesc[0]).toEqual(
-      "jest za krótkie (przynajmniej 10 znaków)"
-    );
+    it("has message on variant 'other'", () => {
+      const article = new Article({ title: tooLongTitle });
+      article.isValid();
+      expect(article.errors.title[0]).toEqual(
+        "jest za długie (maksymalnie 255 znaków)"
+      );
+    });
   });
 });
