@@ -9,27 +9,6 @@ describe 'App.Validators.Length', ->
 
     beforeEach -> App.Env.loco.setLocale 'pl'
 
-    describe 'too short', ->
-
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy title: ''
-        @dummy.isValid()
-        expect(@dummy.errors.title[0]).toEqual "jest za krótkie (przynajmniej jeden znak)"
-
-      it "has message on variant 'few'", ->
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "jest za krótkie (przynajmniej 3 znaki)"
-
-      it "has message on variant 'many'", ->
-        @dummy = new App.Models.Dummy shortDesc: 'abc'
-        @dummy.isValid()
-        expect(@dummy.errors.shortDesc[0]).toEqual "jest za krótkie (przynajmniej 10 znaków)"
-
-      it "has message on variant 'other'", ->
-        @dummy = new App.Models.Dummy shortDesc: 'abc'
-        @dummy.isValid()
-        expect(@dummy.errors.shortDesc[0]).toEqual "jest za krótkie (przynajmniej 10 znaków)"
-
     describe 'too long', ->
 
       it "has message on variant 'one'", ->
