@@ -43,6 +43,23 @@ class Dummy extends Models.Base {
   };
 }
 
+class DummyCustomMsg extends Models.Base {
+  static identity = "DummyCustomMsg";
+
+  static attributes = {
+    lang: {
+      validations: {
+        length: { is: 2, message: "length is not what I expect" }
+      }
+    },
+    shortDesc: {
+      validations: {
+        length: { minimum: 10, maximum: 50, message: "length is bloody wrong" }
+      }
+    }
+  };
+}
+
 class Article extends Models.Base {
   static identity = "Article";
 
@@ -151,9 +168,14 @@ describe("i18n support (en)", () => {
 });
 
 describe("i18n support (pl)", () => {
+  const loco = new Loco();
+
   beforeEach(() => {
-    const loco = new Loco();
     loco.setLocale("pl");
+  });
+
+  afterEach(() => {
+    loco.setLocale("en");
   });
 
   describe("too short", () => {
@@ -240,5 +262,25 @@ describe("i18n support (pl)", () => {
         "ma nieprawidłową długość (powinna wynosić 100 znaków)"
       );
     });
+  });
+});
+
+describe("custom message support", () => {
+  const dummy = new DummyCustomMsg({ shortDesc: "foo bar", lang: "PLN" });
+
+  it('has the same custom message for "minimum" violation', () => {
+    dummy.isValid();
+    expect(dummy.errors.shortDesc[0]).toEqual("length is bloody wrong");
+  });
+
+  it('has the same custom message for "maximum" violation', () => {
+    dummy.shortDesc = tooLongTitle;
+    dummy.isValid();
+    expect(dummy.errors.shortDesc[0]).toEqual("length is bloody wrong");
+  });
+
+  it('has the same custom message for "is" violation', () => {
+    dummy.isValid();
+    expect(dummy.errors.lang[0]).toEqual("length is not what I expect");
   });
 });
