@@ -5,54 +5,6 @@ describe 'App.Validators.Length', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  describe 'i18n support (pl)', ->
-
-    beforeEach -> App.Env.loco.setLocale 'pl'
-
-    describe 'too long', ->
-
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy dumbAttrib: 'ab'
-        @dummy.isValid()
-        expect(@dummy.errors.dumbAttrib[0]).toEqual "jest za długie (maksymalnie jeden znak)"
-
-      it "has message on variant 'few'", ->
-        @dummy = new App.Models.Dummy dumbAttrib2: 'cdefgah'
-        @dummy.isValid()
-        expect(@dummy.errors.dumbAttrib2[0]).toEqual "jest za długie (maksymalnie 4 znaki)"
-
-      it "has message on variant 'many'", ->
-        @article.title = @tooLongTitle
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "jest za długie (maksymalnie 255 znaków)"
-
-      it "has message on variant 'other'", ->
-        @article.title = @tooLongTitle
-        @article.isValid()
-        expect(@article.errors.title[0]).toEqual "jest za długie (maksymalnie 255 znaków)"
-
-    describe 'wrong length', ->
-
-      it "has message on variant 'one'", ->
-        @dummy = new App.Models.Dummy letter: 'ab'
-        @dummy.isValid()
-        expect(@dummy.errors.letter[0]).toEqual "ma nieprawidłową długość (powinna wynosić jeden znak)"
-
-      it "has message on variant 'few'", ->
-        @dummy = new App.Models.Dummy lang: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.lang[0]).toEqual "ma nieprawidłową długość (powinna wynosić 2 znaki)"
-
-      it "has message on variant 'many'", ->
-        @dummy = new App.Models.Dummy dumbAttrib3: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.dumbAttrib3[0]).toEqual "ma nieprawidłową długość (powinna wynosić 5 znaków)"
-
-      it "has message on variant 'other'", ->
-        @dummy = new App.Models.Dummy dumbAttrib4: 'a'
-        @dummy.isValid()
-        expect(@dummy.errors.dumbAttrib4[0]).toEqual "ma nieprawidłową długość (powinna wynosić 100 znaków)"
-
   describe 'custom message support', ->
 
     beforeEach ->

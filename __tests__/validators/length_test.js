@@ -15,6 +15,11 @@ class Dummy extends Models.Base {
         length: { within: [2, 4] }
       }
     },
+    dumbAttrib4: {
+      validations: {
+        length: { is: 100 }
+      }
+    },
     lang: {
       validations: {
         length: { is: 2 }
@@ -207,6 +212,32 @@ describe("i18n support (pl)", () => {
       article.isValid();
       expect(article.errors.title[0]).toEqual(
         "jest za długie (maksymalnie 255 znaków)"
+      );
+    });
+  });
+
+  describe("wrong length", () => {
+    it("has message on variant 'one'", () => {
+      const dummy = new Dummy({ letter: "ab" });
+      dummy.isValid();
+      expect(dummy.errors.letter[0]).toEqual(
+        "ma nieprawidłową długość (powinna wynosić jeden znak)"
+      );
+    });
+
+    it("has message on variant 'few'", () => {
+      const dummy = new Dummy({ lang: "a" });
+      dummy.isValid();
+      expect(dummy.errors.lang[0]).toEqual(
+        "ma nieprawidłową długość (powinna wynosić 2 znaki)"
+      );
+    });
+
+    it("has message on variant 'other'", () => {
+      const dummy = new Dummy({ dumbAttrib4: "a" });
+      dummy.isValid();
+      expect(dummy.errors.dumbAttrib4[0]).toEqual(
+        "ma nieprawidłową długość (powinna wynosić 100 znaków)"
       );
     });
   });
