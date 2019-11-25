@@ -6,15 +6,6 @@ describe 'App.Validators.Numericality', ->
 
   afterEach -> App.Env.loco.setLocale 'en'
 
-  it 'is valid if int required and int is passed as string', ->
-    @dummy.year = '1900'
-    @dummy.isValid()
-    expect(@dummy.errors.year).toBe undefined
-
-  it 'supports custom message', ->
-    @dcm.isValid()
-    expect(@dcm.errors.year[0]).toEqual 'your number is not acceptable'
-
   describe 'i18n support (en)', ->
 
     it 'has message if not a number', ->
