@@ -1,5 +1,4 @@
-import Loco from "base/loco.coffee";
-import { I18n, Models } from "index";
+import { I18n, Loco, Models } from "index";
 
 class Article extends Models.Base {
   static identity = "Article";
