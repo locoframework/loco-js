@@ -1,4 +1,5 @@
-import { Models } from "index";
+import Loco from "base/loco.coffee";
+import { I18n, Models } from "index";
 
 class Dummy extends Models.Base {
   static identity = "Dummy";
@@ -57,6 +58,23 @@ class DummyCustomMsg extends Models.Base {
     }
   };
 }
+
+I18n.pl = {
+  errors: {
+    messages: {
+      equal_to: "musi być równe %{count}",
+      even: "musi być parzyste",
+      greater_than: "musi być większe od %{count}",
+      greater_than_or_equal_to: "musi być większe lub równe %{count}",
+      less_than: "musi być mniejsze od %{count}",
+      less_than_or_equal_to: "musi być mniejsze lub równe %{count}",
+      not_a_number: "nie jest liczbą",
+      not_an_integer: "musi być liczbą całkowitą",
+      odd: "musi być nieparzyste",
+      other_than: "musi być inna niż %{count}"
+    }
+  }
+};
 
 it("is valid if int required and int is passed as string", () => {
   const dummy = new Dummy({ year: "foo" });
@@ -138,5 +156,81 @@ describe("i18n support (en)", () => {
     dummy.dumbAttrib3 = "12345";
     dummy.isValid();
     expect(dummy.errors.dumbAttrib3[0]).toEqual("must be even");
+  });
+});
+
+describe("i18n support (pl)", () => {
+  const loco = new Loco();
+  let dummy = new Dummy({ year: "foo" });
+
+  beforeEach(() => {
+    loco.setLocale("pl");
+  });
+
+  afterEach(() => {
+    loco.setLocale("en");
+    dummy = new Dummy({ year: "foo" });
+  });
+
+  it("has message if not a number", () => {
+    dummy.isValid();
+    expect(dummy.errors.year[0]).toEqual("nie jest liczbą");
+  });
+
+  it("has message if not an integer", () => {
+    dummy.year = 231.23;
+    dummy.isValid();
+    expect(dummy.errors.year[0]).toEqual("musi być liczbą całkowitą");
+  });
+
+  it("has message if value is not greather than specified value", () => {
+    dummy.year = 1887;
+    dummy.isValid();
+    expect(dummy.errors.year[0]).toEqual("musi być większe od 1887");
+  });
+
+  it("has message if value is not greather than or equal to specified value", () => {
+    dummy.releaseYear = 2015;
+    dummy.isValid();
+    expect(dummy.errors.releaseYear[0]).toEqual(
+      `musi być większe lub równe ${new Date().getFullYear()}`
+    );
+  });
+
+  it("has message if value is not equal to specified value", () => {
+    dummy.dumbAttrib = 6;
+    dummy.isValid();
+    expect(dummy.errors.dumbAttrib[0]).toEqual("musi być równe 5");
+  });
+
+  it("has message if value is not less than specified value", () => {
+    dummy.releaseYear = 2101;
+    dummy.isValid();
+    expect(dummy.errors.releaseYear[0]).toEqual("musi być mniejsze od 2100");
+  });
+
+  it("has message if value is not less than or equal to specified value", () => {
+    dummy.year = 2015;
+    dummy.releaseYear = 2013;
+    dummy.isValid();
+    expect(dummy.errors.year[0]).toEqual("musi być mniejsze lub równe 2013");
+  });
+
+  it("has message if value is not other than specified value", () => {
+    dummy.releaseYear = 2098;
+    dummy.isValid();
+    expect(dummy.errors.releaseYear[0]).toEqual("musi być inna niż 2098");
+  });
+
+  it("has message if specified value is not odd", () => {
+    dummy.dumbAttrib2 = "12";
+    dummy.isValid();
+    expect(dummy.errors.dumbAttrib2[0]).toEqual("musi być nieparzyste");
+  });
+
+  it("has message if specified value is not even", () => {
+    dummy.dumbAttrib3 = "12345";
+    dummy.isValid();
+    expect(dummy.errors.dumbAttrib3[0]).toEqual("musi być parzyste");
   });
 });
