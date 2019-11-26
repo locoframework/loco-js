@@ -44,6 +44,14 @@ Object.assign(Validators, { Vulgarity });
 
 I18n.en.errors.messages.vulgarity = "contains strong language.";
 
+I18n.pl = {
+  errors: {
+    messages: {
+      vulgarity: "zawiera mocny język."
+    }
+  }
+};
+
 class Comment extends Models.Base {
   static identity = "Article.Comment";
 
@@ -56,11 +64,21 @@ class Comment extends Models.Base {
   };
 }
 
+const loco = new Loco();
+loco.init();
+
 it("allows to define custom validators", () => {
-  const loco = new Loco();
   loco.setLocale("en");
-  loco.init();
   const comment = new Comment({ text: "Some nice words + FUCK at the end." });
   expect(comment.isInvalid()).toBe(true);
   expect(comment.errors.text[0]).toEqual("contains strong language.");
+});
+
+it("supports i18n", () => {
+  loco.setLocale("pl");
+  const comment = new Comment({
+    text: "Trochę ciepłych słów + KuRwA na końcu."
+  });
+  expect(comment.isInvalid()).toBe(true);
+  expect(comment.errors.text[0]).toEqual("zawiera mocny język.");
 });
