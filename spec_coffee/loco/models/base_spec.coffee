@@ -1,14 +1,4 @@
 describe 'App.Models.Base', ->
-  beforeEach ->
-    jasmine.Ajax.install()
-
-  afterEach ->
-    jasmine.Ajax.uninstall()
-
-  it 'does not send param if was used in URL', ->
-    App.Models.Article.Comment.all {articleId: 1}, (comments) ->
-    expect(jasmine.Ajax.requests.mostRecent().url).toBe '/user/articles/1/comments?page=1'
-
   describe "attribute types", ->
     it 'can be Number', ->
       article = new App.Models.Article adminReviewStartedAt: '1464490570.0260842'
