@@ -1,17 +1,4 @@
 describe 'App.Models.Base', ->
-  describe "attribute types", ->
-    it 'can be Number', ->
-      article = new App.Models.Article adminReviewStartedAt: '1464490570.0260842'
-      expect(article.adminReviewStartedAt).toEqual 1464490570.0260842
-
-    it 'can be Float', ->
-      article = new App.Models.Article adminRate: '  8.33 aaa '
-      expect(article.adminRate).toEqual 8.33
-
-    it 'can be String', ->
-      article = new App.Models.Article title: 12.33
-      expect(article.title).toEqual '12.33'
-
   describe 'validation', ->
     it 'allows custom validations', ->
       article = new App.Models.Article content: 'Some words.. and fUCk!'
