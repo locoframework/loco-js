@@ -104,3 +104,15 @@ describe("validation", () => {
     expect(dummy.errors).toBe(null);
   });
 });
+
+describe("#save", () => {
+  it("properly builds URL for nested models", () => {
+    const comment = new Comment({
+      articleId: 1,
+      author: "Joe Doe",
+      text: "foo bar baz"
+    });
+    comment.save();
+    expect(mockXHR.open).toBeCalledWith("POST", "/user/articles/1/comments");
+  });
+});
