@@ -26,6 +26,9 @@ class Comment extends Models.Base {
         presence: true
       },
       remoteName: "article_id"
+    },
+    approved: {
+      type: "Boolean"
     }
   };
 }
@@ -146,5 +149,19 @@ describe("#serialize", () => {
       text: "foo bar baz"
     });
     expect(comment.serialize()["comment"]).not.toBe(undefined);
+  });
+});
+
+describe("#assignAttr", () => {
+  it("assigns Boolean values", () => {
+    const comment = new Comment();
+    comment.assignAttr("approved", true);
+    expect(comment.approved).toEqual(true);
+  });
+
+  it("converts to Boolean values", () => {
+    const comment = new Comment();
+    comment.assignAttr("approved", "0");
+    expect(comment.approved).toEqual(false);
   });
 });
