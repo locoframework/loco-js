@@ -3,9 +3,30 @@ import { Models } from "index";
 
 class Comment extends Models.Base {
   static identity = "Article.Comment";
+  static remoteName = "Comment";
   static resources = {
     url: "/user/articles/:articleId/comments",
     paginate: { per: 10 }
+  };
+
+  static attributes = {
+    author: {
+      validations: {
+        presence: true
+      }
+    },
+    text: {
+      validations: {
+        presence: true
+      }
+    },
+    articleId: {
+      type: "Int",
+      validations: {
+        presence: true
+      },
+      remoteName: "article_id"
+    }
   };
 }
 
@@ -114,5 +135,16 @@ describe("#save", () => {
     });
     comment.save();
     expect(mockXHR.open).toBeCalledWith("POST", "/user/articles/1/comments");
+  });
+});
+
+describe("#serialize", () => {
+  it("sets proper key's name for nested models", () => {
+    const comment = new Comment({
+      articleId: 1,
+      author: "Joe Doe",
+      text: "foo bar baz"
+    });
+    expect(comment.serialize()["comment"]).not.toBe(undefined);
   });
 });
