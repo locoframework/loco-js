@@ -6,21 +6,21 @@ import Controllers from '../controllers'
 
 class Loco
   constructor: (opts={}) ->
-    @wire = null
-    @line = null
-    @startWire = if opts.notifications?.enable then true else false
-    @postInit = opts.postInit
+    this.wire = null
+    this.line = null
+    this.startWire = if opts.notifications?.enable then true else false
+    this.postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
     this.setProtocolWithHost opts.protocolWithHost
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = this.getProtocolWithHost()
-    @notificationsParams = notificationsParams
+    this.notificationsParams = notificationsParams
     Deps.cable = opts.cable
     Deps.NotificationCenter = opts.notificationCenter
 
-  getWire: -> @wire
+  getWire: -> this.wire
 
-  getLine: -> @line
+  getLine: -> this.line
 
   getLocale: -> Config.locale
   setLocale: (locale) -> Config.locale = locale
@@ -34,7 +34,7 @@ class Loco
     this.initLine()
     this.ready =>
       this.flow()
-      @postInit() if @postInit?
+      this.postInit() if this.postInit?
 
   ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
@@ -44,14 +44,14 @@ class Loco
       document.addEventListener 'DOMContentLoaded', fn
 
   initWire: ->
-    return if not @startWire
-    @wire = new Wire @notificationsParams
-    @wire.fetchSyncTime after: 'connect'
+    return if not this.startWire
+    this.wire = new Wire this.notificationsParams
+    this.wire.fetchSyncTime after: 'connect'
 
   initLine: ->
     return unless Deps.cable?
-    @line = new Line
-    @line.connect()
+    this.line = new Line
+    this.line.connect()
 
   flow: ->
     IdentityMap.clear()
@@ -82,11 +82,11 @@ class Loco
       Env.controller.constructor[action_name]() if Env.controller.constructor[action_name]?
       Env.controller[action_name]() if Env.controller[action_name]?
 
-    if @wire?
-      @wire.resetSyncTime()
-      @wire.fetchSyncTime()
+    if this.wire?
+      this.wire.resetSyncTime()
+      this.wire.fetchSyncTime()
 
-  emit: (data) -> @line.send data
+  emit: (data) -> this.line.send data
 
   getModels: ->
     models = []

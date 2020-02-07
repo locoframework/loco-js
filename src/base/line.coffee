@@ -4,7 +4,7 @@ import {Deps} from '../deps'
 
 class Line
   constructor: (opts = {}) ->
-    @connected = false
+    this.connected = false
 
   connect: ->
     Channels.Loco.NotificationCenter = Deps.cable.subscriptions.create
@@ -12,14 +12,14 @@ class Line
     ,
       connected: =>
         console.log 'ws connected'
-        @connected = true
+        this.connected = true
         wire = Env.loco.getWire()
         if wire?
           wire.setDelayedDisconnection()
         this._sendNotification loco: 'connected'
       disconnected: =>
         console.log 'ws disconnected'
-        @connected = false
+        this.connected = false
         wire = Env.loco.getWire()
         if wire?
           wire.setUuid null
@@ -35,7 +35,7 @@ class Line
         return if Object.keys(data).length is 0
         this._sendNotification data
 
-  isWireAllowed: -> not @connected
+  isWireAllowed: -> not this.connected
 
   send: (data) -> Channels.Loco.NotificationCenter.send data
 
@@ -55,7 +55,7 @@ class Line
       wire.check()
     if data.start_ajax_polling
       console.log "wire connected"
-      @connected = null
+      this.connected = null
       wire.setUuid null
       wire.fetchSyncTime after: 'connect'
 

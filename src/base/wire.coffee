@@ -4,70 +4,70 @@ import ObjectUtils from '../utils/object.coffee'
 
 class Wire
   constructor: (opts = {}) ->
-    @syncTime = null
-    @token = null
-    @pollingInterval = null
-    @pollingTime = opts.pollingTime ? 3000
-    @log = if opts.log? and opts.log then true else false
-    @ssl = opts.ssl
-    @location = opts.location ? 'notification-center'
-    @size = opts.size ? 100
-    @protocolWithHost = opts.protocolWithHost
-    @allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
-    @disconnectedSinceTime = null
-    @uuid = null
-    @delayedDisconnection = false
+    this.syncTime = null
+    this.token = null
+    this.pollingInterval = null
+    this.pollingTime = opts.pollingTime ? 3000
+    this.log = if opts.log? and opts.log then true else false
+    this.ssl = opts.ssl
+    this.location = opts.location ? 'notification-center'
+    this.size = opts.size ? 100
+    this.protocolWithHost = opts.protocolWithHost
+    this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
+    this.disconnectedSinceTime = null
+    this.uuid = null
+    this.delayedDisconnection = false
 
-  setToken: (token) -> @token = token
+  setToken: (token) -> this.token = token
 
-  getSyncTime: -> @syncTime
-  setSyncTime: (val) -> @syncTime = val
-  resetSyncTime: -> @syncTime = null
+  getSyncTime: -> this.syncTime
+  setSyncTime: (val) -> this.syncTime = val
+  resetSyncTime: -> this.syncTime = null
 
-  getPollingTime: -> @pollingTime
+  getPollingTime: -> this.pollingTime
   setPollingTime: (val) ->
-    @pollingTime = val
+    this.pollingTime = val
     this.disconnect()
     this.connect()
 
-  getPollingInterval: -> @pollingInterval
+  getPollingInterval: -> this.pollingInterval
 
-  getSSL: -> @ssl
-  setSSL: (val) -> @ssl = val
+  getSSL: -> this.ssl
+  setSSL: (val) -> this.ssl = val
 
-  getLocation: -> @location
-  setLocation: (val) -> @location = val
+  getLocation: -> this.location
+  setLocation: (val) -> this.location = val
 
-  getSize: -> @size
-  setSize: (val) -> @size = val
+  getSize: -> this.size
+  setSize: (val) -> this.size = val
 
-  getAllowedDisconnectionTime: -> @allowedDisconnectionTime
-  setAllowedDisconnectionTime: (val) -> @allowedDisconnectionTime = val
+  getAllowedDisconnectionTime: -> this.allowedDisconnectionTime
+  setAllowedDisconnectionTime: (val) -> this.allowedDisconnectionTime = val
 
-  getUuid: -> @uuid
-  setUuid: (val) -> @uuid = val
+  getUuid: -> this.uuid
+  setUuid: (val) -> this.uuid = val
 
-  setDelayedDisconnection: -> @delayedDisconnection = true
+  setDelayedDisconnection: -> this.delayedDisconnection = true
 
   connect: ->
     line = Env.loco.getLine()
     if line? and !line.isWireAllowed()
       return
-    @pollingInterval = setInterval =>
+    this.pollingInterval = setInterval =>
       this.check()
-      if @delayedDisconnection
-        @delayedDisconnection = false
+      if this.delayedDisconnection
+        this.delayedDisconnection = false
         this.disconnect()
-    , @pollingTime
+    , this.pollingTime
 
-  disconnect: -> window.clearInterval @pollingInterval
+  disconnect: -> window.clearInterval this.pollingInterval
 
   disableNotifications: ->
     console.log 'Wire#disableNotifications - DEPRECATED'
     this.disconnect()
 
   processNotification: (notification) ->
-    console.log notification if @log
+    console.log notification if this.log
     [className, id, signal, payload] = notification
     model = Env.loco.getModelForRemoteName className
     identity = model.getIdentity()
@@ -86,18 +86,18 @@ class Wire
   processSignal: (notification) -> this.processNotification notification
 
   check: ->
-    return if Object.keys(IdentityMap.imap).length is 0 and not @token? and @syncTime?
+    return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
     request = new XMLHttpRequest()
     request.open 'GET', this._getURL() + '?' + ObjectUtils.toURIParams(this._requestParams())
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
-        @disconnectedSinceTime = null
-        @syncTime = data[1]
+        this.disconnectedSinceTime = null
+        this.syncTime = data[1]
         notifications = data[0]
         return if notifications.length is 0
         this.processNotification notification for notification in notifications
-        this.check() if notifications.length is @size
+        this.check() if notifications.length is this.size
       else if e.target.status >= 500
         this._handleDisconnection()
     request.onerror = =>
@@ -112,7 +112,7 @@ class Wire
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
-        @syncTime = data.sync_time
+        this.syncTime = data.sync_time
         this[opts.after]() if opts.after?
       else if e.target.status >= 500
         this[opts.after]() if opts.after?
@@ -135,25 +135,25 @@ class Wire
         obj.receivedSignal "#{identity} #{signal}", payload
 
   _requestParams: ->
-    params = {synced_at: @syncTime}
-    if @token? then params.token = @token
-    if @uuid? then params.uuid = @uuid
+    params = {synced_at: this.syncTime}
+    if this.token? then params.token = this.token
+    if this.uuid? then params.uuid = this.uuid
     params
 
   _getURL: ->
     [protocol, _, host] = window.location.href.split '/'
-    if @protocolWithHost?
-      [protocol, host] = @protocolWithHost.split '//'
-    if @ssl?
-      protocol = if @ssl then 'https:' else "http:"
-    "#{protocol}//#{host}/#{@location}"
+    if this.protocolWithHost?
+      [protocol, host] = this.protocolWithHost.split '//'
+    if this.ssl?
+      protocol = if this.ssl then 'https:' else "http:"
+    "#{protocol}//#{host}/#{this.location}"
 
   _handleDisconnection: ->
-    if not @disconnectedSinceTime?
-      @disconnectedSinceTime = new Date()
-    diffInSec = (new Date() - @disconnectedSinceTime) / 1000
+    if not this.disconnectedSinceTime?
+      this.disconnectedSinceTime = new Date()
+    diffInSec = (new Date() - this.disconnectedSinceTime) / 1000
     ctrl = Env.namespaceController ? Env.controller
-    if diffInSec > @allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
-      ctrl.disconnectedForTooLong @disconnectedSinceTime
+    if diffInSec > this.allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
+      ctrl.disconnectedForTooLong this.disconnectedSinceTime
 
 export default Wire

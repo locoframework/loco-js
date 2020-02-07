@@ -3,21 +3,21 @@ import { Config } from '../deps';
 
 class Base
   constructor: ->
-    @views = {}
-    @receivers = {}
-    @subController = null
-    @superController = null
-    @params = this.__fetchParams()
+    this.views = {}
+    this.receivers = {}
+    this.subController = null
+    this.superController = null
+    this.params = this.__fetchParams()
 
-  setView: (key, view) -> @views[key] = view
-  getView: (key) -> @views[key]
-  getViews: -> @views
+  setView: (key, view) -> this.views[key] = view
+  getView: (key) -> this.views[key]
+  getViews: -> this.views
 
-  setSubController: (cntrlr) -> @subController = cntrlr
-  getSubController: -> @subController
+  setSubController: (cntrlr) -> this.subController = cntrlr
+  getSubController: -> this.subController
 
-  setSuperController: (cntrlr) -> @superController = cntrlr
-  getSuperController: -> @superController
+  setSuperController: (cntrlr) -> this.superController = cntrlr
+  getSuperController: -> this.superController
 
   setResource: (name) -> this.setScope name
   setScope: (name) -> Config.scope = name

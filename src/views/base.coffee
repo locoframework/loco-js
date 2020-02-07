@@ -2,23 +2,23 @@ import Connectivity from '../base/mixins/Connectivity'
 
 class Base
   constructor: (opts = {}) ->
-    @views = {}
-    @intervals = {}
-    @receivers = {}
-    @controller = null
-    @delegator = null
+    this.views = {}
+    this.intervals = {}
+    this.receivers = {}
+    this.controller = null
+    this.delegator = null
     this.setController(opts.controller) if opts.controller?
     this.setDelegator(opts.delegator) if opts.delegator?
 
-  setController: (cntr) -> @controller = cntr
-  getController: -> @controller
+  setController: (cntr) -> this.controller = cntr
+  getController: -> this.controller
 
-  setView: (key, view) -> @views[key] = view
-  getView: (key) -> @views[key]
-  getViews: -> @views
+  setView: (key, view) -> this.views[key] = view
+  getView: (key) -> this.views[key]
+  getViews: -> this.views
 
-  setDelegator: (delegator) -> @delegator = delegator
-  getDelegator: (delegator) -> @delegator
+  setDelegator: (delegator) -> this.delegator = delegator
+  getDelegator: (delegator) -> this.delegator
 
 Object.assign(Base.prototype, Connectivity);
 
