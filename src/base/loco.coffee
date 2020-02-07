@@ -8,7 +8,6 @@ class Loco
   constructor: (opts={}) ->
     @wire = null
     @line = null
-    @turbolinks = opts.turbolinks ? false
     @startWire = if opts.notifications?.enable then true else false
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
@@ -33,15 +32,9 @@ class Loco
     Env.loco = this
     this.initWire()
     this.initLine()
-    if @turbolinks
-      event = if Number(@turbolinks) >= 5 then "turbolinks:load" else "page:change"
-      document.addEventListener event, =>
-        this.flow()
-        @postInit() if @postInit?
-    else
-      this.ready =>
-        this.flow()
-        @postInit() if @postInit?
+    this.ready =>
+      this.flow()
+      @postInit() if @postInit?
 
   ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
