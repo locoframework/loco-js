@@ -505,7 +505,6 @@ Loco-JS automatically creates an instance of `Line` and it subscribes to `Loco::
 import { Deps } from "loco-js";
 import ActionCable from "actioncable";
 
-// you can use one global NotificationCenter or per "panel"
 import NotificationCenter from "services/admin/NotificationCenter";
 
 Deps.cable = ActionCable.createConsumer();
