@@ -1,10 +1,8 @@
 import Channels from "./channels";
-import Controllers from "./controllers";
 import Env from "./env";
 import I18n from "./i18n";
 import Loco from "./base/loco.coffee";
-import Views from "./views";
-import { Models, Validators } from "./deps";
+import { Controllers, Models, Validators, Views } from "./deps";
 
 const connector = { Env, I18n };
 

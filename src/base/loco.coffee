@@ -1,8 +1,7 @@
-import { initCore, Config, Deps, IdentityMap, Models } from '../deps'
+import { initCore, Config, Controllers, Deps, IdentityMap, Models } from '../deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from '../env'
-import Controllers from '../controllers'
 
 class Loco
   constructor: (opts={}) ->
