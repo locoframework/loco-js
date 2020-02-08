@@ -34,7 +34,10 @@ class Loco
     this.initLine()
     this.ready =>
       IdentityMap.clear()
-      initCore(Controllers, Env)
+      env = initCore(Controllers);
+      Env.namespaceController = env.namespaceController;
+      Env.controller = env.controller;
+      Env.action = env.action;
       if this.wire?
         this.wire.resetSyncTime()
         this.wire.fetchSyncTime()
