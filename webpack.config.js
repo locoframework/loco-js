@@ -26,7 +26,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "loco.js",
-    library: "App",
+    library: "Loco",
     libraryTarget: "umd"
   },
   externals: {
