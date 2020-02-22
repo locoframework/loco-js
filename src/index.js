@@ -4,7 +4,7 @@ import I18n from "./i18n";
 import Loco from "./base/loco.coffee";
 import { Controllers, Models, Validators, Views } from "./deps";
 
-const init = opts => new Loco(opts);
+const init = opts => new Loco(opts).init();
 const connector = { Env, I18n };
 
 export {
