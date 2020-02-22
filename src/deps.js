@@ -1,7 +1,6 @@
 import { init as initCore, Controllers, Views } from "loco-js-core";
 
 import {
-  Base,
   Config,
   I18n,
   IdentityMap,
@@ -22,4 +21,4 @@ const Deps = {
   NotificationCenter: null
 };
 
-export { initCore, Base, Config, Controllers, Deps, I18n, IdentityMap, Models, Validators, Views };
+export { initCore, Config, Controllers, Deps, I18n, IdentityMap, Models, Validators, Views };
