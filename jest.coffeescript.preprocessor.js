@@ -1,5 +1,7 @@
-const coffee = require('coffeescript');
-const babelJest = require('babel-jest');
+/* eslint-env node */
+
+const coffee = require("coffeescript");
+const babelJest = require("babel-jest");
 
 module.exports = {
   process: (src, path, ...rest) => {
