@@ -5,7 +5,7 @@
   "main": "dist/loco.js",
   "scripts": {
     "server": "node dev/server.js",
-    "start": "webpack --watch --config webpack.config.js",
+    "start": "webpack -d --config webpack.config.js --watch",
     "test": "jest",
     "build": "webpack -p --config webpack.config.js",
     "lint-staged": "lint-staged"
