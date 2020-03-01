@@ -1,5 +1,5 @@
 import Env from '../env'
-import {IdentityMap} from '../deps'
+import { Deps, IdentityMap } from '../deps'
 import ObjectUtils from '../utils/object.coffee'
 
 class Wire
@@ -69,16 +69,17 @@ class Wire
   processNotification: (notification) ->
     console.log notification if this.log
     [className, id, signal, payload] = notification
-    model = Env.loco.getModelForRemoteName className
-    identity = model.getIdentity()
+    model = Env.loco.getModelForRemoteName(className);
+    identity = model.getIdentity();
+    Deps.NotificationCenter({ signal: "#{identity} #{signal}", payload: payload });
     return if not IdentityMap.imap[identity]?
     if IdentityMap.imap[identity][id]?
       obj = IdentityMap.find identity, id
       if obj["receivedSignal"]?
         obj.receivedSignal signal, payload
       this._emitSignalToMembers id, signal, payload, model, identity
-    if model["receivedSignal"]?
-      model.receivedSignal signal, payload
+    #if model["receivedSignal"]?
+    #  model.receivedSignal signal, payload
     return if not IdentityMap.imap[identity]["collection"]?
     return if IdentityMap.imap[identity]["collection"].length is 0
     this._emitSignalToCollection signal, payload, identity
@@ -130,9 +131,9 @@ class Wire
   _emitSignalToCollection: (signal, payload, identity) ->
     for obj in IdentityMap.imap[identity]["collection"]
       if obj.receiverFor(identity)?
-        obj[obj.receiverFor(identity)] "#{identity} #{signal}", payload
+        obj[obj.receiverFor(identity)]("#{identity} #{signal}", payload)
       else if obj["receivedSignal"]?
-        obj.receivedSignal "#{identity} #{signal}", payload
+        obj.receivedSignal("#{identity} #{signal}", payload)
 
   _requestParams: ->
     params = {synced_at: this.syncTime}
