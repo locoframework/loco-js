@@ -71,12 +71,12 @@ class Wire
     [className, id, signal, payload] = notification
     model = Env.loco.getModelForRemoteName(className);
     identity = model.getIdentity();
-    Deps.NotificationCenter({ signal: "#{identity} #{signal}", payload: payload });
+    Deps.NotificationCenter({ signal: "#{identity} #{signal}", payload: payload }) if Deps.NotificationCenter?
     return if not IdentityMap.imap[identity]?
     if IdentityMap.imap[identity][id]?
       obj = IdentityMap.find identity, id
-      if obj["receivedSignal"]?
-        obj.receivedSignal signal, payload
+      #if obj["receivedSignal"]?
+      #  obj.receivedSignal signal, payload
       this._emitSignalToMembers id, signal, payload, model, identity
     #if model["receivedSignal"]?
     #  model.receivedSignal signal, payload
