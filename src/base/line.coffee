@@ -1,6 +1,6 @@
 import Channels from '../channels'
 import Env from '../env'
-import {Deps} from '../deps'
+import { Deps } from '../deps'
 
 class Line
   constructor: (opts = {}) ->
@@ -11,33 +11,33 @@ class Line
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
-        console.log 'ws connected'
+        console.log('ws connected');
         this.connected = true
         wire = Env.loco.getWire()
         if wire?
           wire.setDelayedDisconnection()
-        this._sendNotification loco: 'connected'
+        Deps.NotificationCenter({ loco: 'connected' })
       disconnected: =>
-        console.log 'ws disconnected'
+        console.log('ws disconnected');
         this.connected = false
         wire = Env.loco.getWire()
         if wire?
           wire.setUuid null
           wire.fetchSyncTime after: 'connect'
-        this._sendNotification loco: 'disconnected'
+        Deps.NotificationCenter({ loco: 'disconnected' })
       rejected: =>
-        console.log 'ws rejected'
-        this._sendNotification loco: 'rejected'
+        console.log('ws rejected');
+        Deps.NotificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
           this._processSystemNotification data.loco
           delete data.loco
         return if Object.keys(data).length is 0
-        this._sendNotification data
+        Deps.NotificationCenter(data)
 
   isWireAllowed: -> not this.connected
 
-  send: (data) -> Channels.Loco.NotificationCenter.send data
+  send: (data) -> Channels.Loco.NotificationCenter.send(data)
 
   _processSystemNotification: (data) ->
     if data.connection_check?
@@ -47,22 +47,16 @@ class Line
     if data.sync_time?
       wire.setSyncTime data.sync_time
     if data.uuid?
-      console.log "uuid: #{data.uuid}"
+      console.log("uuid: #{data.uuid}");
       wire.setUuid data.uuid
     if data.notification?
       wire.processNotification data.notification
     if data.xhr_notifications?
       wire.check()
     if data.start_ajax_polling
-      console.log "wire connected"
+      console.log("wire connected");
       this.connected = null
       wire.setUuid null
       wire.fetchSyncTime after: 'connect'
-
-  _sendNotification: (data) ->
-    if Deps.NotificationCenter['receivedSignal']?
-      Deps.NotificationCenter.receivedSignal data
-    else
-      (new Deps.NotificationCenter).receivedSignal data
 
 export default Line
