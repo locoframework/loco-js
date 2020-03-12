@@ -74,8 +74,7 @@ class Wire
     Deps.NotificationCenter({ signal: "#{identity} #{signal}", payload: payload }) if Deps.NotificationCenter?
     return if not IdentityMap.imap[identity]?
     if IdentityMap.imap[identity][id]?
-      obj = IdentityMap.find identity, id
-      this._emitSignalToMembers id, signal, payload, model, identity
+      this._emitSignalToMembers(id, signal, payload, model, identity)
     return if not IdentityMap.imap[identity]["collection"]?
     return if IdentityMap.imap[identity]["collection"].length is 0
     this._emitSignalToCollection signal, payload, identity
