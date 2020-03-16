@@ -118,14 +118,18 @@ class Wire
     if not obj?
       obj = new model id: id
     for connObj in IdentityMap.findConnected identity, id
-      if connObj.receiverFor(obj)?
+      if typeof connObj is "function"
+        connObj(signal, payload)
+      else if connObj.receiverFor(obj)?
         connObj[connObj.receiverFor(obj)] signal, payload
       else if connObj["receivedSignal"]?
         connObj.receivedSignal signal, payload
 
   _emitSignalToCollection: (signal, payload, identity) ->
     for obj in IdentityMap.imap[identity]["collection"]
-      if obj.receiverFor(identity)?
+      if typeof obj is "function"
+        obj("#{identity} #{signal}", payload)
+      else if obj.receiverFor(identity)?
         obj[obj.receiverFor(identity)]("#{identity} #{signal}", payload)
       else if obj["receivedSignal"]?
         obj.receivedSignal("#{identity} #{signal}", payload)
