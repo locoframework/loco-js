@@ -1,6 +1,7 @@
 import Channels from './channels'
 import Env from './env'
 import { Deps } from './deps'
+import processNotification from "./wire/processNotification"
 
 class Line
   constructor: (opts = {}) ->
@@ -50,7 +51,7 @@ class Line
       console.log("uuid: #{data.uuid}");
       wire.setUuid data.uuid
     if data.notification?
-      wire.processNotification data.notification
+      processNotification(data.notification, { log: wire.getLog() })
     if data.xhr_notifications?
       wire.check()
     if data.start_ajax_polling

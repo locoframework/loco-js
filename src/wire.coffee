@@ -1,6 +1,7 @@
 import Env from './env'
-import { Deps, IdentityMap } from './deps'
+import { IdentityMap } from './deps'
 import ObjectUtils from './utils/object.coffee'
+import processNotification from "./wire/processNotification"
 
 class Wire
   constructor: (opts = {}) ->
@@ -49,6 +50,8 @@ class Wire
 
   setDelayedDisconnection: -> this.delayedDisconnection = true
 
+  getLog: -> this.log
+
   connect: ->
     line = Env.loco.getLine()
     if line? and !line.isWireAllowed()
@@ -66,19 +69,6 @@ class Wire
     console.log 'Wire#disableNotifications - DEPRECATED'
     this.disconnect()
 
-  processNotification: (notification) ->
-    console.log notification if this.log
-    [className, id, signal, payload] = notification
-    model = Env.loco.getModelForRemoteName(className);
-    identity = model.getIdentity();
-    Deps.NotificationCenter({ signal: "#{identity} #{signal}", payload: payload }) if Deps.NotificationCenter?
-    return if not IdentityMap.imap[identity]?
-    if IdentityMap.imap[identity][id]?
-      this._emitSignalToMembers(id, signal, payload, model, identity)
-    return if not IdentityMap.imap[identity]["collection"]?
-    return if IdentityMap.imap[identity]["collection"].length is 0
-    this._emitSignalToCollection signal, payload, identity
-
   check: ->
     return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
     request = new XMLHttpRequest()
@@ -90,7 +80,7 @@ class Wire
         this.syncTime = data[1]
         notifications = data[0]
         return if notifications.length is 0
-        this.processNotification notification for notification in notifications
+        processNotification(notification, { log: this.log }) for notification in notifications
         this.check() if notifications.length is this.size
       else if e.target.status >= 500
         this._handleDisconnection()
@@ -111,18 +101,6 @@ class Wire
       else if e.target.status >= 500
         this[opts.after]() if opts.after?
     request.send()
-
-  _emitSignalToMembers: (id, signal, payload, model, identity, obj = null) ->
-    if not obj?
-      obj = new model id: id
-    for connObj in IdentityMap.findConnected identity, id
-      if typeof connObj is "function"
-        connObj(signal, payload)
-
-  _emitSignalToCollection: (signal, payload, identity) ->
-    for obj in IdentityMap.imap[identity]["collection"]
-      if typeof obj is "function"
-        obj("#{identity} #{signal}", payload)
 
   _requestParams: ->
     params = {synced_at: this.syncTime}

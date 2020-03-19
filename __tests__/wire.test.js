@@ -33,19 +33,6 @@ describe("#_getURL", () => {
   });
 });
 
-describe("#processNotification", () => {
-  it("returns if imap is empty", () => {
-    const wire = getWire();
-    const result = wire.processNotification([
-      "Article",
-      1,
-      "created",
-      { id: 1 }
-    ]);
-    expect(result).toBe(undefined);
-  });
-});
-
 describe("#setPollingTime", () => {
   it("can change polling time", () => {
     const wire = getWire();
