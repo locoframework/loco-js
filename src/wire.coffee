@@ -1,6 +1,6 @@
-import Env from '../env'
-import { Deps, IdentityMap } from '../deps'
-import ObjectUtils from '../utils/object.coffee'
+import Env from './env'
+import { Deps, IdentityMap } from './deps'
+import ObjectUtils from './utils/object.coffee'
 
 class Wire
   constructor: (opts = {}) ->
@@ -78,8 +78,6 @@ class Wire
     return if not IdentityMap.imap[identity]["collection"]?
     return if IdentityMap.imap[identity]["collection"].length is 0
     this._emitSignalToCollection signal, payload, identity
-
-  processSignal: (notification) -> this.processNotification notification
 
   check: ->
     return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?

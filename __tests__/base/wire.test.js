@@ -1,5 +1,5 @@
-import Loco from "base/loco.coffee";
-import Wire from "base/wire.coffee";
+import Loco from "loco.coffee";
+import Wire from "wire.coffee";
 import { Models } from "index";
 
 class Article extends Models.Base {

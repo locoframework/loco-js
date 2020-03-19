@@ -1,6 +1,6 @@
 import Channels from "./channels";
 import Env from "./env";
-import Loco from "./base/loco.coffee";
+import Loco from "./loco.coffee";
 import {
   Controllers,
   I18n,
