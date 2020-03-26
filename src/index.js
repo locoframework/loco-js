@@ -2,12 +2,12 @@ import Channels from "./channels";
 import Env from "./env";
 import Loco from "./loco.coffee";
 import {
+  helpers,
   Controllers,
   I18n,
   IdentityMap,
   Models,
-  Validators,
-  Views
+  Validators
 } from "./deps";
 
 const emit = args => Env.loco.emit(args);
@@ -18,6 +18,7 @@ const subscribe = IdentityMap.subscribe;
 export {
   connector,
   emit,
+  helpers,
   init,
   subscribe,
   Channels,
@@ -25,6 +26,5 @@ export {
   Env,
   I18n,
   Models,
-  Validators,
-  Views
+  Validators
 };

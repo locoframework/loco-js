@@ -1,4 +1,4 @@
-import { init as initCore, Controllers, Views } from "loco-js-core";
+import { init as initCore, helpers, Controllers } from "loco-js-core";
 
 import { Config, I18n, IdentityMap, Models, Validators } from "loco-js-model";
 
@@ -12,12 +12,12 @@ const Deps = {
 
 export {
   initCore,
+  helpers,
   Config,
   Controllers,
   Deps,
   I18n,
   IdentityMap,
   Models,
-  Validators,
-  Views
+  Validators
 };
