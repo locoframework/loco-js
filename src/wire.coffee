@@ -27,7 +27,7 @@ class Wire
     this.connect()
 
   connect: ->
-    line = Env.loco.getLine()
+    line = Env.loco.line
     if line? and !line.isWireAllowed()
       return
     this.pollingInterval = setInterval =>

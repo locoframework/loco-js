@@ -17,10 +17,6 @@ class Loco
     Deps.cable = opts.cable
     Deps.NotificationCenter = opts.notificationCenter
 
-  getWire: -> this.wire
-
-  getLine: -> this.line
-
   getLocale: -> Config.locale
   setLocale: (locale) -> Config.locale = locale
 

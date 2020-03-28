@@ -14,14 +14,14 @@ class Line
       connected: =>
         console.log('ws connected');
         this.connected = true
-        wire = Env.loco.getWire()
+        wire = Env.loco.wire
         if wire?
           wire.delayedDisconnection = true
         Deps.NotificationCenter({ loco: 'connected' })
       disconnected: =>
         console.log('ws disconnected');
         this.connected = false
-        wire = Env.loco.getWire()
+        wire = Env.loco.wire
         if wire?
           wire.uuid = null
           wire.fetchSyncTime after: 'connect'
@@ -43,7 +43,7 @@ class Line
   _processSystemNotification: (data) ->
     if data.connection_check?
       this.send loco: {connection_check: true}
-    wire = Env.loco.getWire()
+    wire = Env.loco.wire
     return if not wire?
     if data.sync_time?
       wire.syncTime = data.sync_time
