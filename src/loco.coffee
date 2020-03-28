@@ -9,19 +9,11 @@ class Loco
     this.line = null
     this.startWire = if opts.notifications?.enable then true else false
     this.postInit = opts.postInit
-    this.setLocale opts.locale ? 'en'
-    this.setProtocolWithHost opts.protocolWithHost
     notificationsParams = opts.notifications ? {}
-    notificationsParams.protocolWithHost = this.getProtocolWithHost()
+    notificationsParams.protocolWithHost = Config.protocolWithHost
     this.notificationsParams = notificationsParams
     Deps.cable = opts.cable
     Deps.NotificationCenter = opts.notificationCenter
-
-  getLocale: -> Config.locale
-  setLocale: (locale) -> Config.locale = locale
-
-  getProtocolWithHost: -> Config.protocolWithHost
-  setProtocolWithHost: (val) -> Config.protocolWithHost = val
 
   init: ->
     Env.loco = this
