@@ -11,6 +11,11 @@ import {
   Validators
 } from "./deps";
 
+const getLocale = () => Config.locale;
+const setLocale = locale => (Config.locale = locale);
+
+const getWire = () => Env.loco.wire;
+
 const emit = args => Env.loco.emit(args);
 
 const init = opts => {
@@ -19,9 +24,6 @@ const init = opts => {
   new Loco(opts).init();
 };
 
-const getLocale = () => Config.locale;
-const setLocale = locale => (Config.locale = locale);
-
 const connector = { getLocale, Env, I18n };
 
 const subscribe = IdentityMap.subscribe;
@@ -29,6 +31,7 @@ const subscribe = IdentityMap.subscribe;
 export {
   getLocale,
   setLocale,
+  getWire,
   connector,
   emit,
   helpers,
