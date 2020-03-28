@@ -10,7 +10,7 @@ Object.assign(Models, { Article });
 
 test("setting token correctly", () => {
   const wire = new Wire();
-  wire.setToken("123qweasdzxc");
+  wire.token = "123qweasdzxc";
   expect(wire._requestParams()).toEqual({
     synced_at: null,
     token: "123qweasdzxc"
@@ -20,14 +20,14 @@ test("setting token correctly", () => {
 describe("#_getURL", () => {
   it("returns url with choosen protocol", () => {
     const wire = getWire();
-    wire.setSSL(true);
+    wire.ssl = true;
     const [protocol] = wire._getURL().split("/");
     expect(protocol).toEqual("https:");
   });
 
   it("return correct notifications's location", () => {
     const wire = getWire();
-    wire.setLocation("nc");
+    wire.location = "nc";
     const [, , , location] = wire._getURL().split("/");
     expect(location).toEqual("nc");
   });
@@ -44,10 +44,10 @@ describe("#setPollingTime", () => {
   });
 });
 
-describe("#setSize", () => {
+describe("@site setter", () => {
   it("can set max size of notifications", () => {
     const wire = getWire();
-    wire.setSize(10);
+    wire.size = 10;
     expect(wire.size).toEqual(10);
   });
 });

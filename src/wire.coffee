@@ -19,27 +19,12 @@ class Wire
     this.uuid = null
     this.delayedDisconnection = false
 
-  setToken: (token) -> this.token = token
-
-  setSyncTime: (val) -> this.syncTime = val
   resetSyncTime: -> this.syncTime = null
 
   setPollingTime: (val) ->
     this.pollingTime = val
     this.disconnect()
     this.connect()
-
-  setSSL: (val) -> this.ssl = val
-
-  setLocation: (val) -> this.location = val
-
-  setSize: (val) -> this.size = val
-
-  setAllowedDisconnectionTime: (val) -> this.allowedDisconnectionTime = val
-
-  setUuid: (val) -> this.uuid = val
-
-  setDelayedDisconnection: -> this.delayedDisconnection = true
 
   connect: ->
     line = Env.loco.getLine()

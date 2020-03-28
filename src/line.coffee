@@ -16,14 +16,14 @@ class Line
         this.connected = true
         wire = Env.loco.getWire()
         if wire?
-          wire.setDelayedDisconnection()
+          wire.delayedDisconnection = true
         Deps.NotificationCenter({ loco: 'connected' })
       disconnected: =>
         console.log('ws disconnected');
         this.connected = false
         wire = Env.loco.getWire()
         if wire?
-          wire.setUuid null
+          wire.uuid = null
           wire.fetchSyncTime after: 'connect'
         Deps.NotificationCenter({ loco: 'disconnected' })
       rejected: =>
@@ -46,10 +46,10 @@ class Line
     wire = Env.loco.getWire()
     return if not wire?
     if data.sync_time?
-      wire.setSyncTime data.sync_time
+      wire.syncTime = data.sync_time
     if data.uuid?
       console.log("uuid: #{data.uuid}");
-      wire.setUuid data.uuid
+      wire.uuid = data.uuid
     if data.notification?
       processNotification(data.notification, { log: wire.log })
     if data.xhr_notifications?
@@ -57,7 +57,7 @@ class Line
     if data.start_ajax_polling
       console.log("wire connected");
       this.connected = null
-      wire.setUuid null
+      wire.uuid = null
       wire.fetchSyncTime after: 'connect'
 
 export default Line

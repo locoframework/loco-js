@@ -470,16 +470,17 @@ The constructor takes an object whose many properties have been described in the
 💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it will stop polling and will be waiting for informations, transmitted through WebSockets, about new, emitted by the back-end signals (to fetch them).
 In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
 
-[All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `setToken`.
+TODO: Changed to setters
+[All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `token = `.
 
-* `setToken(token)` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
+* `wire.token = token` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
 
 ```javascript
 import { Env } from "loco-js";
 const wire = Env.loco.getWire(); // this is how to grab a working instance
                                  // of Wire during runtime and after
                                  // initialization (see Initialization section)
-wire.setToken("foobarbaz");
+wire.token = "foobarbaz";
 ```
 
 On the back-end, you can now emit a signal to _"this token"_. And only _this_ user will receive the following signal.
