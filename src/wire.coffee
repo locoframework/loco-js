@@ -54,10 +54,6 @@ class Wire
 
   disconnect: -> window.clearInterval this.pollingInterval
 
-  disableNotifications: ->
-    console.log 'Wire#disableNotifications - DEPRECATED'
-    this.disconnect()
-
   check: ->
     return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
     request = new XMLHttpRequest()
