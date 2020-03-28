@@ -51,7 +51,7 @@ class Line
       console.log("uuid: #{data.uuid}");
       wire.setUuid data.uuid
     if data.notification?
-      processNotification(data.notification, { log: wire.getLog() })
+      processNotification(data.notification, { log: wire.log })
     if data.xhr_notifications?
       wire.check()
     if data.start_ajax_polling

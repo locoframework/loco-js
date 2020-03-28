@@ -36,11 +36,11 @@ describe("#_getURL", () => {
 describe("#setPollingTime", () => {
   it("can change polling time", () => {
     const wire = getWire();
-    expect(wire.getPollingTime()).toEqual(3000);
-    const pollingInterval = wire.getPollingInterval();
+    expect(wire.pollingTime).toEqual(3000);
+    const pollingInterval = wire.pollingInterval;
     wire.setPollingTime(10000);
-    expect(wire.getPollingTime()).toEqual(10000);
-    expect(wire.getPollingInterval()).not.toEqual(pollingInterval);
+    expect(wire.pollingTime).toEqual(10000);
+    expect(wire.pollingInterval).not.toEqual(pollingInterval);
   });
 });
 
@@ -48,7 +48,7 @@ describe("#setSize", () => {
   it("can set max size of notifications", () => {
     const wire = getWire();
     wire.setSize(10);
-    expect(wire.getSize()).toEqual(10);
+    expect(wire.size).toEqual(10);
   });
 });
 

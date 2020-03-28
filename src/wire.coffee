@@ -21,36 +21,25 @@ class Wire
 
   setToken: (token) -> this.token = token
 
-  getSyncTime: -> this.syncTime
   setSyncTime: (val) -> this.syncTime = val
   resetSyncTime: -> this.syncTime = null
 
-  getPollingTime: -> this.pollingTime
   setPollingTime: (val) ->
     this.pollingTime = val
     this.disconnect()
     this.connect()
 
-  getPollingInterval: -> this.pollingInterval
-
-  getSSL: -> this.ssl
   setSSL: (val) -> this.ssl = val
 
-  getLocation: -> this.location
   setLocation: (val) -> this.location = val
 
-  getSize: -> this.size
   setSize: (val) -> this.size = val
 
-  getAllowedDisconnectionTime: -> this.allowedDisconnectionTime
   setAllowedDisconnectionTime: (val) -> this.allowedDisconnectionTime = val
 
-  getUuid: -> this.uuid
   setUuid: (val) -> this.uuid = val
 
   setDelayedDisconnection: -> this.delayedDisconnection = true
-
-  getLog: -> this.log
 
   connect: ->
     line = Env.loco.getLine()
