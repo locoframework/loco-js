@@ -1,3 +1,5 @@
+import receivedAlready from "./idempotencyKeys";
+
 export default (data, { line, wire, processNotification }) => {
   if (data.connection_check === true) {
     line.send({ loco: { connection_check: true } });
@@ -26,6 +28,7 @@ export default (data, { line, wire, processNotification }) => {
     wire.fetchSyncTime({ after: "connect" });
   }
   if (typeof data.idempotency_key === "string") {
-    console.log(data.idempotency_key);
+    if (receivedAlready(data.idempotency_key)) return false;
   }
+  return true;
 };

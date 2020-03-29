@@ -32,7 +32,7 @@ class Line
         External.NotificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
-          processSystemNotification(data.loco, { line: this, wire: Env.loco.wire, processNotification });
+          return unless processSystemNotification(data.loco, { line: this, wire: Env.loco.wire, processNotification });
           delete data.loco
         return if Object.keys(data).length is 0
         External.NotificationCenter(data)
