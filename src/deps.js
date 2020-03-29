@@ -5,7 +5,7 @@ import { Config, I18n, IdentityMap, Models, Validators } from "loco-js-model";
 Controllers.Base.prototype.setScope = name => (Config.scope = name);
 Controllers.Base.prototype.setResource = name => this.setScope(name);
 
-const Deps = {
+const External = {
   cable: null,
   NotificationCenter: null
 };
@@ -15,7 +15,7 @@ export {
   helpers,
   Config,
   Controllers,
-  Deps,
+  External,
   I18n,
   IdentityMap,
   Models,

@@ -54,6 +54,6 @@ describe("@site setter", () => {
 
 const getWire = () => {
   const loco = new Loco({ notifications: { enable: true } });
-  loco.init();
+  loco.init({ cable: null });
   return loco.wire;
 };

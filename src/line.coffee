@@ -1,6 +1,6 @@
 import Channels from './channels'
 import Env from './env'
-import { Deps } from './deps'
+import { External } from './deps'
 import processNotification from "./wire/processNotification"
 
 class Line
@@ -8,7 +8,7 @@ class Line
     this.connected = false
 
   connect: ->
-    Channels.Loco.NotificationCenter = Deps.cable.subscriptions.create
+    Channels.Loco.NotificationCenter = External.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
@@ -17,7 +17,7 @@ class Line
         wire = Env.loco.wire
         if wire?
           wire.delayedDisconnection = true
-        Deps.NotificationCenter({ loco: 'connected' })
+        External.NotificationCenter({ loco: 'connected' })
       disconnected: =>
         console.log('ws disconnected');
         this.connected = false
@@ -25,16 +25,16 @@ class Line
         if wire?
           wire.uuid = null
           wire.fetchSyncTime after: 'connect'
-        Deps.NotificationCenter({ loco: 'disconnected' })
+        External.NotificationCenter({ loco: 'disconnected' })
       rejected: =>
         console.log('ws rejected');
-        Deps.NotificationCenter({ loco: 'rejected' })
+        External.NotificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
           this._processSystemNotification data.loco
           delete data.loco
         return if Object.keys(data).length is 0
-        Deps.NotificationCenter(data)
+        External.NotificationCenter(data)
 
   isWireAllowed: -> not this.connected
 

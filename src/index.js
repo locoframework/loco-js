@@ -5,6 +5,7 @@ import {
   helpers,
   Config,
   Controllers,
+  External,
   I18n,
   IdentityMap,
   Models,
@@ -21,7 +22,12 @@ const emit = args => Env.loco.emit(args);
 const init = opts => {
   Config.locale = opts.locale || "en";
   Config.protocolWithHost = opts.protocolWithHost;
-  new Loco(opts).init();
+  External.cable = opts.cable;
+  External.NotificationCenter = opts.notificationCenter;
+  new Loco(opts).init({
+    cable: External.cable,
+    protocolWithHost: Config.protocolWithHost
+  });
 };
 
 const connector = { getLocale, Env, I18n };

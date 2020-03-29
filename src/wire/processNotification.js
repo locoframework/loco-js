@@ -1,5 +1,5 @@
 import Env from "../env";
-import { Deps, IdentityMap } from "../deps";
+import { External, IdentityMap } from "../deps";
 
 const emitSignalToMembers = (
   id,
@@ -26,8 +26,8 @@ export default (notification, opts = {}) => {
   const [className, id, signal, payload] = notification;
   const model = Env.loco.getModelForRemoteName(className);
   const identity = model.getIdentity();
-  if (Deps.NotificationCenter != null) {
-    Deps.NotificationCenter({
+  if (External.NotificationCenter != null) {
+    External.NotificationCenter({
       signal: `${identity} ${signal}`,
       payload: payload
     });

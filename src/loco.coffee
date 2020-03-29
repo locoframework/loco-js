@@ -1,4 +1,4 @@
-import { initCore, Config, Controllers, Deps, IdentityMap, Models } from './deps'
+import { initCore, Controllers, IdentityMap, Models } from './deps'
 import Wire from './wire.coffee'
 import Line from './line.coffee'
 import Env from './env'
@@ -10,15 +10,13 @@ class Loco
     this.startWire = if opts.notifications?.enable then true else false
     this.postInit = opts.postInit
     notificationsParams = opts.notifications ? {}
-    notificationsParams.protocolWithHost = Config.protocolWithHost
+    notificationsParams.protocolWithHost = opts.protocolWithHost
     this.notificationsParams = notificationsParams
-    Deps.cable = opts.cable
-    Deps.NotificationCenter = opts.notificationCenter
 
-  init: ->
+  init: (opts) ->
     Env.loco = this
     this.initWire()
-    this.initLine()
+    this.initLine(opts.cable)
     this.ready =>
       IdentityMap.clear()
       env = initCore(Controllers);
@@ -42,8 +40,8 @@ class Loco
     this.wire = new Wire this.notificationsParams
     this.wire.fetchSyncTime after: 'connect'
 
-  initLine: ->
-    return unless Deps.cable?
+  initLine: (cable) ->
+    return unless cable?
     this.line = new Line
     this.line.connect()
 

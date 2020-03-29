@@ -10,7 +10,7 @@ Object.assign(Models, { Article });
 
 it("returns if imap is empty", () => {
   const loco = new Loco({ notifications: { enable: true } });
-  loco.init();
+  loco.init({ cable: null });
   const result = processNotification(["Article", 1, "created", { id: 1 }]);
   expect(result).toBe(undefined);
 });
