@@ -1,6 +1,7 @@
 import Env from './env'
 import { External } from './deps'
 import processNotification from "./wire/processNotification"
+import processSystemNotification from "./line/processSystemNotification"
 
 class Line
   constructor: (opts = {}) ->
@@ -31,7 +32,7 @@ class Line
         External.NotificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
-          this._processSystemNotification data.loco
+          processSystemNotification(data.loco, { line: this, wire: Env.loco.wire, processNotification });
           delete data.loco
         return if Object.keys(data).length is 0
         External.NotificationCenter(data)
@@ -39,25 +40,5 @@ class Line
   isWireAllowed: -> not this.connected
 
   send: (data) -> this.subscription.send(data)
-
-  _processSystemNotification: (data) ->
-    if data.connection_check?
-      this.send loco: {connection_check: true}
-    wire = Env.loco.wire
-    return if not wire?
-    if data.sync_time?
-      wire.syncTime = data.sync_time
-    if data.uuid?
-      console.log("uuid: #{data.uuid}");
-      wire.uuid = data.uuid
-    if data.notification?
-      processNotification(data.notification, { log: wire.log })
-    if data.xhr_notifications?
-      wire.check()
-    if data.start_ajax_polling
-      console.log("wire connected");
-      this.connected = null
-      wire.uuid = null
-      wire.fetchSyncTime after: 'connect'
 
 export default Line
