@@ -1,4 +1,3 @@
-import Channels from './channels'
 import Env from './env'
 import { External } from './deps'
 import processNotification from "./wire/processNotification"
@@ -6,9 +5,10 @@ import processNotification from "./wire/processNotification"
 class Line
   constructor: (opts = {}) ->
     this.connected = false
+    this.subscription = null
 
   connect: ->
-    Channels.Loco.NotificationCenter = External.cable.subscriptions.create
+    this.subscription = External.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
@@ -38,7 +38,7 @@ class Line
 
   isWireAllowed: -> not this.connected
 
-  send: (data) -> Channels.Loco.NotificationCenter.send(data)
+  send: (data) -> this.subscription.send(data)
 
   _processSystemNotification: (data) ->
     if data.connection_check?
