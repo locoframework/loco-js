@@ -25,4 +25,7 @@ export default (data, { line, wire, processNotification }) => {
     wire.uuid = null;
     wire.fetchSyncTime({ after: "connect" });
   }
+  if (typeof data.idempotency_key === "string") {
+    console.log(data.idempotency_key);
+  }
 };
