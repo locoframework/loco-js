@@ -124,80 +124,9 @@ const loco = new Loco({
 loco.init();
 ```
 
-# 👷🏻‍♂️ How does it work?
-
-After document is loaded, Loco-JS' instance checks following `<body>`'s data attributes:
-
-* data-namespace
-* data-controller
-* data-action
-
-Then, based on their values, it initializes given controllers and calls given methods. Example:
-
-```html
-<body data-namespace="Main" data-controller="Pages" data-action="index">
-</body>
-```
-
-Loco-JS will act like this (simplified version):
-
-```javascript
-import { Controllers } from "loco-js";
-
-namespaceController = new Controllers.Main;
-namespaceController.initialize();
-
-controller = new Controllers.Main.Pages;
-controller.initialize();
-controller.index();
-```
-
-What's important is that Loco-JS looks not only for instance methods but static ones as well. If some controller is not defined, Loco-JS skips it. The same situation is with methods. You don't have to create controllers for every page that you have too. You can use Loco-JS only on desired ones. It does not want to take over your front-end. Augment with JavaScript only those pages that you want instead.
-
-If namespace controller is not defined, Loco-JS will assume `Controllers.Pages` as a controller.
-
-If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS will try to establish WebSocket connection with the server and will be waiting for signals / notifications.
-If WebSocket connection can't be established, Loco-JS will start periodically checking for new notifications via AJAX polling.
-
 # 🔩 Merging classes
 
-As you can see in the previous section, Loco-JS must have an access to all defined controllers to initialize them and to call given methods on them. Therefore, they have to be merged with `Controllers` object which Loco-JS exports.
-
-```javascript
-// javascripts/index.js (entry point)
-
-import { Controllers } from "loco-js";
-
-import Admin from "./controllers/admin"; // namespace controller
-import User from "./controllers/user";   // namespace controller
-
-Object.assign(Controllers, {
-  Admin,
-  User
-});
-```
-
-```javascript
-// javascripts/controllers/admin.js (namespace controller)
-
-import { Controllers } from "loco-js";
-
-import Coupons from "./admin/coupons"; // Coupons controller
-import Plans from "./admin/plans";     // Plans controller
-
-class Admin extends Controllers.Base {}
-
-Object.assign(Admin, {
-  Coupons,
-  Plans
-});
-
-export default Admin;
-```
-
-You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
-
-Remember to polyfill `Object.assign` or assign controllers using a different method.
+...
 
 Loco-JS exports also, among others, the `Models` object. Remember to do the same with all defined models - merge them with this object.
 
