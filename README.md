@@ -124,6 +124,12 @@ const loco = new Loco({
 loco.init();
 ```
 
+# 👷🏻‍♂️ How does it work?
+
+If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS will try to establish WebSocket connection with the server and will be waiting for signals / notifications.
+
+If WebSocket connection can't be established, Loco-JS will start periodically checking for new notifications via AJAX polling.
+
 # 🔩 Merging classes
 
 ...
