@@ -28,8 +28,8 @@
     }
   },
   "dependencies": {
-    "loco-js-model": "~0.3.3"
     "loco-js-core": "^0.1.1",
+    "loco-js-model": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
