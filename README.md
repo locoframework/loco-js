@@ -2,15 +2,15 @@
 
 # 🧐 What is Loco-JS?
 
-**Loco-JS** is a front-end framework similar to recently released [Stimulus](https://stimulusjs.org) in a fact that it doesn't want to take over your entire front-end.
-The difference is that **Loco-JS** was originally designed in 2016 and it works in more generic fashion. **Loco-JS** teams up well with tools like [React](https://reactjs.org) or [Vue](https://reactjs.org) for crafting a view layer.
+**Loco-JS** is a front-end framework similar to [Stimulus](https://stimulusjs.org) in terms of not wanting to take over your entire front-end.
+**Loco-JS** was originally designed in 2016, and it works in a more generically. **Loco-JS** teams up well with tools like [React](https://reactjs.org) or [Vue](https://reactjs.org) for crafting a view layer.
 
-Architecturally - Loco-JS is a front-end part of [**Loco-Rails**](http://github.com/locoframework/loco-rails), which can be used separately (with limited functionality).
+Architecturally - Loco-JS is a front-end part of the [**Loco**](http://github.com/locoframework) framework.
 
-And **Loco-Rails** is a back-end part of the whole [**Loco**](http://github.com/locoframework) framework and it requires **Loco-JS** to work.
+[**Loco-Rails**](http://github.com/locoframework/loco-rails) is a back-end part of the **Loco** framework, and it requires **Loco-JS** to work.
 
-**Loco-Rails** is just a concept that simplifies communication between front-end and back-end code. You can implement it in other languages or frameworks as well.
-I am a Rails programmer that's why I created **Loco** for **Rails**.
+**Loco** framework is a concept that simplifies communication between front-end and back-end code. It can be implemented in any language or framework.
+I am a Rails programmer. That's why I created **Loco** for **Rails**.
 
 This is how it can be visualized:
 
@@ -18,19 +18,24 @@ This is how it can be visualized:
 Loco Framework
 |
 |--- Loco-Rails (back-end part)
+|       |
+|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS-Core)
 |
-|--- Loco-JS (front-end part / can be used separately)
+|--- Loco-JS (front-end part)
+        |
+        |--- Loco-JS-Core (logical structure for JS / can be used separately)
         |
         |--- Loco-JS-Model (model part / can be used separately)
         |
-        |--- other parts of Loco-JS
+        |--- other built-in parts of Loco-JS
+
+        Loco-JS-UI - connects models with UI elements (a separate library)
 ```
 
-Following sections contain more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code (along with base classes for models, controllers and views). You exactly know where to start, when looking for a JavaScript code that runs current page (**Loco-JS**)
+* by providing logical structure for a JavaScript code (along with base classes for models and controllers). You exactly know where to start looking for a JavaScript code running a current page (**Loco-JS**)
 * you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form what will enrich this form with fields' validation (**Loco-JS**)
 * you can connect models with controllers and views on the front-end. And they will be notified about every change made to a corresponding model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
