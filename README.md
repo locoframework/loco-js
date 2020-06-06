@@ -42,18 +42,6 @@ Loco Framework
 * it allows sending messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
 * it respects permissions. You can filter out sent messages if a sender is not signed in as a given resource, _for example, a given admin or user_) (**Loco**)
 
-# 🦕 Origins
-
-**Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
-I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
-
-I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
-
-**Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
-
-But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.
-[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
-
 # 🤝 Dependencies
 
 🎊 Loco-JS has no external dependencies. 🎉
