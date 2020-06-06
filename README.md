@@ -61,52 +61,66 @@ If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's
 # 🎬 Initialization
 
 ```javascript
-import { Loco } from "loco-js";
+import { init } from "loco-js";
+import { createConsumer } from "@rails/actioncable";
 
-const loco = new Loco({
+const NotificationCenter = data => {
+  switch (data.signal) {
+    case "ping":
+      // do something
+      break;
+    }
+  }
+};
+
+init({
+  // (optional) assign a consumer if you want to send and receive messages through WebSockets
+  cable: createConsumer(),
+  
+  locale: "en",                          // (optional) "en" by default
+
+  // (optional) assign a custom class to this property that is going to receive 
+  // notifications sent from the server
+  notificationCenter: NotificationCenter,
+  
   // the browser's app will start to receive signals / notifications from
-  // the server either via WebSockets or AJAX polling (if WebSocket connection
-  // can't be established). Loco-JS can even switch between WebSockets and AJAX
+  // the server either via WebSockets or AJAX polling if a WebSocket connection
+  // can't be established. Loco-JS can even switch between WebSockets and AJAX
   // polling depending on the momentary availability. This works if you use
   // Loco-JS with Loco-Rails.
   notifications: {
-    enable: true,                      // false by default
-    //pollingTime: 3000,               // 3000 ms by default (for AJAX polling)
+    enable: true,                        // (optional) false by default
+    
+    pollingTime: 3000,                   // (optional) 3000 ms by default (for AJAX polling)
 
     // display upcoming notifications in browser's console e.g. for debugging
-    //log: true,                       // false by default
+    log: true,                           // (optional) false by default
 
-    //ssl: false,                      // your current protocol by default
+    ssl: false,                          // (optional) your current protocol by default
 
     // location must be the same as where you mounted Loco-Rails in routes.rb
-    //location: "notification-center", // 'notification-center' by default
+    location: "notification-center",     // (optional) 'notification-center' by default
 
     // max number of notifications fetched at once via ajax pooling
-    // must be the same as notifications_size defined in initializers/loco.rb
-    // next batch of notifications will be fetched immediately after
-    // max size is reached
-    //size: 100,                       // 100 by default
+    // must be the same as notifications_size defined in initializers/loco.rb;
+    // next batch of notifications will be fetched immediately after max size is reached
+    size: 100,                           // (optional) 100 by default
 
-    // after specified time your current (namespace) controller instance method
-    // disconnectedForTooLong will be called with the "time since disconnection"
+    // your current (namespace) controller instance method disconnectedForTooLong 
+    // will be called after a specified time with the "time since disconnection"
     // passed as an argument
-    //allowedDisconnectionTime: 10     // 10 by default [sec]
+    allowedDisconnectionTime: 10         // (optional) 10 by default [sec]
   },
 
-  //locale: "en",                      // "en" by default
-
-  // if provided - Loco-JS will be using absolute path
+  // (optional) if provided - Loco-JS will be using absolute path
   // instead of site-root-relative path in all xhr requests
-  //protocolWithHost: "https://example.com",
+  protocolWithHost: "https://example.com",
 
-  // this method is called at the end, after given controller's
-  // method has been called. At this moment Loco's instance is initialized
-  // and you can use it to change some settings of the browser's app
-  // e.g. polling interval -> Env.loco.getWire().setPollingTime(<time>);
+  // (optional) this method is called at the end, after a given controller's
+  // method has been called. You can use it to change some settings based on other conditions
+  // e.g. polling interval: getWire().setPollingTime(1000);
   postInit: () => {}
 });
-
-loco.init();
 ```
 
 # 👷🏻‍♂️ How does it work?
@@ -148,9 +162,6 @@ Brief explanation of each element:
 
 * **Channels** - the namespace where `ActionCable`'s subscriptions are created
 * **Controllers** - the object that you have to merge all custom controllers with. It contains `Base` class for custom controllers
-* **Deps** - this is an abbreviation of "dependencies". This object has 2 properties:
-    * **cable** - if you want to send and receive signals / messages through WebSockets, assign consumer to this property by invoking `ActionCable.createConsumer();`
-    * **NotificationCenter** - you have to assign a custom class to this property that is going to receive notifications sent via WebSockets
 * **Env** - this object holds environmental informations. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
@@ -415,18 +426,6 @@ These messages are not what we call signals / notifications. Signals / notificat
 It is not required to use Line when using Loco-JS. It works currently only if you use Loco-Rails on the back-end and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency.
 
 Loco-JS automatically creates an instance of `Line` and it subscribes to `Loco::NotificationCenterChannel` if it discovers `ActionCable`'s consumer under `Deps.cable` exported by Loco-JS.
-
-## Configuration 🛠
-
-```javascript
-import { Deps } from "loco-js";
-import ActionCable from "actioncable";
-
-import NotificationCenter from "services/admin/NotificationCenter";
-
-Deps.cable = ActionCable.createConsumer();
-Deps.NotificationCenter = NotificationCenter;
-```
 
 ## Sending messages 🚚
 
