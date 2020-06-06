@@ -54,13 +54,6 @@ I still use **Rails** but my front-end toolbox has changed a lot. Now, I work wi
 But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.
 [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
 
-# 🔬 Tech stack of Loco-JS
-
-The Origins explain why some parts of **Loco-JS** are still written in CoffeeScript.	 It shouldn't worry you though unless you want to contribute.
-
-What's more important is that all Loco-JS' modules are transpiled and bundled using modern tools such as **Babel** and **Webpack** accordingly. Loco-JS works well as a part of modern JavaScript ecosystem alongside libraries such as React.
-In the future, while adding features, all modules will be rewritten to Javascript.
-
 # 🤝 Dependencies
 
 🎊 Loco-JS has no external dependencies. 🎉
