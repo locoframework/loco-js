@@ -35,7 +35,7 @@ Loco Framework
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code (along with base classes for models and controllers). You exactly know where to start looking for a JavaScript code that runs a current page (**Loco-JS**)
+* by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
 * you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
 * you can subscribe to a model or a collection of models on the front-end by passing a function. This function is called on every change made to a corresponding model on the server-side. (**Loco**)
@@ -46,9 +46,9 @@ Loco Framework
 
 🎊 Loco-JS has no external dependencies. 🎉
 
-It depends only on Loco-JS-Model which is an internal part of Loco-JS but can be used separately as well (look at Loco-JS-Model [**dependencies**](https://github.com/locoframework/loco-js-model#-dependencies)❗️)
-Although, [class properties transform](https://babeljs.io/docs/plugins/transform-class-properties/) Babel plugin may be helpful to support static class properties, which are useful in defining models.
-Additionally, if you want to use Loco-JS with Loco-Rails and send or receive signals / messages over WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
+It depends only on [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/) and [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/), which are internal parts of Loco-JS but can be used separately. They don't have external dependencies too.  
+Although [@babel/plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties) may be helpful to support static class properties, which are useful in defining models.  
+Additionally, if you want to use Loco-JS with Loco-Rails and send or receive messages over a WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
 
 # 📥 Installation
 
