@@ -56,7 +56,7 @@ Additionally, if you want to use Loco-JS with Loco-Rails and send or receive mes
 $ npm install --save loco-js
 ```
 
-If you want to use Loco-JS by a script tag, without the module bundler, it's exposed as an `App` global variable.
+If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's exposed as the `Loco` global variable.
 
 # 🎬 Initialization
 
