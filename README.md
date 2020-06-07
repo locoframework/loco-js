@@ -125,9 +125,9 @@ init({
 
 # 👷🏻‍♂️ How does it work?
 
-If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS will try to establish WebSocket connection with the server and will be waiting for signals / notifications.
+If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS tries to establish WebSocket connection with the server and is waiting for messages.
 
-If WebSocket connection can't be established, Loco-JS will start periodically checking for new notifications via AJAX polling.
+If WebSocket connection can't be established, Loco-JS starts periodically checking for new notifications via AJAX polling.
 
 # 🔩 Merging classes
 
@@ -535,7 +535,7 @@ loco.init();
 # 👩🏽‍🔬 Tests
 
 ```bash
-npm run test
+$ npm run test
 ```
 
 # 📈 Changelog
