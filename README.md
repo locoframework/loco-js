@@ -131,9 +131,8 @@ If WebSocket connection can't be established, Loco-JS starts periodically checki
 
 # 🔩 Merging classes
 
-...
-
-Loco-JS exports also, among others, the `Models` object. Remember to do the same with all defined models - merge them with this object.
+Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these object.  
+Merging controllers is described in [Loco-JS-Core repo](https://github.com/locoframework/loco-js-core#-merging-classes). Loco-JS-Core is a part of Loco-JS that can be used separately. Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
 
 # 🏛 Structure
 
@@ -145,9 +144,9 @@ export {
   getLocale,
   setLocale,
   getWire,
-  connector,
+  connector,   // object
   emit,
-  helpers,
+  helpers,     // object
   init,
   subscribe,
   Controllers, // object
