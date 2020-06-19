@@ -136,7 +136,7 @@ Merging controllers is described in [Loco-JS-Core repo](https://github.com/locof
 
 # 🏛 Structure
 
-Loco-JS exports following structure:
+Loco-JS exports the following structure:
 
 ```javascript
 export {
@@ -157,37 +157,27 @@ export {
 };
 ```
 
-Brief explanation of each element:
+A brief explanation of each element:
 
-* **Channels** - the namespace where `ActionCable`'s subscriptions are created
-* **Controllers** - the object that you have to merge all custom controllers with. It contains `Base` class for custom controllers
-* **Env** - this object holds environmental informations. Its properties:
+* **getLine** - function returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
+* **getLocale** - function returns configured locale
+* **setLocale** - function allows setting a locale
+* **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
+* **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
+* **emit** - function sends messages over a WebSocket connection to the server
+* **helpers** - object containing helper functions 
+* **init** - a function used to initialize Loco-JS 
+* **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
+* **Controllers** - object that you have to merge all custom controllers with. It contains the `Base` class for custom controllers
+* **Env** - object holding environmental information. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
     * **namespaceController** - the instance of the current namespace controller
-    * **loco** - the instance of `Loco` (see _Initialization_ section). Its most important instance methods are:
-        * `getWire` - returns the current instance of `Wire`
-        * `setLocale` / `getLocale` - allows to set / get current locale
+    * **loco** - the running instance of `Loco`
+* **I18n** - object holding localizations. Localizations are objects as well
+* **Models** - an object which all custom models should be merged with. It contains the `Base` class for custom models
+* **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
-        Look at [source code](https://github.com/locoframework/loco-js/blob/master/src/base/loco.coffee) for all.
-* **Helpers** - the namespace where helpers are defined. Helpers are classes facilitating things like transforming text, converting numbers to currencies etc. Members:
-    * **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
-* **I18n** - the object that holds localizations. Localizations are objects as well
-* **Line** - the class responsible for sending and receiving messages over WebSocket connection
-* **Loco** - this class rules everything ;)
-* **Mix** - the factory function that generates a `Mixed` superclass (used for implementing mixins)
-* **Mixins** - the namespace where mixins are defined
-* **Models** - the object which all custom models should be merged with. It contains `Base` class for custom models
-* **Presenters** - the empty object that you can merge your custom presenters with. Presenters can be used to hold functions used to present models or their attributes.
-_Deprecated! It will be removed in the future. Store presenters on your own. This object doesn't have to be exported._
-* **Services** - the namespace where service classes are defined. Members:
-    * **Date** - its instance methods are useful for converting `Date` to a string
-* **UI** - the namespace where classes that interact with the HTML are defined. Members:
-    * **Form** - the class responsible for dealing with forms
-* **Utils** - the namespace in which the classes containing the utility methods for the given data type are defined. Members: `Array`, `Collection`, `Dom`, `Object`, `String`
-* **Validators** - the namespace where validators are defined and where custom validators should also be merged
-* **Views** - the namespace where `Base` class for custom Views is defined
-* **Wire** - the class responsible for fetching signals / notifications
 
 # 📡 Models
 
@@ -286,44 +276,6 @@ To see all convenient properties and methods of the base class, other than `para
 
 Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models (`setResource` / `setScope`) methods.
 
-# 🗺 Views
-
-View is a layer where you should interact with the DOM to keep separation of concerns.
-[Base class](https://github.com/locoframework/loco-js/blob/master/src/views/base.coffee) delivers only a few methods, so it does not force you how to do so.
-The good practice is to always call `render` method on a view and treat it as a starting point.
-You can even render **React** components inside of view.
-
-```javascript
-// views/admin/coupons/new.js
-
-import { Views } from "loco-js";
-import React from "react";
-import { render as renderElement } from "react-dom";
-
-import CouponForm from "components/admin/CouponForm";
-import Coupon from "models/Coupon";
-
-class New extends Views.Base {
-  constructor(opts) {
-    super(opts);
-    this.planId = opts.planId;
-  }
-
-  render() {
-    this.renderCouponForm();
-  }
-
-  renderCouponForm() {
-    const coupon = new Coupon({ resource: "admin", planId: this.planId });
-    renderElement(
-      <CouponForm coupon={coupon} />,
-      document.getElementById("coupon-form")
-    );
-  }
-}
-
-export default New;
-```
 
 # 🔌 Connectivity
 
