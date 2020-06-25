@@ -181,11 +181,11 @@ A brief explanation of each element:
 
 # 📡 Models
 
-The model layer has been extracted to a separate [repository](https://github.com/locoframework/loco-js-model) and it can be used standalone as well. If you want to look at how to integrate [React](https://reactjs.org), [Redux](https://redux.js.org) and **Loco-JS-Model**, 🎁[**this repository**](https://github.com/artofcodelabs/front-end-boilerplate)🎁 may be a good starting point.
+The model layer has been extracted to a separate [repository](https://github.com/locoframework/loco-js-model), and it can be used standalone as well. 🎁[**This repository**](https://github.com/artofcodelabs/front-end-boilerplate)🎁 may be a good starting point if you want to look at how to integrate [React](https://reactjs.org), [Redux](https://redux.js.org), and **Loco-JS-Model**.
 
 ## Nesting models 🏺
 
-If you want to have two models with the same name or maybe you want to reflect a server architecture, you can even nest models. But only one-level nesting is allowed.
+If you want to have two models with the same name or maybe you want to reflect a server architecture, you can nest models. But only one-level nesting is allowed.
 
 ```javascript
 // models/Coupon/Unit.js
@@ -210,7 +210,7 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Remember to merge all defined models with the exported `Models` object:
+Remember to merge all defined models with the exported `Models` object.
 
 ```javascript
 // models/index.js
@@ -231,7 +231,7 @@ Object.assign(Models, {
 });
 ```
 
-Loco-JS will be able to find the correct model in this situation if you emit a signal for the corresponding model on the server side.
+Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
 
