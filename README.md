@@ -235,46 +235,21 @@ Loco-JS will be able to find the correct model in this situation when you send a
 
 # 🕹 Controllers
 
-Like it's already been said - given method of given controller is called automatically based on HTML `<body>`'s attributes.
+The controllers layer has been extracted to a separate project [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) that can be used standalone and is a Loco-JS dependency. Read its README, please for more information. `helpers` and `Controllers` are exported by Loco-JS too.
 
-Exemplary controller:
+Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models using `setResource` / `setScope` methods.
 
 ```javascript
-// controllers/admin/coupons.js
+// controllers/Admin.js
 
 import { Controllers } from "loco-js";
 
-import New from "views/admin/coupons/new";
-import List from "views/admin/coupons/list";
-
-class Coupons extends Controllers.Base {
-  static identity = "Coupons"; // persist the name of the class because
-                               // it is going to be minified in production
-                               // and knowing the name of the current controller
-                               // can be useful (see the section about Line)
-
-  // Loco-JS supports static and instance methods
-  static index() {
-    new List().render();
-  }
-
-  new() {
-    const view = new New({ planId: this.params.id });
-    this.setView("new", view); // assigning the instance of currently rendered
-                               // view to the controller's property gives
-                               // a possibility to call other methods on it
-                               // in the next life cycle
-                               // (see the section about Line)
-    view.render();
+class Admin extends Controllers.Base {
+  initialize() {
+    this.setScope("admin");
   }
 }
-
-export default Coupons;
 ```
-
-To see all convenient properties and methods of the base class, other than `params` presented above, look at the [source code](https://github.com/locoframework/loco-js/blob/master/src/controllers/base.coffee).
-
-Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models (`setResource` / `setScope`) methods.
 
 
 # 🔌 Connectivity
