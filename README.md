@@ -38,7 +38,7 @@ Loco Framework
 * by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
 * you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
-* you can subscribe to a model or a collection of models on the front-end by passing a function. This function is called on every change made to a corresponding model on the server-side. (**Loco**)
+* you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
 * it allows sending messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
 * it respects permissions. You can filter out sent messages if a sender is not signed in as a given resource, _for example, a given admin or user_) (**Loco**)
 
@@ -252,68 +252,92 @@ class Admin extends Controllers.Base {
 ```
 
 
-# 🔌 Connectivity
+# 🔌 The subscribe function
 
-`Connectivity` is a mixin that is included in the `Base` classes of `Views` and `Controllers`. It allows you to send signals / notifications to all instances of controllers and views that are connected with given model classes or specific model instances. Example:
+This function allows subscribing to a given object or a class of objects by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side.
+
+*Example:*
 
 ```javascript
-// views/admin/coupons/list.js
+// views/user/rooms/List.js
 
-import { Views } from "loco-js";
+import { subscribe } from "loco-js";
 
-import Coupon from "models/Coupon";
+import Room from "models/Room";
 
-class List extends Views.Base {
-  constructor(opts) {
-    super(opts);
+const memberJoined = roomId => {
+  const node = membersNode(roomId);
+  node.textContent = parseInt(node.text()) + 1;
+};
+
+const memberLeft = roomId => {
+  const node = membersNode(roomId);
+  node.textContent = parseInt(node.text()) - 1;
+};
+
+const membersNode = roomId => {
+  document.querySelector(`#room_${roomId} td.members`);
+};
+
+const renderRoom = room => {
+  `
+  <tr id='room_${room.id}'>
+    ...
+  </tr>
+  `;
+};
+
+const receivedSignal = (signal, data) => {
+  switch (signal) {
+    case "Room member_joined":
+      memberJoined(data.room_id);
+      break;
+    case "Room member_left":
+      memberLeft(data.room_id);
+      break;
+    case "Room created": {
+      document
+        .getElementById("rooms_list")
+        .insertAdjacentHTML("beforeend", renderRoom(data.room));
+      break;
+    }
+    case "Room destroyed": {
+      const roomNode = document.getElementById(`room_${data.room_id}`);
+      roomNode.parentNode.removeChild(roomNode);
+    }
   }
+};
 
-  async render() {
-    this.connectWith([Coupon]); // every time back-end emits signal for
-                                // any coupon, receivedSignal method is called.
-                                // An array of more than 1 model class can
-                                // be passed as an argument. It is even possible
-                                // to mix model classes and instances in this
-                                // array
-    const coupons = await Coupon.get("all", { resource: "admin" });
-    this.connectWith(coupons.slice(-1), {  // method lastCouponReceivedSignal
-      receiver: "lastCouponReceivedSignal" // is called only if a signal is
-    });                                    // emitted by the back-end for
-                                           // a specific Coupon instance
-                                           // that is the last element in
-                                           // "coupons" array at this moment
-  }
-
-  receivedSignal(signal, data) {
-  }
-
-  lastCouponReceivedSignal(signal, data) {
-  }
+export default function() {
+  subscribe({ to: Room, with: receivedSignal });
 }
-
-export default List;
 ```
 
-So if you use Loco-Rails on the back-end and emit a signal for the first coupon in the database, like this:
+`subscribe` returns a function that can be called if you want to **unsubscribe**.
+
+If you use Loco-Rails on the back-end and send notifications for any instance of `Room` model, like:
 
 ```ruby
-# you can do it anywhere, in rails console for example
+# you can do it anywhere, in Rails Console for example
 include Loco::Emitter
-emit Coupon.first, :updated, { data: { foo: 'bar' } }
+
+emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
 ```
 
 On the front-end side:
 
-1. Loco-JS will receive a signal in the following format `["Coupon", 1, "updated", {foo: "bar", id: 1}]`
-2. `receivedSignal` method will be called for every instance of the `List` class above (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as the arguments
+1. Loco-JS receives a notification in the following format `["Room", 123, "created", { room: { id: 123, name: "Room #123" } }]`
+2. `receivedSignal` method is called with `"Room created"` and `{ room: { id: 123, name: "Room #123" } }` as arguments
 
-If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, :updated, { data: { foo: 'bar' } }`
+The example above shows subscribing to all instances of the given class by passing a model class name (`Room`). It may be useful, for example, if you want to be notified when an object is created on the server-side. The front-end equivalent (Loco-JS-Model) does not exist yet, so you have to subscribe to the whole model class.
 
-On the front-end side:
+A function that receives notifications (`receivedSignal` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.  
 
-1. Loco-JS will receive a signal `["Coupon", 27, "updated", {foo: "bar", id: 27}]`
-2. `lastCouponReceivedSignal` method will be called with `updated` and `{foo: "bar", id: 27}` as arguments
-3. `receivedSignal` method will be called with `Coupon updated` and `{foo: "bar", id: 27}` as arguments
+It is possible to subscribe to more than one object by passing an array `subscribe({ to: [Room, User, comment1, post2], with: customFunc })`
+
+From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedSignal })` if you want to subscribe to the instance of User with a given ID. 
+
+All notifications are also sent to `NotificationCenter` (see *Receiving messages* section).
 
 # 🚠 Wire
 
