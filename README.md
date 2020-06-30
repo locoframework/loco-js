@@ -341,31 +341,33 @@ All notifications are also sent to `NotificationCenter` (see *Receiving messages
 
 # 🚠 Wire
 
-Instance of this class works internally and is responsible for fetching notifications.
-The constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
+An instance of this class works internally and is responsible for fetching notifications. You can fetch this instance using `getWire` function.
+`Wire` class's constructor takes takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
 
-💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it will stop polling and will be waiting for informations, transmitted through WebSockets, about new, emitted by the back-end signals (to fetch them).
+💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it stops polling and waits for notifications, transmitted through WebSockets. These notifications are sent using the `emit` method on the server-side.
 In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
 
-TODO: Changed to setters
-[All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `token = `.
+Useful accessors and methods:
 
-* `wire.token = token` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
+* `wire.token = token` - when a token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful when you want to send a notification, on the back-end, to a user that is not authenticated in the system _(e.g., you want to notify a user that has confirmed his email address successfully via clicking on a link and is now able to sign in)_
 
 ```javascript
-import { Env } from "loco-js";
-const wire = Env.loco.getWire(); // this is how to grab a working instance
-                                 // of Wire during runtime and after
-                                 // initialization (see Initialization section)
+import { getWire } from "loco-js";
+
+const wire = getWire();
+
 wire.token = "foobarbaz";
 ```
 
-On the back-end, you can now emit a signal to _"this token"_. And only _this_ user will receive the following signal.
+On the back-end, you can send notifications for a given token now.
 
 ```ruby
 include Loco::Emitter
+
 emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
 ```
+
+* `setPollingTime(value)` - this method changes the time interval of fetching notifications from the server via AJAX polling if you don't have a WebSocket connection. It accepts values in milliseconds (default is 3000)
 
 # 〰 Line
 
