@@ -28,7 +28,7 @@ export default (notification, opts = {}) => {
   const identity = model.getIdentity();
   if (External.NotificationCenter != null) {
     External.NotificationCenter({
-      signal: `${identity} ${signal}`,
+      type: `${identity} ${signal}`,
       payload: payload
     });
   }
