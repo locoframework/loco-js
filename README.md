@@ -65,8 +65,8 @@ import { init } from "loco-js";
 import { createConsumer } from "@rails/actioncable";
 
 const NotificationCenter = data => {
-  switch (data.signal) {
-    case "ping":
+  switch (data.type) {
+    case "PING":
       // do something
       break;
     }
@@ -83,7 +83,7 @@ init({
   // notifications sent from the server
   notificationCenter: NotificationCenter,
   
-  // the browser's app will start to receive signals / notifications from
+  // the browser's app will start to receive notifications from
   // the server either via WebSockets or AJAX polling if a WebSocket connection
   // can't be established. Loco-JS can even switch between WebSockets and AJAX
   // polling depending on the momentary availability. This works if you use
@@ -315,7 +315,7 @@ export default function() {
 
 `subscribe` returns a function that can be called if you want to **unsubscribe**.
 
-If you use Loco-Rails on the back-end and send notifications for any instance of `Room` model, like:
+If you use Loco-Rails on the back-end and send notification for a given instance of `Room` model, like:
 
 ```ruby
 # you can do it anywhere, in Rails Console for example
@@ -342,7 +342,7 @@ All notifications are also sent to `NotificationCenter` (see *Receiving messages
 # 🚠 Wire
 
 An instance of this class works internally and is responsible for fetching notifications. You can fetch this instance using `getWire` function.
-`Wire` class's constructor takes takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
+`Wire` class's constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
 
 💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it stops polling and waits for notifications, transmitted through WebSockets. These notifications are sent using the `emit` method on the server-side.
 In case of losing the WebSocket connection, it can automatically switch to AJAX polling.

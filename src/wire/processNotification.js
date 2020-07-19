@@ -1,9 +1,9 @@
 import Env from "../env";
 import { External, IdentityMap } from "../deps";
 
-const emitSignalToMembers = (
+const emitMessageToMembers = (
   id,
-  signal,
+  name,
   payload,
   model,
   identity,
@@ -11,31 +11,31 @@ const emitSignalToMembers = (
 ) => {
   if (obj === null) obj = new model({ id: id });
   for (const connObj of IdentityMap.findConnected(identity, id)) {
-    connObj(signal, payload);
+    connObj(name, payload);
   }
 };
 
-const emitSignalToCollection = (signal, payload, identity) => {
+const emitMessageToCollection = (name, payload, identity) => {
   for (const obj of IdentityMap.imap[identity]["collection"]) {
-    obj(`${identity} ${signal}`, payload);
+    obj(`${identity} ${name}`, payload);
   }
 };
 
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
-  const [className, id, signal, payload] = notification;
+  const [className, id, name, payload] = notification;
   const model = Env.loco.getModelForRemoteName(className);
   const identity = model.getIdentity();
   if (External.NotificationCenter != null) {
     External.NotificationCenter({
-      type: `${identity} ${signal}`,
+      type: `${identity} ${name}`,
       payload: payload
     });
   }
   if (IdentityMap.imap[identity] === undefined) return;
   if (IdentityMap.imap[identity][id] !== undefined)
-    emitSignalToMembers(id, signal, payload, model, identity);
+    emitMessageToMembers(id, name, payload, model, identity);
   if (IdentityMap.imap[identity]["collection"] === undefined) return;
   if (IdentityMap.imap[identity]["collection"].length === 0) return;
-  emitSignalToCollection(signal, payload, identity);
+  emitMessageToCollection(name, payload, identity);
 };
