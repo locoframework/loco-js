@@ -456,7 +456,7 @@ emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
 
 # 🚚 Sending messages
 
-You can send messages over WebSocket connection after initializing Loco-JS (see _Initialization_ section).
+You can send messages over WebSocket connection after initializing Loco-JS properly (see _Initialization_ and _Receiving messages_ sections).
 
 ```javascript
 import { emit } from "loco-js";
