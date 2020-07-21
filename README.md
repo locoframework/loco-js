@@ -79,7 +79,7 @@ init({
   
   locale: "en",                          // (optional) "en" by default
 
-  // (optional) assign a custom class to this property that is going to receive 
+  // (optional) assign a custom function to this property that will receive 
   // notifications sent from the server
   notificationCenter: NotificationCenter,
   
@@ -287,8 +287,8 @@ const renderRoom = room => {
   `;
 };
 
-const receivedSignal = (signal, data) => {
-  switch (signal) {
+const receivedMessage = (type, data) => {
+  switch (type) {
     case "Room member_joined":
       memberJoined(data.room_id);
       break;
@@ -309,7 +309,7 @@ const receivedSignal = (signal, data) => {
 };
 
 export default function() {
-  subscribe({ to: Room, with: receivedSignal });
+  subscribe({ to: Room, with: receivedMessage });
 }
 ```
 
@@ -327,24 +327,109 @@ emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
 On the front-end side:
 
 1. Loco-JS receives a notification in the following format `["Room", 123, "created", { room: { id: 123, name: "Room #123" } }]`
-2. `receivedSignal` method is called with `"Room created"` and `{ room: { id: 123, name: "Room #123" } }` as arguments
+2. `receivedMessage` method is called with `"Room created"` and `{ room: { id: 123, name: "Room #123" } }` as arguments
 
 The example above shows subscribing to all instances of the given class by passing a model class name (`Room`). It may be useful, for example, if you want to be notified when an object is created on the server-side. The front-end equivalent (Loco-JS-Model) does not exist yet, so you have to subscribe to the whole model class.
 
-A function that receives notifications (`receivedSignal` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.  
+A function that receives notifications (`receivedMessage` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.  
 
 It is possible to subscribe to more than one object by passing an array `subscribe({ to: [Room, User, comment1, post2], with: customFunc })`
 
-From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedSignal })` if you want to subscribe to the instance of User with a given ID. 
+From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedMessage })` if you want to subscribe to the instance of User with a given ID. 
 
-All notifications are also sent to `NotificationCenter` (see *Receiving messages* section).
+All notifications are also sent to the `notificationCenter` (see *Receiving messages* section).
 
-# 🚠 Wire
+# 📩 Receiving messages
+
+Every time the back-end sends a message to the front-end over a WebSocket connection like this:
+
+```ruby
+include Loco::Emitter
+
+# emit_to method emits a message over a WebSocket connection
+# to all Hub members in this example
+# Hub is a Loco-Rails concept that matches to a virtual room where you can add/remove members
+emit_to Hub.get('chat_room_1'),
+        type: 'NEW_MESSAGE',
+        message: 'Hello chat members!',
+        author: 'Mr. Admin'
+```
+
+a custom function is called that must be assigned to the `notificationCenter` property during initialization if you want to receive messages from the server. 
+
+```javascript
+import { init } from "loco-js";
+import { createConsumer } from "@rails/actioncable";
+
+import NotificationCenter from "services/NotificationCenter";
+
+init({
+  // ...
+  cable: createConsumer(),
+  notificationCenter: NotificationCenter,
+  // ...
+});
+```
+
+```javascript
+// services/NotificationCenter.js
+
+import { Env } from "loco-js";
+
+import { addArticles } from "actions";
+import store from "store";
+
+import Article from "models/Article";
+
+import RoomsController from "controllers/user/Rooms";
+import UserController from "controllers/User";
+
+const getCallbackForReceivedMessage = () => {
+  const nullCallback = () => {};
+  // break if current namespace controller is not UserController
+  if (Env.namespaceController.constructor !== UserController)
+    return nullCallback;
+  if (Env.controller.constructor !== RoomsController) return nullCallback;
+  // break if current action is not "show"
+  if (Env.action !== "show") return nullCallback;
+  return Env.controller.callbacks["receivedMessage"];
+};
+
+const articleCreated = async ({ id }) => {
+  if (Env.namespaceController.constructor !== UserController) return;
+  const article = await Article.find({ id, abbr: true });
+  store.dispatch(addArticles([article]));
+};
+
+export default data => {
+  switch (data.type) {
+    case "NEW_MESSAGE":
+      getCallbackForReceivedMessage()(data.message, data.author);
+      break;
+    case "Article created":
+      articleCreated(data.payload);
+      break;
+  }
+};
+```
+
+Sending and receiving messages over a WebSocket connection only works if you use Loco-Rails on the back-end, and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency. It can be skipped if you are not interested in WebSocket communication.  
+Internally, Loco-JS uses an instance of a class called `Line` for sending and receiving messages over a WebSocket connection. You can fetch this instance using the `getLine` function. But there is rarely a need for this.
+
+Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method. 
+
+```ruby
+include Loco::Emitter
+
+emit(@article, :created, for: current_user)
+```
+
+## Wire 🚠
 
 An instance of this class works internally and is responsible for fetching notifications. You can fetch this instance using `getWire` function.
 `Wire` class's constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
 
-💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it stops polling and waits for notifications, transmitted through WebSockets. These notifications are sent using the `emit` method on the server-side.
+💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection, it stops polling and waits for notifications, transmitted through WebSockets. These notifications are sent using the `emit` method on the server-side.
 In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
 
 Useful accessors and methods:
@@ -369,76 +454,17 @@ emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
 
 * `setPollingTime(value)` - this method changes the time interval of fetching notifications from the server via AJAX polling if you don't have a WebSocket connection. It accepts values in milliseconds (default is 3000)
 
-# 〰 Line
-
-Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection.
-
-These messages are not what we call signals / notifications. Signals / notifications must be associated with instances of models on the back-end while messages sent via `Line` don't have this requirement and are directed directly to recipients.
-
-It is not required to use Line when using Loco-JS. It works currently only if you use Loco-Rails on the back-end and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency.
-
-Loco-JS automatically creates an instance of `Line` and it subscribes to `Loco::NotificationCenterChannel` if it discovers `ActionCable`'s consumer under `Deps.cable` exported by Loco-JS.
-
-## Sending messages 🚚
+# 🚚 Sending messages
 
 You can send messages over WebSocket connection after initializing Loco-JS (see _Initialization_ section).
 
 ```javascript
-import { Env } from "loco-js";
+import { emit } from "loco-js";
 
-const line = Env.loco.getLine();
-line.send({ foo: "bar" });
-
-// or using shortcut
-Env.loco.emit({ baz: "buz"});
+emit({ type: "PING", user_id: 123 });
 ```
 
 To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
-
-## Receiving messages 📩
-
-Every time the back-end emits a signal to the front-end like this:
-
-```ruby
-include Loco::Emitter
-# emit_to method emits message over WebSocket connection
-# to all signed in admins (in this example)
-emit_to Admin.all, type: 'COUPON_CREATED', id: @coupon.id
-```
-
-`receivedSignal` static or instance method is called on `Deps.NotificationCenter` class.
-
-```javascript
-// services/admin/NotificationCenter.js
-
-import { Env } from "loco-js";
-
-class NotificationCenter {
-  static receivedSignal(data) {
-    switch (data.type) {
-      case "COUPON_CREATED":
-        this.couponCreated(data.id);
-        break;
-      default:
-    }
-  }
-
-  static couponCreated(couponId) {
-    // break if current controller is not Coupons
-    if (Env.controller.constructor.identity !== "Coupons") return;
-
-    // break if current action is not "new"
-    if (Env.action !== "new") return;
-
-    // call couponCreated method on the view - assigned to the current
-    // controller as "new" by using setView method inherited
-    // from the Controllers.Base class
-    Env.controller.getView("new").couponCreated(couponId);
-  }
-}
-
-export default NotificationCenter;
-```
 
 # 🇵🇱 i18n
 
