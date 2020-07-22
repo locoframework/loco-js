@@ -468,47 +468,31 @@ To see how to receive messages on the back-end, look at the [Loco-Rails document
 
 # 🇵🇱 i18n
 
-Loco-JS supports internationalization. Following example shows how to setup a different default language.
+Loco-JS supports internationalization. The following example shows how to set up a different default language.
 
-First, create a translation of the [base English file](https://github.com/locoframework/loco-js/blob/master/src/locales/en.coffee).
+First of all, create a translation in a given language. Loco-JS consists internally of a few parts (see _What is Loco-JS?_ section). Each lib can contain its localization file, which exports a simple JavaScript object. Their properties are not conflicting. So it is possible to create a one localization file that combines several files from different Loco-JS' parts ([example translation to the Polish language](https://github.com/locoframework/loco-rails/blob/master/test/dummy/frontend/js/locales/base/pl.js)).
+
+Loco-JS must have all translations assigned to the `I18n` object. You can add your custom locales to the `I18n` object too.
 
 ```javascript
-// locales/pl.js
+// locales/base/pl.js
 
-const pl = {
+import { I18n } from "loco-js";
+
+I18n.pl = {
   // ...
   errors: {
     messages: {
+      accepted: "musi zostać zaakceptowane",
       blank: "nie może być puste",
-      inclusion: "nie jest na liście dopuszczalnych wartości",
-      invalid: "jest nieprawidłowe",
+      confirmation: "nie zgadza się z polem %{attribute}",
+      empty: "nie może być puste",
       // ...
     }
   }
 };
-
-export default pl;
 ```
-
-Loco-JS must have all translations assigned to `I18n` object.
-
-```javascript
-import { I18n, Loco } from "loco-js";
-
-import pl from "locales/pl";
-
-// remember to polyfill Object.assign or assign it in a different way
-Object.assign(I18n, {
-  pl
-});
-
-const loco = new Loco({
-  // ...
-  locale: "pl"
-});
-
-loco.init();
-```
+You can specify a default locale during initialization (see _Initialization_ section) or by using `setLocale` function.
 
 # 👩🏽‍🔬 Tests
 
