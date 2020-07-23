@@ -6,7 +6,10 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const rootPath = '..';
 
 const app = express();
+
 const config = require(`${rootPath}/webpack.config.js`);
+config.mode = "development";
+
 const compiler = webpack(config);
 
 app.use(webpackDevMiddleware(compiler, {

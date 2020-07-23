@@ -1,4 +1,6 @@
-var path = require("path");
+/* eslint-env node */
+
+const path = require("path");
 
 module.exports = {
   entry: "./src/index.js",
@@ -12,7 +14,7 @@ module.exports = {
             loader: "coffee-loader",
             options: {
               transpile: {
-                presets: ["env"]
+                presets: ["@babel/preset-env"]
               }
             }
           }
@@ -23,7 +25,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "loco.js",
-    library: "App",
+    library: "Loco",
     libraryTarget: "umd"
   },
   externals: {

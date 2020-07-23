@@ -2,15 +2,15 @@
 
 # 🧐 What is Loco-JS?
 
-**Loco-JS** is a front-end framework similar to recently released [Stimulus](https://stimulusjs.org) in a fact that it doesn't want to take over your entire front-end.  
-The difference is that **Loco-JS** was originally designed in 2016 and it works in more generic fashion. **Loco-JS** teams up well with tools like [React](https://reactjs.org) or [Vue](https://reactjs.org) for crafting a view layer.
+**Loco-JS** is a front-end framework similar to [Stimulus](https://stimulusjs.org) in terms of not wanting to take over your entire front-end.
+**Loco-JS** was originally designed in 2016, and it works in a more generically. **Loco-JS** teams up well with tools like [React](https://reactjs.org) or [Vue](https://reactjs.org) for crafting a view layer.
 
-Architecturally - Loco-JS is a front-end part of [**Loco-Rails**](http://github.com/locoframework/loco-rails), which can be used separately (with limited functionality).
+Architecturally - Loco-JS is a front-end part of the [**Loco**](http://github.com/locoframework) framework.
 
-And **Loco-Rails** is a back-end part of the whole [**Loco**](http://github.com/locoframework) framework and it requires **Loco-JS** to work.
+[**Loco-Rails**](http://github.com/locoframework/loco-rails) is a back-end part of the **Loco** framework, and it requires **Loco-JS** to work.
 
-**Loco-Rails** is just a concept that simplifies communication between front-end and back-end code. You can implement it in other languages or frameworks as well.  
-I am a Rails programmer that's why I created **Loco** for **Rails**.
+**Loco** framework is a concept that simplifies communication between front-end and back-end code. It can be implemented in any language or framework.
+I am a Rails programmer. That's why I created **Loco** for **Rails**.
 
 This is how it can be visualized:
 
@@ -18,52 +18,37 @@ This is how it can be visualized:
 Loco Framework
 |
 |--- Loco-Rails (back-end part)
+|       |
+|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS-Core)
 |
-|--- Loco-JS (front-end part / can be used separately)
+|--- Loco-JS (front-end part)
+        |
+        |--- Loco-JS-Core (logical structure for JS / can be used separately)
         |
         |--- Loco-JS-Model (model part / can be used separately)
         |
-        |--- other parts of Loco-JS
+        |--- other built-in parts of Loco-JS
+
+        Loco-JS-UI - connects models with UI elements (a separate library)
 ```
 
-Following sections contain more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code (along with base classes for models, controllers and views). You exactly know where to start, when looking for a JavaScript code that runs current page (**Loco-JS**)
-* you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
-* you can easily assign a model to a form what will enrich this form with fields' validation (**Loco-JS**)
-* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a corresponding model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
-* it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
-* respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
-* solves other common problems
-
-# 🦕 Origins
-
-**Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
-I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
-
-I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
-
-**Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
-
-But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.  
-[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
-
-# 🔬 Tech stack of Loco-JS
-
-The Origins explain why some parts of **Loco-JS** are still written in CoffeeScript.	 It shouldn't worry you though unless you want to contribute.
-
-What's more important is that all Loco-JS' modules are transpiled and bundled using modern tools such as **Babel** and **Webpack** accordingly. Loco-JS works well as a part of modern JavaScript ecosystem alongside libraries such as React.  
-In the future, while adding features, all modules will be rewritten to Javascript.
+* by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
+* you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
+* you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
+* you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
+* it allows sending messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
+* it respects permissions. You can filter out sent messages if a sender is not signed in as a given resource, _for example, a given admin or user_) (**Loco**)
 
 # 🤝 Dependencies
 
 🎊 Loco-JS has no external dependencies. 🎉
 
-It depends only on Loco-JS-Model which is an internal part of Loco-JS but can be used separately as well (look at Loco-JS-Model [**dependencies**](https://github.com/locoframework/loco-js-model#-dependencies)❗️)  
-Although, [class properties transform](https://babeljs.io/docs/plugins/transform-class-properties/) Babel plugin may be helpful to support static class properties, which are useful in defining models.  
-Additionally, if you want to use Loco-JS with Loco-Rails and send or receive signals / messages over WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
+It depends only on [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/) and [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/), which are internal parts of Loco-JS but can be used separately. They don't have external dependencies too.  
+Although [@babel/plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties) may be helpful to support static class properties, which are useful in defining models.  
+Additionally, if you want to use Loco-JS with Loco-Rails and send or receive messages over a WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
 
 # 📥 Installation
 
@@ -71,209 +56,136 @@ Additionally, if you want to use Loco-JS with Loco-Rails and send or receive sig
 $ npm install --save loco-js
 ```
 
-If you want to use Loco-JS by a script tag, without the module bundler, it's exposed as an `App` global variable.
+If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's exposed as the `Loco` global variable.
 
 # 🎬 Initialization
 
 ```javascript
-import { Loco } from "loco-js";
+import { init } from "loco-js";
+import { createConsumer } from "@rails/actioncable";
 
-const loco = new Loco({
-  // set to your Turbolinks version if you use Loco-JS with Loco-Rails
-  // and have enabled Turbolinks
-  turbolinks: false,                   // false by default
+const NotificationCenter = data => {
+  switch (data.type) {
+    case "PING":
+      // do something
+      break;
+    }
+  }
+};
+
+init({
+  // (optional) assign a consumer if you want to send and receive messages through WebSockets
+  cable: createConsumer(),
   
-  // the browser's app will start to receive signals / notifications from
-  // the server either via WebSockets or AJAX polling (if WebSocket connection
-  // can't be established). Loco-JS can even switch between WebSockets and AJAX
+  locale: "en",                          // (optional) "en" by default
+
+  // (optional) assign a custom function to this property that will receive 
+  // notifications sent from the server
+  notificationCenter: NotificationCenter,
+  
+  // the browser's app will start to receive notifications from
+  // the server either via WebSockets or AJAX polling if a WebSocket connection
+  // can't be established. Loco-JS can even switch between WebSockets and AJAX
   // polling depending on the momentary availability. This works if you use
   // Loco-JS with Loco-Rails.
   notifications: {
-    enable: true,                      // false by default
-    //pollingTime: 3000,               // 3000 ms by default (for AJAX polling)
+    enable: true,                        // (optional) false by default
     
+    pollingTime: 3000,                   // (optional) 3000 ms by default (for AJAX polling)
+
     // display upcoming notifications in browser's console e.g. for debugging
-    //log: true,                       // false by default
-    
-    //ssl: false,                      // your current protocol by default
-    
+    log: true,                           // (optional) false by default
+
+    ssl: false,                          // (optional) your current protocol by default
+
     // location must be the same as where you mounted Loco-Rails in routes.rb
-    //location: "notification-center", // 'notification-center' by default
-    
+    location: "notification-center",     // (optional) 'notification-center' by default
+
     // max number of notifications fetched at once via ajax pooling
-    // must be the same as notifications_size defined in initializers/loco.rb
-    // next batch of notifications will be fetched immediately after 
-    // max size is reached
-    //size: 100,                       // 100 by default
-    
-    // after specified time your current (namespace) controller instance method
-    // disconnectedForTooLong will be called with the "time since disconnection"
+    // must be the same as notifications_size defined in initializers/loco.rb;
+    // next batch of notifications will be fetched immediately after max size is reached
+    size: 100,                           // (optional) 100 by default
+
+    // your current (namespace) controller instance method disconnectedForTooLong 
+    // will be called after a specified time with the "time since disconnection"
     // passed as an argument
-    //allowedDisconnectionTime: 10     // 10 by default [sec]
+    allowedDisconnectionTime: 10         // (optional) 10 by default [sec]
   },
-  
-  //locale: "en",                      // "en" by default
-  
-  // if provided - Loco-JS will be using absolute path 
+
+  // (optional) if provided - Loco-JS will be using absolute path
   // instead of site-root-relative path in all xhr requests
-  //protocolWithHost: "https://example.com",
-  
-  // this method is called at the end, after given controller's
-  // method has been called. At this moment Loco's instance is initialized 
-  // and you can use it to change some settings of the browser's app
-  // e.g. polling interval -> Env.loco.getWire().setPollingTime(<time>);
+  protocolWithHost: "https://example.com",
+
+  // (optional) this method is called at the end, after a given controller's
+  // method has been called. You can use it to change some settings based on other conditions
+  // e.g. polling interval: getWire().setPollingTime(1000);
   postInit: () => {}
 });
-
-loco.init();
 ```
 
 # 👷🏻‍♂️ How does it work?
 
-After document is loaded, Loco-JS' instance checks following `<body>`'s data attributes:
+If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS tries to establish WebSocket connection with the server and is waiting for messages.
 
-* data-namespace
-* data-controller
-* data-action
-
-Then, based on their values, it initializes given controllers and calls given methods. Example:
-
-```html
-<body data-namespace="Main" data-controller="Pages" data-action="index">
-</body>
-```
-
-Loco-JS will act like this (simplified version):
-
-```javascript
-import { Controllers } from "loco-js";
-
-namespaceController = new Controllers.Main;
-namespaceController.initialize();
-
-controller = new Controllers.Main.Pages;
-controller.initialize();
-controller.index();
-```
-
-What's important is that Loco-JS looks not only for instance methods but static ones as well. If some controller is not defined, Loco-JS skips it. The same situation is with methods. You don't have to create controllers for every page that you have too. You can use Loco-JS only on desired ones. It does not want to take over your front-end. Augment with JavaScript only those pages that you want instead.
-
-If namespace controller is not defined, Loco-JS will assume `Controllers.Pages` as a controller.
-
-If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco-JS will try to establish WebSocket connection with the server and will be waiting for signals / notifications.  
-If WebSocket connection can't be established, Loco-JS will start periodically checking for new notifications via AJAX polling.
+If WebSocket connection can't be established, Loco-JS starts periodically checking for new notifications via AJAX polling.
 
 # 🔩 Merging classes
 
-As you can see in the previous section, Loco-JS must have an access to all defined controllers to initialize them and to call given methods on them. Therefore, they have to be merged with `Controllers` object which Loco-JS exports.
-
-```javascript
-// javascripts/index.js (entry point)
-
-import { Controllers } from "loco-js";
-
-import Admin from "./controllers/admin"; // namespace controller
-import User from "./controllers/user";   // namespace controller
-
-Object.assign(Controllers, {
-  Admin,
-  User
-});
-```
-
-```javascript
-// javascripts/controllers/admin.js (namespace controller)
-
-import { Controllers } from "loco-js";
-
-import Coupons from "./admin/coupons"; // Coupons controller
-import Plans from "./admin/plans";     // Plans controller 
-
-class Admin extends Controllers.Base {}
-
-Object.assign(Admin, {
-  Coupons,
-  Plans
-});
-
-export default Admin;
-```
-
-You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
-
-Remember to polyfill `Object.assign` or assign controllers using a different method.
-
-Loco-JS exports also, among others, the `Models` object. Remember to do the same with all defined models - merge them with this object.
+Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these object.  
+Merging controllers is described in [Loco-JS-Core repo](https://github.com/locoframework/loco-js-core#-merging-classes). Loco-JS-Core is a part of Loco-JS that can be used separately. Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
 
 # 🏛 Structure
 
-Loco-JS exports following structure:
+Loco-JS exports the following structure:
 
 ```javascript
 export {
-  Channels,    // object                 - since ver. 1.3
+  getLine,
+  getLocale,
+  setLocale,
+  getWire,
+  connector,   // object
+  emit,
+  helpers,     // object
+  init,
+  subscribe,
   Controllers, // object
-  Deps,        // object
   Env,         // object
-  Helpers,     // object
   I18n,        // object
-  Line,        // function (class)       - since ver. 1.3
-  Loco,        // function (class)
-  Mix,         // function (mixin class)
-  Mixins,      // object
   Models,      // object
-  Presenters,  // object
-  Services,    // object
-  UI,          // object
-  Utils,       // object
-  Validators,  // object
-  Views,       // object
-  Wire         // function (class)
+  Validators   // object
 };
 ```
 
-Brief explanation of each element:
+A brief explanation of each element:
 
-* **Channels** - the namespace where `ActionCable`'s subscriptions are created
-* **Controllers** - the object that you have to merge all custom controllers with. It contains `Base` class for custom controllers
-* **Deps** - this is an abbreviation of "dependencies". This object has 2 properties:
-    * **cable** - if you want to send and receive signals / messages through WebSockets, assign consumer to this property by invoking `ActionCable.createConsumer();`
-    * **NotificationCenter** - you have to assign a custom class to this property that is going to receive notifications sent via WebSockets
-* **Env** - this object holds environmental informations. Its properties:
+* **getLine** - function returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
+* **getLocale** - function returns configured locale
+* **setLocale** - function allows setting a locale
+* **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
+* **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
+* **emit** - function sends messages over a WebSocket connection to the server
+* **helpers** - object containing helper functions 
+* **init** - a function used to initialize Loco-JS 
+* **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
+* **Controllers** - object that you have to merge all custom controllers with. It contains the `Base` class for custom controllers
+* **Env** - object holding environmental information. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
     * **namespaceController** - the instance of the current namespace controller
-    * **loco** - the instance of `Loco` (see _Initialization_ section). Its most important instance methods are:
-        * `getWire` - returns the current instance of `Wire`
-        * `setLocale` / `getLocale` - allows to set / get current locale
-    
-        Look at [source code](https://github.com/locoframework/loco-js/blob/master/src/base/loco.coffee) for all.
-* **Helpers** - the namespace where helpers are defined. Helpers are classes facilitating things like transforming text, converting numbers to currencies etc. Members:
-    * **Text** - has method(s) that returns *text* transformed into HTML by using simple formatting rules
-* **I18n** - the object that holds localizations. Localizations are objects as well
-* **Line** - the class responsible for sending and receiving messages over WebSocket connection
-* **Loco** - this class rules everything ;)
-* **Mix** - the factory function that generates a `Mixed` superclass (used for implementing mixins)
-* **Mixins** - the namespace where mixins are defined
-* **Models** - the object which all custom models should be merged with. It contains `Base` class for custom models
-* **Presenters** - the empty object that you can merge your custom presenters with. Presenters can be used to hold functions used to present models or their attributes.  
-_Deprecated! It will be removed in the future. Store presenters on your own. This object doesn't have to be exported._ 
-* **Services** - the namespace where service classes are defined. Members:
-    * **Date** - its instance methods are useful for converting `Date` to a string
-* **UI** - the namespace where classes that interact with the HTML are defined. Members:
-    * **Form** - the class responsible for dealing with forms
-* **Utils** - the namespace in which the classes containing the utility methods for the given data type are defined. Members: `Array`, `Collection`, `Dom`, `Object`, `String`
-* **Validators** - the namespace where validators are defined and where custom validators should also be merged
-* **Views** - the namespace where `Base` class for custom Views is defined
-* **Wire** - the class responsible for fetching signals / notifications 
+    * **loco** - the running instance of `Loco`
+* **I18n** - object holding localizations. Localizations are objects as well
+* **Models** - an object which all custom models should be merged with. It contains the `Base` class for custom models
+* **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
+
 
 # 📡 Models
 
-The model layer has been extracted to a separate [repository](https://github.com/locoframework/loco-js-model) and it can be used standalone as well. If you want to look at how to integrate [React](https://reactjs.org), [Redux](https://redux.js.org) and **Loco-JS-Model**, 🎁[**this repository**](https://github.com/artofcodelabs/front-end-boilerplate)🎁 may be a good starting point. 
+The model layer has been extracted to a separate [repository](https://github.com/locoframework/loco-js-model), and it can be used standalone as well. 🎁[**This repository**](https://github.com/artofcodelabs/front-end-boilerplate)🎁 may be a good starting point if you want to look at how to integrate [React](https://reactjs.org), [Redux](https://redux.js.org), and **Loco-JS-Model**.
 
 ## Nesting models 🏺
 
-If you want to have two models with the same name or maybe you want to reflect a server architecture, you can even nest models. But only one-level nesting is allowed.
+If you want to have two models with the same name or maybe you want to reflect a server architecture, you can nest models. But only one-level nesting is allowed.
 
 ```javascript
 // models/Coupon/Unit.js
@@ -298,7 +210,7 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Remember to merge all defined models with the exported `Models` object:
+Remember to merge all defined models with the exported `Models` object.
 
 ```javascript
 // models/index.js
@@ -319,496 +231,289 @@ Object.assign(Models, {
 });
 ```
 
-Loco-JS will be able to find the correct model in this situation if you emit a signal for the corresponding model on the server side.
+Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
 
-Like it's already been said - given method of given controller is called automatically based on HTML `<body>`'s attributes. 
+The controllers layer has been extracted to a separate project [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) that can be used standalone and is a Loco-JS dependency. Read its README, please for more information. `helpers` and `Controllers` are exported by Loco-JS too.
 
-Exemplary controller:
+Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models using `setResource` / `setScope` methods.
 
 ```javascript
-// controllers/admin/coupons.js
+// controllers/Admin.js
 
 import { Controllers } from "loco-js";
 
-import New from "views/admin/coupons/new";
-import List from "views/admin/coupons/list";
-
-class Coupons extends Controllers.Base {
-  static identity = "Coupons"; // persist the name of the class because
-                               // it is going to be minified in production
-                               // and knowing the name of the current controller
-                               // can be useful (see the section about Line)
-  
-  // Loco-JS supports static and instance methods
-  static index() {
-    new List().render();
-  }
-
-  new() {
-    const view = new New({ planId: this.params.id });
-    this.setView("new", view); // assigning the instance of currently rendered
-                               // view to the controller's property gives 
-                               // a possibility to call other methods on it
-                               // in the next life cycle
-                               // (see the section about Line)
-    view.render();
+class Admin extends Controllers.Base {
+  initialize() {
+    this.setScope("admin");
   }
 }
-
-export default Coupons;
 ```
 
-To see all convenient properties and methods of the base class, other than `params` presented above, look at the [source code](https://github.com/locoframework/loco-js/blob/master/src/controllers/base.coffee).
 
-Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models (`setResource` / `setScope`) methods.
+# 🔌 The subscribe function
 
-# 🗺 Views
+This function allows subscribing to a given object or a class of objects by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side.
 
-View is a layer where you should interact with the DOM to keep separation of concerns.  
-[Base class](https://github.com/locoframework/loco-js/blob/master/src/views/base.coffee) delivers only a few methods, so it does not force you how to do so.  
-The good practice is to always call `render` method on a view and treat it as a starting point.  
-You can even render **React** components inside of view.
+*Example:*
 
 ```javascript
-// views/admin/coupons/new.js
+// views/user/rooms/List.js
 
-import { Views } from "loco-js";
-import React from "react";
-import { render as renderElement } from "react-dom";
+import { subscribe } from "loco-js";
 
-import CouponForm from "components/admin/CouponForm";
-import Coupon from "models/Coupon";
+import Room from "models/Room";
 
-class New extends Views.Base {
-  constructor(opts) {
-    super(opts);
-    this.planId = opts.planId;
-  }
+const memberJoined = roomId => {
+  const node = membersNode(roomId);
+  node.textContent = parseInt(node.text()) + 1;
+};
 
-  render() {
-    this.renderCouponForm();
-  }
+const memberLeft = roomId => {
+  const node = membersNode(roomId);
+  node.textContent = parseInt(node.text()) - 1;
+};
 
-  renderCouponForm() {
-    const coupon = new Coupon({ resource: "admin", planId: this.planId });
-    renderElement(
-      <CouponForm coupon={coupon} />,
-      document.getElementById("coupon-form")
-    );
-  }
-}
+const membersNode = roomId => {
+  document.querySelector(`#room_${roomId} td.members`);
+};
 
-export default New;
-```
+const renderRoom = room => {
+  `
+  <tr id='room_${room.id}'>
+    ...
+  </tr>
+  `;
+};
 
-# 🔌 Connectivity
-
-`Connectivity` is a mixin that is included in the `Base` classes of `Views` and `Controllers`. It allows you to send signals / notifications to all instances of controllers and views that are connected with given model classes or specific model instances. Example:
-
-```javascript
-// views/admin/coupons/list.js
-
-import { Views } from "loco-js";
-
-import Coupon from "models/Coupon";
-
-class List extends Views.Base {
-  constructor(opts) {
-    super(opts);
-  }
-
-  async render() {
-    this.connectWith([Coupon]); // every time back-end emits signal for 
-                                // any coupon, receivedSignal method is called.
-                                // An array of more than 1 model class can
-                                // be passed as an argument. It is even possible
-                                // to mix model classes and instances in this
-                                // array
-    const coupons = await Coupon.get("all", { resource: "admin" });
-    this.connectWith(coupons.slice(-1), {  // method lastCouponReceivedSignal
-      receiver: "lastCouponReceivedSignal" // is called only if a signal is
-    });                                    // emitted by the back-end for
-                                           // a specific Coupon instance 
-                                           // that is the last element in 
-                                           // "coupons" array at this moment
-  }
-
-  receivedSignal(signal, data) {
-  }
-
-  lastCouponReceivedSignal(signal, data) {
-  }
-}
-
-export default List;
-```
-
-So if you use Loco-Rails on the back-end and emit a signal for the first coupon in the database, like this:
-
-```ruby
-# you can do it anywhere, in rails console for example
-include Loco::Emitter
-emit Coupon.first, :updated, { data: { foo: 'bar' } }
-```
-
-On the front-end side:
-
-1. Loco-JS will receive a signal in the following format `["Coupon", 1, "updated", {foo: "bar", id: 1}]`
-2. `receivedSignal` method will be called for every instance of the `List` class above (there is only one usually) with `"Coupon updated"` and `{foo: "bar", id: 1}` as the arguments 
-
-If you, on the other hand, emit signal for the last coupon in the database `emit Coupon.last, :updated, { data: { foo: 'bar' } }`
-
-On the front-end side:
-
-1. Loco-JS will receive a signal `["Coupon", 27, "updated", {foo: "bar", id: 27}]`
-2. `lastCouponReceivedSignal` method will be called with `updated` and `{foo: "bar", id: 27}` as arguments
-3. `receivedSignal` method will be called with `Coupon updated` and `{foo: "bar", id: 27}` as arguments
-
-# 🚠 Wire
-
-Instance of this class works internally and is responsible for fetching notifications.  
-The constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
-
-💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection _(see Line section)_, it will stop polling and will be waiting for informations, transmitted through WebSockets, about new, emitted by the back-end signals (to fetch them).  
-In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
-
-[All accessor methods](https://github.com/locoframework/loco-js/blob/master/src/base/wire.coffee) that may be useful are rather straightforward and self-explanatory. The one that requires a bit of explanation is `setToken`.
-
-* `setToken(token)` - when token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful, when you want to emit a signal / notification, on the back-end, to a user that is not authenticated in the system _(e.g. you want to notify a user that he has confirmed his email address successfully via clicking on a link and is now able to sign in)_
-
-```javascript
-import { Env } from "loco-js";
-const wire = Env.loco.getWire(); // this is how to grab a working instance
-                                 // of Wire during runtime and after
-                                 // initialization (see Initialization section)
-wire.setToken("foobarbaz");
-```
-
-On the back-end, you can now emit a signal to _"this token"_. And only _this_ user will receive the following signal.
-
-```ruby
-include Loco::Emitter
-emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
-```
-
-# 〰 Line
-
-Instance of this class works internally and is responsible for sending and receiving messages over WebSocket connection.
-
-These messages are not what we call signals / notifications. Signals / notifications must be associated with instances of models on the back-end while messages sent via `Line` don't have this requirement and are directed directly to recipients.
-
-It is not required to use Line when using Loco-JS. It works currently only if you use Loco-Rails on the back-end and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency.
-
-Loco-JS automatically creates an instance of `Line` and it subscribes to `Loco::NotificationCenterChannel` if it discovers `ActionCable`'s consumer under `Deps.cable` exported by Loco-JS.
-
-## Configuration 🛠
-
-```javascript
-import { Deps } from "loco-js";
-import ActionCable from "actioncable";
-
-// you can use one global NotificationCenter or per "panel"
-import NotificationCenter from "services/admin/NotificationCenter";
-
-Deps.cable = ActionCable.createConsumer();
-Deps.NotificationCenter = NotificationCenter;
-```
-
-## Sending messages 🚚
-
-You can send messages over WebSocket connection after initializing Loco-JS (see _Initialization_ section).
-
-```javascript
-import { Env } from "loco-js";
-
-const line = Env.loco.getLine();
-line.send({ foo: "bar" });
-
-// or using shortcut
-Env.loco.emit({ baz: "buz"});
-```
-
-To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
-
-## Receiving messages 📩
-
-Every time the back-end emits a signal to the front-end like this:
-
-```ruby
-include Loco::Emitter
-# emit_to method emits message over WebSocket connection 
-# to all signed in admins (in this example)
-emit_to Admin.all, type: 'COUPON_CREATED', id: @coupon.id
-```
-
-`receivedSignal` static or instance method is called on `Deps.NotificationCenter` class.
-
-```javascript
-// services/admin/NotificationCenter.js
-
-import { Env } from "loco-js";
-
-class NotificationCenter {
-  static receivedSignal(data) {
-    switch (data.type) {
-      case "COUPON_CREATED":
-        this.couponCreated(data.id);
-        break;
-      default:
+const receivedMessage = (type, data) => {
+  switch (type) {
+    case "Room member_joined":
+      memberJoined(data.room_id);
+      break;
+    case "Room member_left":
+      memberLeft(data.room_id);
+      break;
+    case "Room created": {
+      document
+        .getElementById("rooms_list")
+        .insertAdjacentHTML("beforeend", renderRoom(data.room));
+      break;
     }
-  }
-
-  static couponCreated(couponId) {
-    // break if current controller is not Coupons
-    if (Env.controller.constructor.identity !== "Coupons") return;
-    
-    // break if current action is not "new"
-    if (Env.action !== "new") return;
-    
-    // call couponCreated method on the view - assigned to the current
-    // controller as "new" by using setView method inherited 
-    // from the Controllers.Base class
-    Env.controller.getView("new").couponCreated(couponId);
-  }
-}
-
-export default NotificationCenter;
-```
-
-# 📝 UI.Form
-
-This class is useful when you want to allow users of you app to modify model's attributes. In other words, it connects a model instance with a form.  
-`UI.Form` converts attributes of model's instance to the values of the corresponding form elements. It gives you a front-end validation without an extra effort and it turns standard static form into dynamic, submitted asynchronously one.
-
-In this section I will be using exemplary model from [Loco-JS-Model README](https://github.com/locoframework/loco-js-model).
-
-The following code presents a view with an example of initializing and using the `UI.Form`.
-
-```javascript
-// views/admin/coupons/new.js
-
-import { UI, Views } from "loco-js";
-
-import Coupon from "models/Coupon";
-
-class New extends Views.Base {
-  static initCoupon(planId) {
-    return new Coupon({
-      resource: "admin",
-      planId,
-      amountOff: 0.0,
-      percentOff: 0,
-      duration: "once"
-    });
-  }
-
-  constructor(opts) {
-    super(opts);
-    this.coupon = this.constructor.initCoupon(opts.planId);
-  }
-  
-  render() {
-    const form = new UI.Form({
-      for: this.coupon, // (optional) an instance of a model that is connected 
-                        // with the form
-      id: "coupon-form", // (optional) ID attribute of the HTML <form> element.
-                         // If not passed - it will be resolved, based on
-                         // whether model has ID, to: 
-                         // * "edit_${lowercased model's identity prop}_${model's ID}"
-                         // * "new_${lowercased model's identity prop}"
-      initObj: false, // (optional) whether to initialize passed object based
-                      // on values of corresponding form's elements.
-                      // False by default (it has its initial attribute values)
-      delegator: this, // (optional) an object to which all the callbacks 
-                       // are delegated to
-      callbackActive: "callbackActive", // (optional) the name of the function
-                                        // that will be called after sending the request
-      callbackSuccess: "callbackSuccess", // (optional) the name of the function that
-                                          // will be called on success 
-      callbackFailure: "callbackFailure" // (optional) the name of the function that
-                                         // will be called if an object
-                                         // is invalid on the front-end
-                                         // or back-end side (400 HTTP status code)
-    });
-    
-    form.render();
-  }
-
-  callbackActive() {
-    console.log("Coupon is creating on the server...");
-  }
-    
-  callbackSuccess(data) {
-    console.log("Coupon has been created.");
-  }
-    
-  callbackFailure() {
-    console.log("Creation failed or front-end validations didn't pass.");
-  }
-}
-```
-
-From the HTML perspective - the following example shows how a form should be structured.  
-What you should pay attention to is that all tags related to given attribute, should be wrapped by a tag with a proper **data-attr** attribute. The value of this attribute should match the **remote name** of given attribute (the name of the corresponding attribute on the server side, returned by an API).
-
-Look at how errors are expressed. The tag is irrelevant, only **errors** class and **data-for** HTML attribute are important.
-
-```html
-<form id="coupon-form">
-  <p data-attr="stripe_id">
-    <label>Stripe ID</label><br>
-    <input type="text" />
-    <span class="errors" data-for="stripe_id"></span>
-  </p>
-
-  <p data-attr="amount_off">
-    <input type="radio" name="amount_off" value="0" />
-    <label>$0 off</label>
-
-    <input type="radio" name="amount_off" value="20" />
-    <label>$20 off</label>
-
-    <input type="radio" name="amount_off" value="50" />
-    <label>$50 off</label>
-
-    <span class="errors" data-for="amount_off"></span>
-  </p>
-
-  <p data-attr="percent_off">
-    <input type="hidden" name="percent_off" value="0" />
-
-    <input type="checkbox" name="percent_off" value="50" />
-    <label>50% off</label>
-
-    <span class="errors" data-for="percent_off"></span>
-  </p>
-
-  <p data-attr="duration">
-    <label>Duration</label><br>
-    <select>
-      <option value="forever">Forever</option>
-      <option value="once">Once</option>
-      <option value="repeating">Repeating</option>
-    </select>
-  </p>
-
-  <p data-attr="duration_in_months">
-    <label>Duration in months</label><br>
-    <input type="text" />
-    <span class="errors" data-for="duration_in_months"></span>
-  </p>
-
-  <p>
-    <input type="submit" value="Submit" />
-    <span class="errors" data-for="base"></span>
-  </p>
-</form>
-```
-
-Remember that when you submitting a form, **all model attributes** are sent to the server and not only those available to modify via the form fields.  
-Model's attribute can be an object as well - for example, if you want to send a nested resources.
-
-If model's ID is `null`, the instance is considered as new, not persisted on the server, so after submitting a form, Loco-JS will send the following XHR request:
-
-```bash
-Started POST "/admin/plans/7/coupons"
-Parameters: {"coupon"=>{"stripe_id"=>"my-project-test", "percent_off"=>50, "amount_off"=>"0", "duration"=>"repeating", "duration_in_months"=>6, "max_redemptions"=>nil, "redeem_by"=>nil}, "plan_id"=>"7"}
-```
-
-On the other hand, if model instance has not null ID, Loco-JS sends the following XHR request to the server.
-
-```bash  
-Started PUT "/admin/plans/9/coupons/100"
-Parameters: {"coupon"=>{"stripe_id"=>"my-project-test", "percent_off"=>0, "amount_off"=>"50", "duration"=>"once", "duration_in_months"=>nil, "max_redemptions"=>nil, "redeem_by"=>nil}, "plan_id"=>"9", "id"=>"100"}
-```
-
-The success response from the server should be in the JSON format with the following structure:
-
-```javascript
-{
-  "success": true,
-  "status": 200,
-  "data": {      // (optional) this object that will be passed to 
-    "id": 123,   // callbackSuccess if this function is defined
-    "foo": "bar"
-  },
-  "flash": {                              // (optional) UI.Form changes the value
-    "success": "Coupon has been created!" // of submit button depending on the current
-  },                                      // state of the form and this key represents
-                                          // the success state (a record has been saved)
-  "access_token": "123qweasd" // (optional) when access_token is returned you can then
-                              // emit on the server a signal assigned to that token
-}
-```
-
-The example of the failure response:
-
-```javascript
-{
-  "success": false,
-  "status": 400,
-  "errors": {
-    "stripe_id": ["has already been taken"],
-    "base": ["something wrong with the whole object"]
-  }
-}
-```
-
-# 🇵🇱 i18n
-
-Loco-JS supports internationalization. Following example shows how to setup a different default language.
-
-First, create a translation of the [base English file](https://github.com/locoframework/loco-js/blob/master/src/locales/en.coffee).
-
-```javascript
-// locales/pl.js
-
-const pl = {
-  // ...
-  errors: {
-    messages: {
-      blank: "nie może być puste",
-      inclusion: "nie jest na liście dopuszczalnych wartości",
-      invalid: "jest nieprawidłowe",
-      // ...
+    case "Room destroyed": {
+      const roomNode = document.getElementById(`room_${data.room_id}`);
+      roomNode.parentNode.removeChild(roomNode);
     }
   }
 };
 
-export default pl;
+export default function() {
+  subscribe({ to: Room, with: receivedMessage });
+}
 ```
 
-Loco-JS must have all translations assigned to `I18n` object.
+`subscribe` returns a function that can be called if you want to **unsubscribe**.
+
+If you use Loco-Rails on the back-end and send notification for a given instance of `Room` model, like:
+
+```ruby
+# you can do it anywhere, in Rails Console for example
+include Loco::Emitter
+
+emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
+```
+
+On the front-end side:
+
+1. Loco-JS receives a notification in the following format `["Room", 123, "created", { room: { id: 123, name: "Room #123" } }]`
+2. `receivedMessage` method is called with `"Room created"` and `{ room: { id: 123, name: "Room #123" } }` as arguments
+
+The example above shows subscribing to all instances of the given class by passing a model class name (`Room`). It may be useful, for example, if you want to be notified when an object is created on the server-side. The front-end equivalent (Loco-JS-Model) does not exist yet, so you have to subscribe to the whole model class.
+
+A function that receives notifications (`receivedMessage` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.  
+
+It is possible to subscribe to more than one object by passing an array `subscribe({ to: [Room, User, comment1, post2], with: customFunc })`
+
+From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedMessage })` if you want to subscribe to the instance of User with a given ID. 
+
+All notifications are also sent to the `notificationCenter` (see *Receiving messages* section).
+
+# 📩 Receiving messages
+
+Every time the back-end sends a message to the front-end over a WebSocket connection like this:
+
+```ruby
+include Loco::Emitter
+
+# emit_to method emits a message over a WebSocket connection
+# to all Hub members in this example
+# Hub is a Loco-Rails concept that matches to a virtual room where you can add/remove members
+emit_to Hub.get('chat_room_1'),
+        type: 'NEW_MESSAGE',
+        message: 'Hello chat members!',
+        author: 'Mr. Admin'
+```
+
+a custom function is called that must be assigned to the `notificationCenter` property during initialization if you want to receive messages from the server. 
 
 ```javascript
-import { I18n, Loco } from "loco-js";
+import { init } from "loco-js";
+import { createConsumer } from "@rails/actioncable";
 
-import pl from "locales/pl";
+import NotificationCenter from "services/NotificationCenter";
 
-// remember to polyfill Object.assign or assign it in a different way
-Object.assign(I18n, {
-  pl
-});
-
-const loco = new Loco({
+init({
   // ...
-  locale: "pl"
+  cable: createConsumer(),
+  notificationCenter: NotificationCenter,
+  // ...
 });
-
-loco.init();
 ```
+
+```javascript
+// services/NotificationCenter.js
+
+import { Env } from "loco-js";
+
+import { addArticles } from "actions";
+import store from "store";
+
+import Article from "models/Article";
+
+import RoomsController from "controllers/user/Rooms";
+import UserController from "controllers/User";
+
+const getCallbackForReceivedMessage = () => {
+  const nullCallback = () => {};
+  // break if current namespace controller is not UserController
+  if (Env.namespaceController.constructor !== UserController)
+    return nullCallback;
+  if (Env.controller.constructor !== RoomsController) return nullCallback;
+  // break if current action is not "show"
+  if (Env.action !== "show") return nullCallback;
+  return Env.controller.callbacks["receivedMessage"];
+};
+
+const articleCreated = async ({ id }) => {
+  if (Env.namespaceController.constructor !== UserController) return;
+  const article = await Article.find({ id, abbr: true });
+  store.dispatch(addArticles([article]));
+};
+
+export default data => {
+  switch (data.type) {
+    case "NEW_MESSAGE":
+      getCallbackForReceivedMessage()(data.message, data.author);
+      break;
+    case "Article created":
+      articleCreated(data.payload);
+      break;
+  }
+};
+```
+
+Sending and receiving messages over a WebSocket connection only works if you use Loco-Rails on the back-end, and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency. It can be skipped if you are not interested in WebSocket communication.  
+Internally, Loco-JS uses an instance of a class called `Line` for sending and receiving messages over a WebSocket connection. You can fetch this instance using the `getLine` function. But there is rarely a need for this.
+
+Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method. 
+
+```ruby
+include Loco::Emitter
+
+emit(@article, :created, for: current_user)
+```
+
+## Wire 🚠
+
+An instance of this class works internally and is responsible for fetching notifications. You can fetch this instance using `getWire` function.
+`Wire` class's constructor takes an object whose many properties have been described in the *Initialization* section (look at the `notifications` property).
+
+💥 In normal conditions, Wire checks and fetches notifications via AJAX polling. But if you have an established WebSocket connection, it stops polling and waits for notifications, transmitted through WebSockets. These notifications are sent using the `emit` method on the server-side.
+In case of losing the WebSocket connection, it can automatically switch to AJAX polling.
+
+Useful accessors and methods:
+
+* `wire.token = token` - when a token is set, it is automatically appended to the requests that fetch notifications. So it allows you to fetch notifications assigned to a given token. It is useful when you want to send a notification, on the back-end, to a user that is not authenticated in the system _(e.g., you want to notify a user that has confirmed his email address successfully via clicking on a link and is now able to sign in)_
+
+```javascript
+import { getWire } from "loco-js";
+
+const wire = getWire();
+
+wire.token = "foobarbaz";
+```
+
+On the back-end, you can send notifications for a given token now.
+
+```ruby
+include Loco::Emitter
+
+emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
+```
+
+* `setPollingTime(value)` - this method changes the time interval of fetching notifications from the server via AJAX polling if you don't have a WebSocket connection. It accepts values in milliseconds (default is 3000)
+
+# 🚚 Sending messages
+
+You can send messages over WebSocket connection after initializing Loco-JS properly (see _Initialization_ and _Receiving messages_ sections).
+
+```javascript
+import { emit } from "loco-js";
+
+emit({ type: "PING", user_id: 123 });
+```
+
+To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
+
+# 🇵🇱 i18n
+
+Loco-JS supports internationalization. The following example shows how to set up a different default language.
+
+First of all, create a translation in a given language. Loco-JS consists internally of a few parts (see _What is Loco-JS?_ section). Each lib can contain its localization file, which exports a simple JavaScript object. Their properties are not conflicting. So it is possible to create a one localization file that combines several files from different Loco-JS' parts ([example translation to the Polish language](https://github.com/locoframework/loco-rails/blob/master/test/dummy/frontend/js/locales/base/pl.js)).
+
+Loco-JS must have all translations assigned to the `I18n` object. You can add your custom locales to the `I18n` object too.
+
+```javascript
+// locales/base/pl.js
+
+import { I18n } from "loco-js";
+
+I18n.pl = {
+  // ...
+  errors: {
+    messages: {
+      accepted: "musi zostać zaakceptowane",
+      blank: "nie może być puste",
+      confirmation: "nie zgadza się z polem %{attribute}",
+      empty: "nie może być puste",
+      // ...
+    }
+  }
+};
+```
+You can specify a default locale during initialization (see _Initialization_ section) or by using `setLocale` function.
 
 # 👩🏽‍🔬 Tests
 
 ```bash
-npm run test
+$ npm run test
 ```
 
 # 📈 Changelog
 
 ## Major releases 🎙
+
+### 4.0 (2020-07-23)
+
+* Code has been extracted to Loco-JS-Core and Loco-JS-UI
+* the `notificationCenter` is more powerful and receives all messages
+* **Breaking changes**:
+    * `Channels`, `Deps`, `Helpers`, `Line`, `Loco`, `Mix`, `Mixins`, `Presenters`, `Services`, `UI`, `Utils`, `Views`, `Wire` are no longer exported
+    * use `emit()` instead of `Env.loco.emit()`
+    * you have to import `helpers` and use `helpers.params` instead of `this.params` in controllers
+    * an initialization with `init` method
+    * use `subscribe` instead of `connectWith`
 
 ### 3.2
 
@@ -838,8 +543,6 @@ npm run test
 ### 1.3
 
 * Line
-
-🔥 Only version 3 is under support and development.
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
