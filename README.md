@@ -504,6 +504,17 @@ $ npm run test
 
 ## Major releases 🎙
 
+### 4.0 (2020-07-23)
+
+* Code has been extracted to Loco-JS-Core and Loco-JS-UI
+* the `notificationCenter` is more powerful and receives all messages
+* **Breaking changes**:
+    * `Channels`, `Deps`, `Helpers`, `Line`, `Loco`, `Mix`, `Mixins`, `Presenters`, `Services`, `UI`, `Utils`, `Views`, `Wire` are no longer exported
+    * use `emit()` instead of `Env.loco.emit()`
+    * you have to import `helpers` and use `helpers.params` instead of `this.params` in controllers
+    * an initialization with `init` method
+    * use `subscribe` instead of `connectWith`
+
 ### 3.2
 
 * loco-js-model ver. 0.3
@@ -532,8 +543,6 @@ $ npm run test
 ### 1.3
 
 * Line
-
-🔥 Only version 3 is under support and development.
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
