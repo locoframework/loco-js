@@ -6,7 +6,7 @@ class Article extends Models.Base {
   static identity = "Article";
 }
 
-Object.assign(Models, { Article });
+Models.Article = Article;
 
 test("setting token correctly", () => {
   const wire = new Wire();

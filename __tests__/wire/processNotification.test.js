@@ -6,7 +6,7 @@ class Article extends Models.Base {
   static identity = "Article";
 }
 
-Object.assign(Models, { Article });
+Models.Article = Article;
 
 it("returns if imap is empty", () => {
   const loco = new Loco({ notifications: { enable: true } });
