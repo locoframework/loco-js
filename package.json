@@ -28,7 +28,7 @@
     }
   },
   "dependencies": {
-    "loco-js-core": "^0.1.1",
+    "loco-js-core": "^0.2.0",
     "loco-js-model": "^1.0.0"
   },
   "devDependencies": {
