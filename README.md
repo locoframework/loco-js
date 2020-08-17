@@ -129,11 +129,6 @@ If you use Loco-JS along with Loco-Rails - after calling specified methods, Loco
 
 If WebSocket connection can't be established, Loco-JS starts periodically checking for new notifications via AJAX polling.
 
-# 🔩 Merging classes
-
-Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these object.  
-Merging controllers is described in [Loco-JS-Core repo](https://github.com/locoframework/loco-js-core#-merging-classes). Loco-JS-Core is a part of Loco-JS that can be used separately. Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
-
 # 🏛 Structure
 
 Loco-JS exports the following structure:
@@ -177,7 +172,6 @@ A brief explanation of each element:
 * **I18n** - object holding localizations. Localizations are objects as well
 * **Models** - an object which all custom models should be merged with. It contains the `Base` class for custom models
 * **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
-
 
 # 📡 Models
 
@@ -251,6 +245,49 @@ class Admin extends Controllers.Base {
 }
 ```
 
+# 🔩 Merging classes
+
+Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these objects.  
+
+_Example of merging controllers:_
+
+```javascript
+// js/index.js (entry point)
+
+import { Controllers } from "loco-js";
+
+import Admin from "./controllers/admin"; // namespace controller
+import User from "./controllers/user";   // namespace controller
+
+Object.assign(Controllers, {
+  Admin,
+  User
+});
+```
+
+```javascript
+// js/controllers/admin.js (namespace controller)
+
+import { Controllers } from "loco-js";
+
+import Coupons from "./admin/coupons"; // Coupons controller
+import Plans from "./admin/plans";     // Plans controller
+
+class Admin extends Controllers.Base {}
+
+Object.assign(Admin, {
+  Coupons,
+  Plans
+});
+
+export default Admin;
+```
+
+You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
+
+Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
+
+Remember to polyfill `Object.assign` or assign objects using a different method.
 
 # 🔌 The subscribe function
 
