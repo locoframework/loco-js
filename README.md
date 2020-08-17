@@ -35,7 +35,7 @@ Loco Framework
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
+* by providing a logical structure for a JavaScript code. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
 * you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
 * you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
@@ -160,7 +160,7 @@ A brief explanation of each element:
 * **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
 * **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
 * **emit** - function sends messages over a WebSocket connection to the server
-* **helpers** - object containing helper functions 
+* **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
 * **init** - a function used to initialize Loco-JS 
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that you have to merge all custom controllers with. It contains the `Base` class for custom controllers
@@ -229,9 +229,9 @@ Loco-JS will be able to find the correct model in this situation when you send a
 
 # 🕹 Controllers
 
-The controllers layer has been extracted to a separate project [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) that can be used standalone and is a Loco-JS dependency. Read its README, please for more information. `helpers` and `Controllers` are exported by Loco-JS too.
+The concept of controllers is described in [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) project that can be used standalone and is a Loco-JS dependency.
 
-Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use the namespace controller to set the default scope for models using `setResource` / `setScope` methods.
+Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
 
 ```javascript
 // controllers/Admin.js
