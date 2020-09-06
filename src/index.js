@@ -23,6 +23,7 @@ const emit = args => Env.loco.emit(args);
 const init = opts => {
   Config.locale = opts.locale || "en";
   Config.protocolWithHost = opts.protocolWithHost;
+  Config.cookiesByCORS = opts.cookiesByCORS || false;
   External.cable = opts.cable;
   External.NotificationCenter = opts.notificationCenter;
   new Loco(opts).init({
