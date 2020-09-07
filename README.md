@@ -112,9 +112,12 @@ init({
     allowedDisconnectionTime: 10         // (optional) 10 by default [sec]
   },
 
-  // (optional) if provided - Loco-JS will be using absolute path
-  // instead of site-root-relative path in all xhr requests
+  // (optional) if provided - Loco-JS uses an absolute path
+  // instead of a site-root-relative path in all XHR requests
   protocolWithHost: "https://example.com",
+  
+  // send and receive cookies by a CORS request 
+  cookiesByCORS: false  // (optional) false by default
 
   // (optional) this method is called at the end, after a given controller's
   // method has been called. You can use it to change some settings based on other conditions
@@ -541,7 +544,11 @@ $ npm run test
 
 ## Major releases 🎙
 
-### 4.0 (2020-07-23)
+### 4.1  _(2020-09-06)_
+
+* Ability to receive & send cookies by a CORS request
+
+### 4.0 _(2020-07-23)_
 
 * Code has been extracted to Loco-JS-Core and Loco-JS-UI
 * the `notificationCenter` is more powerful and receives all messages
