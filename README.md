@@ -69,7 +69,6 @@ const NotificationCenter = data => {
     case "PING":
       // do something
       break;
-    }
   }
 };
 
