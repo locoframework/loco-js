@@ -18,15 +18,6 @@ export default (data, { line, wire, processNotification }) => {
   ) {
     processNotification(data.notification, { log: wire.log });
   }
-  if (data.xhr_notifications === true) {
-    wire.check();
-  }
-  if (data.start_ajax_polling === true) {
-    console.log("wire connected");
-    line.connected = null;
-    wire.uuid = null;
-    wire.fetchSyncTime({ after: "connect" });
-  }
   if (typeof data.idempotency_key === "string") {
     if (receivedAlready(data.idempotency_key)) return false;
   }
