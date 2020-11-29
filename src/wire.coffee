@@ -27,6 +27,9 @@ class Wire
   connect: ->
     this.check();
     this.pollingInterval = setInterval =>
+      if Env.loco.line.connected
+        this.disconnect();
+        return
       this.check();
     , this.pollingTime
 
@@ -86,6 +89,6 @@ class Wire
     diffInSec = (new Date() - this.disconnectedSinceTime) / 1000
     ctrl = Env.namespaceController ? Env.controller
     if diffInSec > this.allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
-      ctrl.disconnectedForTooLong this.disconnectedSinceTime
+      ctrl.disconnectedForTooLong(this.disconnectedSinceTime)
 
 export default Wire

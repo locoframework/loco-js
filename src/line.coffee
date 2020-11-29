@@ -13,14 +13,11 @@ class Line
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
-        console.log('ws connected');
-        this.connected = true
-        wire = Env.loco.wire
-        if wire?
-          wire.disconnect();
+        console.log('WS connected');
+        this.connected = true;
         External.NotificationCenter({ loco: 'connected' })
       disconnected: =>
-        console.log('ws disconnected');
+        console.log('WS disconnected');
         this.connected = false
         wire = Env.loco.wire
         if wire?
@@ -37,6 +34,6 @@ class Line
         return if Object.keys(data).length is 0
         External.NotificationCenter(data)
 
-  send: (data) -> this.subscription.send(data)
+  send: (payload) -> this.subscription.send(payload)
 
 export default Line

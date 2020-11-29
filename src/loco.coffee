@@ -41,7 +41,7 @@ class Loco
     this.line = new Line
     this.line.connect()
 
-  emit: (data) -> this.line.send data
+  emit: (payload) -> this.line.send(payload)
 
   getModels: ->
     models = []
