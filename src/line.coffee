@@ -25,7 +25,7 @@ class Line
           wire.fetchSyncTime({ after: 'connect' });
         External.NotificationCenter({ loco: 'disconnected' })
       rejected: =>
-        console.log('ws rejected');
+        console.log('WS rejected');
         External.NotificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
