@@ -1,5 +1,5 @@
 import Loco from "loco.coffee";
-import { Models } from "index";
+import { subscribe, Models } from "index";
 import processNotification from "wire/processNotification";
 
 class Article extends Models.Base {
@@ -8,9 +8,34 @@ class Article extends Models.Base {
 
 Models.Article = Article;
 
+const loco = new Loco({ notifications: { enable: true } });
+loco.init({ cable: null });
+
 it("returns if imap is empty", () => {
-  const loco = new Loco({ notifications: { enable: true } });
-  loco.init({ cable: null });
-  const result = processNotification(["Article", 1, "created", { id: 1 }]);
-  expect(result).toBe(undefined);
+  const result = processNotification([
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771e" } }
+  ]);
+  expect(result).toBe(false);
+});
+
+it("returns false on a dubled idempotency key", () => {
+  const idempotency_key = "4ea41272f11ea5c75db8ba5891567713";
+  subscribe({ to: Article, with: () => {} });
+  let result = processNotification([
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: idempotency_key } }
+  ]);
+  expect(result).toBe(true);
+  result = processNotification([
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: idempotency_key } }
+  ]);
+  expect(result).toBe(false);
 });

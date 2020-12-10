@@ -1,5 +1,6 @@
 import Env from "../env";
 import { External, IdentityMap } from "../deps";
+import receivedAlready from "../line/idempotencyKeys";
 
 const emitMessageToMembers = (
   id,
@@ -24,6 +25,7 @@ const emitMessageToCollection = (name, payload, identity) => {
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
+  if (receivedAlready(payload.loco.idempotency_key)) return false;
   const model = Env.loco.getModelForRemoteName(className);
   const identity = model.getIdentity();
   if (External.NotificationCenter != null) {
@@ -32,10 +34,11 @@ export default (notification, opts = {}) => {
       payload: payload
     });
   }
-  if (IdentityMap.imap[identity] === undefined) return;
+  if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
     emitMessageToMembers(id, name, payload, model, identity);
-  if (IdentityMap.imap[identity]["collection"] === undefined) return;
-  if (IdentityMap.imap[identity]["collection"].length === 0) return;
+  if (IdentityMap.imap[identity]["collection"] === undefined) return false;
+  if (IdentityMap.imap[identity]["collection"].length === 0) return false;
   emitMessageToCollection(name, payload, identity);
+  return true;
 };
