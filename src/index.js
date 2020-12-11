@@ -21,6 +21,9 @@ const getLine = () => Env.loco.line.subscription;
 const emit = args => Env.loco.emit(args);
 
 const init = opts => {
+  for (const i of Object.keys(opts.models || {})) {
+    Models[i] = opts.models[i];
+  }
   Config.locale = opts.locale || "en";
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;

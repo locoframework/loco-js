@@ -1,4 +1,4 @@
-import { init } from "index";
+import { init, Models } from "index";
 import { Config } from "deps";
 
 describe("init", () => {
@@ -11,5 +11,10 @@ describe("init", () => {
     expect(Config.cookiesByCORS).toEqual(false);
     init({ cookiesByCORS: true });
     expect(Config.cookiesByCORS).toEqual(true);
+  });
+
+  it("sets models", () => {
+    init({ models: { Article: { foo: "bar" } } });
+    expect(Models.Article).toEqual({ foo: "bar" });
   });
 });
