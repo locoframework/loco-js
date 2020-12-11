@@ -21,6 +21,9 @@ const getLine = () => Env.loco.line.subscription;
 const emit = args => Env.loco.emit(args);
 
 const init = opts => {
+  for (const i of Object.keys(opts.controllers || {})) {
+    Controllers[i] = opts.controllers[i];
+  }
   for (const i of Object.keys(opts.models || {})) {
     Models[i] = opts.models[i];
   }
