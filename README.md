@@ -88,7 +88,7 @@ init({
   // polling depending on the momentary availability. This works if you use
   // Loco-JS with Loco-Rails.
   notifications: {
-    enable: true,                        // (optional) false by default
+    enable: true,                        // (optional) true by default
     
     pollingTime: 3000,                   // (optional) 3000 ms by default (for AJAX polling)
 

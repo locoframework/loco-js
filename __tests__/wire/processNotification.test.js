@@ -8,7 +8,7 @@ class Article extends Models.Base {
 
 Models.Article = Article;
 
-const loco = new Loco({ notifications: { enable: true } });
+const loco = new Loco();
 loco.init({ cable: null });
 
 it("returns if imap is empty", () => {

@@ -32,7 +32,7 @@ class Loco
       document.addEventListener 'DOMContentLoaded', fn
 
   initWire: ->
-    return if not this.notificationsParams?.enable
+    return if this.notificationsParams?.enable is false
     this.wire = new Wire(this.notificationsParams)
     this.wire.fetchSyncTime({ after: 'connect' })
 
