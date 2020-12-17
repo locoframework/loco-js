@@ -16,6 +16,7 @@ class Line
         console.log('WS connected');
         this.connected = true;
         External.NotificationCenter({ loco: 'connected' })
+        this.pong();
       disconnected: =>
         console.log('WS disconnected');
         this.connected = false
@@ -35,5 +36,10 @@ class Line
         External.NotificationCenter(data)
 
   send: (payload) -> this.subscription.send(payload)
+
+  pong: ->
+    setTimeout =>
+      this.send({ loco: { pong: true } });
+    , 3000
 
 export default Line

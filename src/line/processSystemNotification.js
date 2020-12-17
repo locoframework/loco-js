@@ -1,8 +1,8 @@
 import receivedAlready from "./idempotencyKeys";
 
 export default (data, { line, wire, processNotification }) => {
-  if (data.connection_check === true) {
-    line.send({ loco: { connection_check: true } });
+  if (data.ping === true) {
+    line.pong();
   }
   if (wire == null) return;
   if (typeof data.sync_time === "string") {
