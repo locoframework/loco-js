@@ -64,6 +64,15 @@ If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's
 import { init } from "loco-js";
 import { createConsumer } from "@rails/actioncable";
 
+import Admin from "./controllers/admin"; // namespace controller
+import Users from "./controllers/users";
+
+import Coupons from "./controllers/admin/coupons"; // Coupons controller
+import Plans from "./controllers/admin/plans";     // Plans controller
+
+Admin.Coupons = Coupons;
+Admin.Plans = Plans;
+
 const NotificationCenter = data => {
   switch (data.type) {
     case "PING":
@@ -75,6 +84,11 @@ const NotificationCenter = data => {
 init({
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
+  
+  controllers: {
+    Admin,
+    Users
+  },
   
   locale: "en",                          // (optional) "en" by default
 
@@ -165,7 +179,7 @@ A brief explanation of each element:
 * **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
 * **init** - a function used to initialize Loco-JS 
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
-* **Controllers** - object that you have to merge all custom controllers with. It contains the `Base` class for custom controllers
+* **Controllers** - object that contains the `Base` class for custom controllers
 * **Env** - object holding environmental information. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
@@ -246,50 +260,6 @@ class Admin extends Controllers.Base {
   }
 }
 ```
-
-# 🔩 Merging classes
-
-Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these objects.  
-
-_Example of merging controllers:_
-
-```javascript
-// js/index.js (entry point)
-
-import { Controllers } from "loco-js";
-
-import Admin from "./controllers/admin"; // namespace controller
-import User from "./controllers/user";   // namespace controller
-
-Object.assign(Controllers, {
-  Admin,
-  User
-});
-```
-
-```javascript
-// js/controllers/admin.js (namespace controller)
-
-import { Controllers } from "loco-js";
-
-import Coupons from "./admin/coupons"; // Coupons controller
-import Plans from "./admin/plans";     // Plans controller
-
-class Admin extends Controllers.Base {}
-
-Object.assign(Admin, {
-  Coupons,
-  Plans
-});
-
-export default Admin;
-```
-
-You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
-
-Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
-
-Remember to polyfill `Object.assign` or assign objects using a different method.
 
 # 🔌 The subscribe function
 
@@ -542,6 +512,11 @@ $ npm run test
 # 📈 Changelog
 
 ## Major releases 🎙
+
+### 5.0  _(2020-12-22)_
+
+* notifications are enabled by default
+* custom controllers are passed to Loco-JS during initialization
 
 ### 4.1  _(2020-09-06)_
 
