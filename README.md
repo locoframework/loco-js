@@ -98,9 +98,9 @@ init({
   
   locale: "en",                          // (optional) "en" by default
 
-  models: {                              // it is required to receive messages
-    Admin,                               // sent from the server and related to given models
-    Coupon
+  models: {                              // specifying models here is required 
+    Admin,                               // to receive messages sent from the server 
+    Coupon                               // and related to given models
   },  
 
   // (optional) assign a custom function to this property that will receive 
@@ -231,7 +231,7 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Revisit *Initialization* to see how to connect both models together and pass to `init()` function.  
+Revisit *Initialization* to see how to connect both models and pass to `init()` function.  
 Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
