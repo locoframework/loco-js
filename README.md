@@ -508,6 +508,7 @@ $ npm run test
 
 * notifications are enabled by default
 * custom controllers and models are passed to Loco-JS during the initialization
+* Loco-JS does not process the same notification more times (an idempotency key is included)
 
 ### 4.1  _(2020-09-06)_
 
