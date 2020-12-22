@@ -7,7 +7,6 @@ class Loco
   constructor: (opts={}) ->
     this.wire = null
     this.line = null
-    this.startWire = if opts.notifications?.enable then true else false
     this.postInit = opts.postInit
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = opts.protocolWithHost
@@ -23,9 +22,6 @@ class Loco
       Env.namespaceController = env.namespaceController;
       Env.controller = env.controller;
       Env.action = env.action;
-      if this.wire?
-        this.wire.resetSyncTime()
-        this.wire.fetchSyncTime()
       this.postInit() if this.postInit?
 
   ready: (fn) ->
@@ -36,16 +32,16 @@ class Loco
       document.addEventListener 'DOMContentLoaded', fn
 
   initWire: ->
-    return if not this.startWire
-    this.wire = new Wire this.notificationsParams
-    this.wire.fetchSyncTime after: 'connect'
+    return if this.notificationsParams?.enable is false
+    this.wire = new Wire(this.notificationsParams)
+    this.wire.fetchSyncTime({ after: 'connect' })
 
   initLine: (cable) ->
     return unless cable?
     this.line = new Line
     this.line.connect()
 
-  emit: (data) -> this.line.send data
+  emit: (payload) -> this.line.send(payload)
 
   getModels: ->
     models = []

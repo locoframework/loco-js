@@ -64,6 +64,21 @@ If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's
 import { init } from "loco-js";
 import { createConsumer } from "@rails/actioncable";
 
+import Coupon from "./models/Coupon";
+import Unit from "./models/Coupon/Unit";           // nested model
+import Admin from "./models/Admin";
+
+import AdminController from "./controllers/admin"; // namespace controller
+import Users from "./controllers/users";
+
+import Coupons from "./controllers/admin/coupons"; // Coupons controller
+import Plans from "./controllers/admin/plans";     // Plans controller
+
+Coupon.Unit = Unit;
+
+AdminController.Coupons = Coupons;
+AdminController.Plans = Plans;
+
 const NotificationCenter = data => {
   switch (data.type) {
     case "PING":
@@ -76,7 +91,17 @@ init({
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
   
+  controllers: {
+    Admin: AdminController,
+    Users
+  },
+  
   locale: "en",                          // (optional) "en" by default
+
+  models: {                              // specifying models here is required 
+    Admin,                               // to receive messages sent from the server 
+    Coupon                               // and related to given models
+  },  
 
   // (optional) assign a custom function to this property that will receive 
   // notifications sent from the server
@@ -88,7 +113,7 @@ init({
   // polling depending on the momentary availability. This works if you use
   // Loco-JS with Loco-Rails.
   notifications: {
-    enable: true,                        // (optional) false by default
+    enable: true,                        // (optional) true by default
     
     pollingTime: 3000,                   // (optional) 3000 ms by default (for AJAX polling)
 
@@ -165,14 +190,14 @@ A brief explanation of each element:
 * **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
 * **init** - a function used to initialize Loco-JS 
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
-* **Controllers** - object that you have to merge all custom controllers with. It contains the `Base` class for custom controllers
+* **Controllers** - object that contains the `Base` class for custom controllers
 * **Env** - object holding environmental information. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
     * **namespaceController** - the instance of the current namespace controller
     * **loco** - the running instance of `Loco`
 * **I18n** - object holding localizations. Localizations are objects as well
-* **Models** - an object which all custom models should be merged with. It contains the `Base` class for custom models
+* **Models** - object that contains the `Base` class for custom models
 * **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
 # 📡 Models
@@ -206,34 +231,14 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Remember to merge all defined models with the exported `Models` object.
-
-```javascript
-// models/index.js
-
-import { Models } from "loco-js";
-
-import Coupon from "./Coupon";
-import Unit from "./Coupon/Unit";
-import Admin from "./Admin";
-
-Object.assign(Coupon, {
-  Unit
-});
-
-Object.assign(Models, {
-  Admin,
-  Coupon
-});
-```
-
+Revisit *Initialization* to see how to connect both models and pass to `init()` function.  
 Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
 
 The concept of controllers is described in [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) project that can be used standalone and is a Loco-JS dependency.
 
-Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
+Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
 
 ```javascript
 // controllers/Admin.js
@@ -246,50 +251,6 @@ class Admin extends Controllers.Base {
   }
 }
 ```
-
-# 🔩 Merging classes
-
-Loco-JS exports, among others, the `Controllers` and `Models` objects. To work correctly, it requires to merge all defined controllers and models with these objects.  
-
-_Example of merging controllers:_
-
-```javascript
-// js/index.js (entry point)
-
-import { Controllers } from "loco-js";
-
-import Admin from "./controllers/admin"; // namespace controller
-import User from "./controllers/user";   // namespace controller
-
-Object.assign(Controllers, {
-  Admin,
-  User
-});
-```
-
-```javascript
-// js/controllers/admin.js (namespace controller)
-
-import { Controllers } from "loco-js";
-
-import Coupons from "./admin/coupons"; // Coupons controller
-import Plans from "./admin/plans";     // Plans controller
-
-class Admin extends Controllers.Base {}
-
-Object.assign(Admin, {
-  Coupons,
-  Plans
-});
-
-export default Admin;
-```
-
-You don't have to define namespace controllers. You can merge controllers directly with exported `Controllers` object.
-
-Merging custom models with `Models` object is required to receive messages sent from the server and related to them.
-
-Remember to polyfill `Object.assign` or assign objects using a different method.
 
 # 🔌 The subscribe function
 
@@ -455,13 +416,15 @@ export default data => {
 Sending and receiving messages over a WebSocket connection only works if you use Loco-Rails on the back-end, and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency. It can be skipped if you are not interested in WebSocket communication.  
 Internally, Loco-JS uses an instance of a class called `Line` for sending and receiving messages over a WebSocket connection. You can fetch this instance using the `getLine` function. But there is rarely a need for this.
 
-Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method. 
+Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` property of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method. 
 
 ```ruby
 include Loco::Emitter
 
 emit(@article, :created, for: current_user)
 ```
+
+If you are interested in receiving _"system"_ notifications about the WebSocket connection lifecycle: `connected` / `disconnected` / `rejected`, look at the `loco` property of a notification.
 
 ## Wire 🚠
 
@@ -542,6 +505,12 @@ $ npm run test
 # 📈 Changelog
 
 ## Major releases 🎙
+
+### 5.0  _(2020-12-22)_
+
+* notifications are enabled by default
+* custom controllers and models are passed to Loco-JS during the initialization
+* Loco-JS does not process the same notification more times (an idempotency key is included)
 
 ### 4.1  _(2020-09-06)_
 

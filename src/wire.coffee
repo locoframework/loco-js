@@ -17,27 +17,24 @@ class Wire
     this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
     this.disconnectedSinceTime = null
     this.uuid = null
-    this.delayedDisconnection = false
-
-  resetSyncTime: -> this.syncTime = null
 
   setPollingTime: (val) ->
     this.pollingTime = val
+    return if Env.loco.line?.connected
     this.disconnect()
     this.connect()
 
   connect: ->
-    line = Env.loco.line
-    if line? and !line.isWireAllowed()
-      return
+    this.check();
     this.pollingInterval = setInterval =>
-      this.check()
-      if this.delayedDisconnection
-        this.delayedDisconnection = false
-        this.disconnect()
+      if Env.loco.line.connected
+        this.disconnect();
+        return
+      this.check();
     , this.pollingTime
 
-  disconnect: -> window.clearInterval this.pollingInterval
+  disconnect: ->
+    window.clearInterval(this.pollingInterval);
 
   check: ->
     return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
@@ -92,6 +89,6 @@ class Wire
     diffInSec = (new Date() - this.disconnectedSinceTime) / 1000
     ctrl = Env.namespaceController ? Env.controller
     if diffInSec > this.allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
-      ctrl.disconnectedForTooLong this.disconnectedSinceTime
+      ctrl.disconnectedForTooLong(this.disconnectedSinceTime)
 
 export default Wire
