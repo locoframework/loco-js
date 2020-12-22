@@ -64,14 +64,20 @@ If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's
 import { init } from "loco-js";
 import { createConsumer } from "@rails/actioncable";
 
-import Admin from "./controllers/admin"; // namespace controller
+import Coupon from "./models/Coupon";
+import Unit from "./models/Coupon/Unit";           // nested model
+import Admin from "./models/Admin";
+
+import AdminController from "./controllers/admin"; // namespace controller
 import Users from "./controllers/users";
 
 import Coupons from "./controllers/admin/coupons"; // Coupons controller
 import Plans from "./controllers/admin/plans";     // Plans controller
 
-Admin.Coupons = Coupons;
-Admin.Plans = Plans;
+Coupon.Unit = Unit;
+
+AdminController.Coupons = Coupons;
+AdminController.Plans = Plans;
 
 const NotificationCenter = data => {
   switch (data.type) {
@@ -86,11 +92,16 @@ init({
   cable: createConsumer(),
   
   controllers: {
-    Admin,
+    Admin: AdminController,
     Users
   },
   
   locale: "en",                          // (optional) "en" by default
+
+  models: {                              // it is required to receive messages
+    Admin,                               // sent from the server and related to given models
+    Coupon
+  },  
 
   // (optional) assign a custom function to this property that will receive 
   // notifications sent from the server
@@ -186,7 +197,7 @@ A brief explanation of each element:
     * **namespaceController** - the instance of the current namespace controller
     * **loco** - the running instance of `Loco`
 * **I18n** - object holding localizations. Localizations are objects as well
-* **Models** - an object which all custom models should be merged with. It contains the `Base` class for custom models
+* **Models** - object that contains the `Base` class for custom models
 * **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
 # 📡 Models
@@ -220,34 +231,14 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Remember to merge all defined models with the exported `Models` object.
-
-```javascript
-// models/index.js
-
-import { Models } from "loco-js";
-
-import Coupon from "./Coupon";
-import Unit from "./Coupon/Unit";
-import Admin from "./Admin";
-
-Object.assign(Coupon, {
-  Unit
-});
-
-Object.assign(Models, {
-  Admin,
-  Coupon
-});
-```
-
+Revisit *Initialization* to see how to connect both models together and pass to `init()` function.  
 Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
 
 The concept of controllers is described in [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) project that can be used standalone and is a Loco-JS dependency.
 
-Remember to merge all custom controllers with the `Controllers` object exported by Loco-JS (see the _Merging classes_ section). Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
+Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
 
 ```javascript
 // controllers/Admin.js
@@ -516,7 +507,7 @@ $ npm run test
 ### 5.0  _(2020-12-22)_
 
 * notifications are enabled by default
-* custom controllers are passed to Loco-JS during initialization
+* custom controllers and models are passed to Loco-JS during the initialization
 
 ### 4.1  _(2020-09-06)_
 
