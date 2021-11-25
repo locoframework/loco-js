@@ -7,7 +7,7 @@
     "server": "node dev/server.js",
     "start": "webpack -d --config webpack.config.js --watch",
     "test": "jest",
-    "build": "webpack -p --config webpack.config.js",
+    "build": "webpack --mode=production --node-env=production -c webpack.config.js --progress",
     "lint-staged": "lint-staged"
   },
   "repository": {
