@@ -1,17 +1,14 @@
 {
   "./*.js": [
     "prettier --write",
-    "eslint",
-    "git add"
+    "eslint"
   ],
   "__tests__/**/*.js": [
     "prettier --write",
-    "eslint",
-    "git add"
+    "eslint"
   ],
   "src/**/*.js": [
     "prettier --write",
-    "eslint",
-    "git add"
+    "eslint"
   ]
 }
