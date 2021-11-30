@@ -15,7 +15,7 @@ class Loco
   init: (opts) ->
     Env.loco = this
     this.initWire()
-    this.initLine(opts.cable)
+    this.initLine() if opts.cable?
     this.ready =>
       IdentityMap.clear()
       env = initCore(Controllers);
@@ -36,8 +36,7 @@ class Loco
     this.wire = new Wire(this.notificationsParams)
     this.wire.fetchSyncTime({ after: 'connect' })
 
-  initLine: (cable) ->
-    return unless cable?
+  initLine: ->
     this.line = new Line
     this.line.connect()
 
