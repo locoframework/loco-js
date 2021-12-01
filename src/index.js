@@ -31,10 +31,12 @@ const init = (opts) => {
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   External.cable = opts.cable;
-  new Loco(opts).init({
+  const loco = new Loco(opts);
+  loco.init({
     cable: External.cable,
     protocolWithHost: Config.protocolWithHost,
   });
+  return loco;
 };
 
 const connector = { getLocale, Env, I18n };
