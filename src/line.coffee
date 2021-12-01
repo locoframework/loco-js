@@ -1,16 +1,16 @@
 import Env from './env'
-import { External } from './deps'
 import processNotification from "./wire/processNotification"
 import processSystemNotification from "./line/processSystemNotification"
 
 class Line
-  constructor: (notificationCenter) ->
+  constructor: (cable, notificationCenter) ->
+    this.cable = cable
+    this.notificationCenter = notificationCenter
     this.connected = false
     this.subscription = null
-    this.notificationCenter = notificationCenter
 
   connect: ->
-    this.subscription = External.cable.subscriptions.create
+    this.subscription = this.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>

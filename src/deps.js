@@ -14,16 +14,11 @@ class Base {
 
 const Controllers = { Base };
 
-const External = {
-  cable: null,
-};
-
 export {
   initCore,
   helpers,
   Config,
   Controllers,
-  External,
   I18n,
   IdentityMap,
   Models,

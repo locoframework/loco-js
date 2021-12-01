@@ -5,9 +5,6 @@ import processNotification from "./wire/processNotification"
 
 class Wire
   constructor: (opts = {}) ->
-    this.syncTime = null
-    this.token = null
-    this.pollingInterval = null
     this.pollingTime = opts.pollingTime ? 3000
     this.log = if opts.log? and opts.log then true else false
     this.ssl = opts.ssl
@@ -15,19 +12,26 @@ class Wire
     this.size = opts.size ? 100
     this.protocolWithHost = opts.protocolWithHost
     this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
+    this.syncTime = null
+    this.token = null
+    this.pollingInterval = null
     this.disconnectedSinceTime = null
     this.uuid = null
+    this.line = null
+
+  setLine: (line) ->
+    this.line = line
 
   setPollingTime: (val) ->
     this.pollingTime = val
-    return if Env.loco.line?.connected
+    return if this.line?.connected
     this.disconnect()
     this.connect()
 
   connect: ->
     this.check();
     this.pollingInterval = setInterval =>
-      if Env.loco.line.connected
+      if this.line.connected
         this.disconnect();
         return
       this.check();

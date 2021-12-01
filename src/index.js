@@ -4,7 +4,6 @@ import {
   helpers,
   Config,
   Controllers,
-  External,
   I18n,
   IdentityMap,
   Models,
@@ -30,12 +29,9 @@ const init = (opts) => {
   Config.locale = opts.locale || "en";
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
-  External.cable = opts.cable;
   const loco = new Loco(opts);
-  loco.init({
-    cable: External.cable,
-    protocolWithHost: Config.protocolWithHost,
-  });
+  Env.loco = loco;
+  loco.init(Env);
   return loco;
 };
 
