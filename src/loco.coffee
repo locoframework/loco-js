@@ -37,7 +37,7 @@ class Loco
     this.wire.fetchSyncTime({ after: 'connect' })
 
   initLine: ->
-    this.line = new Line(this.cable, this.notificationCenter)
+    this.line = new Line(this.cable, this.notificationCenter, this.wire)
     this.line.connect()
 
   emit: (payload) -> this.line.send(payload)
