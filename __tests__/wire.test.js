@@ -13,7 +13,7 @@ test("setting token correctly", () => {
   wire.token = "123qweasdzxc";
   expect(wire._requestParams()).toEqual({
     synced_at: null,
-    token: "123qweasdzxc"
+    token: "123qweasdzxc",
   });
 });
 
