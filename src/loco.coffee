@@ -11,6 +11,7 @@ class Loco
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = opts.protocolWithHost
     this.notificationsParams = notificationsParams
+    this.notificationCenter = opts.notificationCenter
 
   init: (opts) ->
     Env.loco = this
@@ -37,7 +38,7 @@ class Loco
     this.wire.fetchSyncTime({ after: 'connect' })
 
   initLine: ->
-    this.line = new Line
+    this.line = new Line(this.notificationCenter)
     this.line.connect()
 
   emit: (payload) -> this.line.send(payload)

@@ -8,19 +8,19 @@ import {
   I18n,
   IdentityMap,
   Models,
-  Validators
+  Validators,
 } from "./deps";
 
 const getLocale = () => Config.locale;
-const setLocale = locale => (Config.locale = locale);
+const setLocale = (locale) => (Config.locale = locale);
 
 const getWire = () => Env.loco.wire;
 
 const getLine = () => Env.loco.line.subscription;
 
-const emit = args => Env.loco.emit(args);
+const emit = (args) => Env.loco.emit(args);
 
-const init = opts => {
+const init = (opts) => {
   for (const i of Object.keys(opts.controllers || {})) {
     Controllers[i] = opts.controllers[i];
   }
@@ -31,10 +31,9 @@ const init = opts => {
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   External.cable = opts.cable;
-  External.NotificationCenter = opts.notificationCenter;
   new Loco(opts).init({
     cable: External.cable,
-    protocolWithHost: Config.protocolWithHost
+    protocolWithHost: Config.protocolWithHost,
   });
 };
 
@@ -56,5 +55,5 @@ export {
   Env,
   I18n,
   Models,
-  Validators
+  Validators,
 };

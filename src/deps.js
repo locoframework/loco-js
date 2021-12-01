@@ -16,7 +16,6 @@ const Controllers = { Base };
 
 const External = {
   cable: null,
-  NotificationCenter: null
 };
 
 export {
@@ -28,5 +27,5 @@ export {
   I18n,
   IdentityMap,
   Models,
-  Validators
+  Validators,
 };

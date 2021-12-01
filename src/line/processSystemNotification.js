@@ -1,6 +1,9 @@
 import receivedAlready from "./idempotencyKeys";
 
-export default (data, { line, wire, processNotification }) => {
+export default (
+  data,
+  { line, wire, processNotification, notificationCenter }
+) => {
   if (data.ping === true) {
     line.pong();
   }
@@ -16,7 +19,10 @@ export default (data, { line, wire, processNotification }) => {
     typeof data.notification === "object" &&
     data.notification.constructor.name === "Array"
   ) {
-    processNotification(data.notification, { log: wire.log });
+    processNotification(data.notification, {
+      log: wire.log,
+      notificationCenter,
+    });
   }
   if (typeof data.idempotency_key === "string") {
     if (receivedAlready(data.idempotency_key)) return false;

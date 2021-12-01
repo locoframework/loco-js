@@ -4,9 +4,10 @@ import processNotification from "./wire/processNotification"
 import processSystemNotification from "./line/processSystemNotification"
 
 class Line
-  constructor: ->
+  constructor: (notificationCenter) ->
     this.connected = false
     this.subscription = null
+    this.notificationCenter = notificationCenter
 
   connect: ->
     this.subscription = External.cable.subscriptions.create
@@ -15,7 +16,7 @@ class Line
       connected: =>
         console.log('WS connected');
         this.connected = true;
-        External.NotificationCenter({ loco: 'connected' })
+        this.notificationCenter({ loco: 'connected' })
         this.pong();
       disconnected: =>
         console.log('WS disconnected');
@@ -24,16 +25,16 @@ class Line
         if wire?
           wire.uuid = null;
           wire.fetchSyncTime({ after: 'connect' });
-        External.NotificationCenter({ loco: 'disconnected' })
+        this.notificationCenter({ loco: 'disconnected' })
       rejected: =>
         console.log('WS rejected');
-        External.NotificationCenter({ loco: 'rejected' })
+        this.notificationCenter({ loco: 'rejected' })
       received: (data) =>
         if data.loco?
-          return unless processSystemNotification(data.loco, { line: this, wire: Env.loco.wire, processNotification });
+          return unless processSystemNotification(data.loco, { line: this, wire: Env.loco.wire, processNotification, notificationCenter: this.notificationCenter });
           delete data.loco
         return if Object.keys(data).length is 0
-        External.NotificationCenter(data)
+        this.notificationCenter(data)
 
   send: (payload) -> this.subscription.send(payload)
 
