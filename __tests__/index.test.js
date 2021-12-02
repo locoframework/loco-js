@@ -1,4 +1,11 @@
-import { init, Controllers, Models } from "index";
+import {
+  getLocale,
+  init,
+  createConnector,
+  Controllers,
+  I18n,
+  Models,
+} from "index";
 import { Config } from "deps";
 
 describe("init", () => {
@@ -21,5 +28,15 @@ describe("init", () => {
   it("sets controllers", () => {
     init({ controllers: { ArticleController: { foo: "bar" } } });
     expect(Controllers.ArticleController).toEqual({ foo: "bar" });
+  });
+});
+
+describe("createConnector", () => {
+  it("return correct object", () => {
+    const loco = init({});
+    const connector = createConnector(loco);
+    expect(connector.getLocale).toEqual(getLocale);
+    expect(connector.loco).toEqual(loco);
+    expect(connector.I18n).toEqual(I18n);
   });
 });

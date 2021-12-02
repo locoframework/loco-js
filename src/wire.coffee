@@ -1,10 +1,10 @@
-import Env from './env'
 import { IdentityMap } from './deps'
 import ObjectUtils from './utils/object.coffee'
 import processNotification from "./wire/processNotification"
 
 class Wire
   constructor: (opts = {}) ->
+    this.env = opts.env
     this.pollingTime = opts.pollingTime ? 3000
     this.log = if opts.log? and opts.log then true else false
     this.ssl = opts.ssl
@@ -90,7 +90,7 @@ class Wire
     if not this.disconnectedSinceTime?
       this.disconnectedSinceTime = new Date()
     diffInSec = (new Date() - this.disconnectedSinceTime) / 1000
-    ctrl = Env.namespaceController ? Env.controller
+    ctrl = this.env.namespaceController ? this.env.controller
     if diffInSec > this.allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
       ctrl.disconnectedForTooLong(this.disconnectedSinceTime)
 

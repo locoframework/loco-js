@@ -6,9 +6,8 @@ class Loco
   constructor: (opts={}) ->
     this.cable = opts.cable
     this.postInit = opts.postInit
-    notificationsParams = opts.notifications ? {}
-    notificationsParams.protocolWithHost = opts.protocolWithHost
-    this.notificationsParams = notificationsParams
+    this.env = {namespaceController: null, controller: null, action: null}
+    this.notificationsParams = this._genNotificationsParams(opts)
     this.notificationCenter = opts.notificationCenter
     this.wire = null
     this.line = null
@@ -17,19 +16,25 @@ class Loco
 
   getWire: -> this.wire
 
-  init: (Env) ->
+  init: () ->
     this._initWire() if this.notificationsParams?.enable isnt false
     this._initLine() if this.cable?
     this.wire.setLine(this.line);
     this._ready =>
       IdentityMap.clear()
       env = initCore(Controllers);
-      Env.namespaceController = env.namespaceController;
-      Env.controller = env.controller;
-      Env.action = env.action;
+      this.env.namespaceController = env.namespaceController
+      this.env.controller = env.controller
+      this.env.action = env.action
       this.postInit() if this.postInit?
 
   emit: (payload) -> this.line.send(payload)
+
+  _genNotificationsParams: (opts) ->
+    notificationsParams = opts.notifications ? {}
+    notificationsParams.protocolWithHost = opts.protocolWithHost
+    notificationsParams.env = this.env
+    notificationsParams
 
   _ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"

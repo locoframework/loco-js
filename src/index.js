@@ -1,4 +1,3 @@
-import Env from "./env";
 import Loco from "./loco.coffee";
 import {
   helpers,
@@ -24,23 +23,22 @@ const init = (opts) => {
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   const loco = new Loco(opts);
-  loco.init(Env);
+  loco.init();
   return loco;
 };
 
-const connector = { getLocale, Env, I18n };
+const createConnector = (loco) => ({ getLocale, loco, I18n });
 
 const subscribe = IdentityMap.subscribe;
 
 export {
   getLocale,
   setLocale,
-  connector,
+  createConnector,
   helpers,
   init,
   subscribe,
   Controllers,
-  Env,
   I18n,
   Models,
   Validators,
