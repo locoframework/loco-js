@@ -18,10 +18,10 @@ class Loco
   getWire: -> this.wire
 
   init: (Env) ->
-    this.initWire() if this.notificationsParams?.enable isnt false
-    this.initLine() if this.cable?
+    this._initWire() if this.notificationsParams?.enable isnt false
+    this._initLine() if this.cable?
     this.wire.setLine(this.line);
-    this.ready =>
+    this._ready =>
       IdentityMap.clear()
       env = initCore(Controllers);
       Env.namespaceController = env.namespaceController;
@@ -29,21 +29,21 @@ class Loco
       Env.action = env.action;
       this.postInit() if this.postInit?
 
-  ready: (fn) ->
+  emit: (payload) -> this.line.send(payload)
+
+  _ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
     if cond
       fn()
     else
       document.addEventListener 'DOMContentLoaded', fn
 
-  initWire: ->
+  _initWire: ->
     this.wire = new Wire(this.notificationsParams)
     this.wire.fetchSyncTime({ after: 'connect' })
 
-  initLine: ->
+  _initLine: ->
     this.line = new Line
     this.line.connect(this.cable, this.notificationCenter, this.wire)
-
-  emit: (payload) -> this.line.send(payload)
 
 export default Loco

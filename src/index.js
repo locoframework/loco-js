@@ -13,8 +13,6 @@ import {
 const getLocale = () => Config.locale;
 const setLocale = (locale) => (Config.locale = locale);
 
-const emit = (args) => Env.loco.emit(args);
-
 const init = (opts) => {
   for (const i of Object.keys(opts.controllers || {})) {
     Controllers[i] = opts.controllers[i];
@@ -26,7 +24,6 @@ const init = (opts) => {
   Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   const loco = new Loco(opts);
-  Env.loco = loco;
   loco.init(Env);
   return loco;
 };
@@ -39,7 +36,6 @@ export {
   getLocale,
   setLocale,
   connector,
-  emit,
   helpers,
   init,
   subscribe,

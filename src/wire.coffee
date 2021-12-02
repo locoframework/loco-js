@@ -19,8 +19,7 @@ class Wire
     this.uuid = null
     this.line = null
 
-  setLine: (line) ->
-    this.line = line
+  setLine: (line) -> this.line = line
 
   setPollingTime: (val) ->
     this.pollingTime = val
