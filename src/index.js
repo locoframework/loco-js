@@ -18,9 +18,11 @@ const init = (opts) => {
   }
   for (const i of Object.keys(opts.models || {})) {
     Models[i] = opts.models[i];
+    if (opts.protocolWithHost != null) {
+      Models[i].protocolWithHost = opts.protocolWithHost;
+    }
   }
   Config.locale = opts.locale || "en";
-  Config.protocolWithHost = opts.protocolWithHost;
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   const loco = new Loco(opts);
   loco.init();

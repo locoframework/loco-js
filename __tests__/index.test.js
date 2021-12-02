@@ -9,9 +9,9 @@ import {
 import { Config } from "deps";
 
 describe("init", () => {
-  it("sets protocol with host and removes a slash at the end", () => {
+  it("does not set protocol with host", () => {
     init({ protocolWithHost: "https://localhost:3000/" });
-    expect(Config.protocolWithHost).toEqual("https://localhost:3000");
+    expect(Config.protocolWithHost).toEqual(null);
   });
 
   it("sets cookiesByCORS on LocoJSModel", () => {
@@ -23,6 +23,14 @@ describe("init", () => {
   it("sets models", () => {
     init({ models: { Article: { foo: "bar" } } });
     expect(Models.Article).toEqual({ foo: "bar" });
+  });
+
+  it("sets protocolWithHost on models if passed as a config", () => {
+    init({
+      models: { Article: { foo: "bar" } },
+      protocolWithHost: "https://localhost:3003/",
+    });
+    expect(Models.Article.protocolWithHost).toEqual("https://localhost:3003/");
   });
 
   it("sets controllers", () => {
