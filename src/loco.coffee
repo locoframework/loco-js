@@ -13,6 +13,8 @@ class Loco
     this.wire = null
     this.line = null
 
+  getWire: -> this.wire
+
   init: (Env) ->
     this.initWire() if this.notificationsParams?.enable isnt false
     this.initLine() if this.cable?
