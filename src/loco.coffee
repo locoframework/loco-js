@@ -13,6 +13,8 @@ class Loco
     this.wire = null
     this.line = null
 
+  getLine: -> this.line?.subscription
+
   getWire: -> this.wire
 
   init: (Env) ->

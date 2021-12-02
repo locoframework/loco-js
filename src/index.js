@@ -13,10 +13,6 @@ import {
 const getLocale = () => Config.locale;
 const setLocale = (locale) => (Config.locale = locale);
 
-const getWire = () => Env.loco.wire;
-
-const getLine = () => Env.loco.line.subscription;
-
 const emit = (args) => Env.loco.emit(args);
 
 const init = (opts) => {
@@ -40,10 +36,8 @@ const connector = { getLocale, Env, I18n };
 const subscribe = IdentityMap.subscribe;
 
 export {
-  getLine,
   getLocale,
   setLocale,
-  getWire,
   connector,
   emit,
   helpers,
