@@ -25,7 +25,7 @@ const init = (opts) => {
   Config.locale = opts.locale || "en";
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   const loco = new Loco(opts);
-  loco.init();
+  loco.init(opts);
   return loco;
 };
 
