@@ -3,6 +3,16 @@ import Wire from "wire.coffee";
 
 const loco = init({});
 
+describe("#getEnv", () => {
+  it("returns env", () => {
+    expect(loco.getEnv()).toEqual({
+      namespaceController: null,
+      controller: null,
+      action: null,
+    });
+  });
+});
+
 describe("#getLine", () => {
   it("returns the current AC subscription", () => {
     expect(loco.getLine()).toBe(undefined);
