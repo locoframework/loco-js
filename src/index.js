@@ -9,22 +9,31 @@ import {
   Validators,
 } from "./deps";
 
+const processModels = (opts) => {
+  const models = opts.models || {};
+  for (const i of Object.keys(models)) {
+    Models[i] = models[i];
+    if (opts.protocolWithHost != null) {
+      Models[i].protocolWithHost = opts.protocolWithHost;
+    }
+    if (opts.authorizationHeader != null) {
+      Models[i].authorizationHeader = opts.authorizationHeader;
+    }
+  }
+  return models;
+};
+
 const getLocale = () => Config.locale;
 const setLocale = (locale) => (Config.locale = locale);
 
 const init = (opts) => {
+  Config.locale = opts.locale || "en";
+  Config.cookiesByCORS = opts.cookiesByCORS || false;
   for (const i of Object.keys(opts.controllers || {})) {
     Controllers[i] = opts.controllers[i];
   }
-  for (const i of Object.keys(opts.models || {})) {
-    Models[i] = opts.models[i];
-    if (opts.protocolWithHost != null) {
-      Models[i].protocolWithHost = opts.protocolWithHost;
-    }
-  }
-  Config.locale = opts.locale || "en";
-  Config.cookiesByCORS = opts.cookiesByCORS || false;
-  const loco = new Loco(opts);
+  const models = processModels(opts);
+  const loco = new Loco(models);
   loco.init(opts);
   return loco;
 };

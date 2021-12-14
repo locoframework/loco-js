@@ -9,6 +9,7 @@ describe("#getEnv", () => {
       namespaceController: null,
       controller: null,
       action: null,
+      models: {},
     });
   });
 });
