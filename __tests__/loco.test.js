@@ -1,7 +1,7 @@
 import { init } from "index";
 import Wire from "wire.coffee";
 
-const loco = init({});
+const loco = init({ models: { Article: { foo: "bar" } } });
 
 describe("#getEnv", () => {
   it("returns env", () => {
@@ -9,7 +9,7 @@ describe("#getEnv", () => {
       namespaceController: null,
       controller: null,
       action: null,
-      models: {},
+      models: { Article: { foo: "bar" } },
     });
   });
 });
@@ -23,5 +23,14 @@ describe("#getLine", () => {
 describe("#getWire", () => {
   it("returns the current instance of Wire", () => {
     expect(loco.getWire()).toBeInstanceOf(Wire);
+  });
+});
+
+describe("#setAuthorizationHeader", () => {
+  it("sets authorizationHeader for all models", () => {
+    loco.setAuthorizationHeader("Bearer XXX");
+    expect(loco.getEnv().models.Article.authorizationHeader).toEqual(
+      "Bearer XXX"
+    );
   });
 });
