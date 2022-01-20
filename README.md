@@ -61,6 +61,8 @@ If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's
 # 🎬 Initialization
 
 ```javascript
+// initializers/loco.js
+
 import { init } from "loco-js";
 import { createConsumer } from "@rails/actioncable";
 
@@ -87,7 +89,7 @@ const NotificationCenter = data => {
   }
 };
 
-init({
+const loco = init({
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
   
@@ -148,6 +150,8 @@ init({
   // e.g. polling interval: getWire().setPollingTime(1000);
   postInit: () => {}
 });
+
+export default loco;
 ```
 
 # 👷🏻‍♂️ How does it work?
@@ -162,43 +166,43 @@ Loco-JS exports the following structure:
 
 ```javascript
 export {
-  getLine,
   getLocale,
   setLocale,
-  getWire,
-  connector,   // object
-  emit,
-  helpers,     // object
+  createConnector, // function
+  helpers,         // object
   init,
   subscribe,
-  Controllers, // object
-  Env,         // object
-  I18n,        // object
-  Models,      // object
-  Validators   // object
+  Controllers,     // object
+  I18n,            // object
+  Models,          // object
+  Validators,      // object
 };
 ```
 
 A brief explanation of each element:
 
-* **getLine** - function returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
 * **getLocale** - function returns configured locale
 * **setLocale** - function allows setting a locale
-* **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
-* **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
-* **emit** - function sends messages over a WebSocket connection to the server
+* createConnector - TODO:
 * **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
 * **init** - a function used to initialize Loco-JS 
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
+* **I18n** - object holding localizations. Localizations are objects as well
+* **Models** - object that contains the `Base` class for custom models
+* **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
+
+TODO: MOVE IT 
+
+* **getLine** - function returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
+* **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
+* **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
+* **emit** - function sends messages over a WebSocket connection to the server
 * **Env** - object holding environmental information. Its properties:
     * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
     * **controller** - the instance of the current controller
     * **namespaceController** - the instance of the current namespace controller
     * **loco** - the running instance of `Loco`
-* **I18n** - object holding localizations. Localizations are objects as well
-* **Models** - object that contains the `Base` class for custom models
-* **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
 # 📡 Models
 
@@ -374,7 +378,7 @@ init({
 ```javascript
 // services/NotificationCenter.js
 
-import { Env } from "loco-js";
+import loco from "initializers/loco.js";
 
 import { addArticles } from "actions";
 import store from "store";
@@ -387,16 +391,16 @@ import UserController from "controllers/User";
 const getCallbackForReceivedMessage = () => {
   const nullCallback = () => {};
   // break if current namespace controller is not UserController
-  if (Env.namespaceController.constructor !== UserController)
+  if (loco.getEnv().namespaceController.constructor !== UserController)
     return nullCallback;
-  if (Env.controller.constructor !== RoomsController) return nullCallback;
+  if (loco.getEnv().controller.constructor !== RoomsController) return nullCallback;
   // break if current action is not "show"
-  if (Env.action !== "show") return nullCallback;
-  return Env.controller.callbacks["receivedMessage"];
+  if (loco.getEnv().action !== "show") return nullCallback;
+  return loco.getEnv().controller.callbacks["receivedMessage"];
 };
 
 const articleCreated = async ({ id }) => {
-  if (Env.namespaceController.constructor !== UserController) return;
+  if (loco.getEnv().namespaceController.constructor !== UserController) return;
   const article = await Article.find({ id, abbr: true });
   store.dispatch(addArticles([article]));
 };
@@ -505,6 +509,10 @@ $ npm run test
 # 📈 Changelog
 
 ## Major releases 🎙
+
+### 6.0  _(2022-01-XX)_
+
+* exports have changed
 
 ### 5.0  _(2020-12-22)_
 
