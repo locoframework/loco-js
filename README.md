@@ -183,26 +183,23 @@ A brief explanation of each element:
 
 * **getLocale** - function returns configured locale
 * **setLocale** - function allows setting a locale
-* createConnector - TODO:
+* **createConnector** - a function that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
 * **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
-* **init** - a function used to initialize Loco-JS 
+* **init** - a function used to initialize Loco-JS. It returns a Loco-JS instance which main methods are:
+    * **emit** - sends messages over a WebSocket connection to the server
+    * **getEnv** - returns an object with information about the environment. Its properties:
+        * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
+        * **controller** - the instance of the current controller
+        * **namespaceController** - the instance of the current namespace controller
+    * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
+    * **getWire** - returns the working instance of the **Wire** class responsible for fetching notifications from the server
+    * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests 
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
 * **I18n** - object holding localizations. Localizations are objects as well
 * **Models** - object that contains the `Base` class for custom models
 * **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
-TODO: MOVE IT 
-
-* **getLine** - function returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
-* **getWire** - function returns the working instance of the **Wire** class responsible for fetching notifications from the server
-* **connector** - an object that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
-* **emit** - function sends messages over a WebSocket connection to the server
-* **Env** - object holding environmental information. Its properties:
-    * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
-    * **controller** - the instance of the current controller
-    * **namespaceController** - the instance of the current namespace controller
-    * **loco** - the running instance of `Loco`
 
 # 📡 Models
 
@@ -513,6 +510,7 @@ $ npm run test
 ### 6.0  _(2022-01-XX)_
 
 * exports have changed
+* `emit` messages via `Loco` instance method   
 
 ### 5.0  _(2020-12-22)_
 
