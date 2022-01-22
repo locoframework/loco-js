@@ -90,6 +90,9 @@ const NotificationCenter = data => {
 };
 
 const loco = init({
+  // (optional) Loco-JS uses Authorization header in all XHR requests if provided
+  authorizationHeader: "Bearer XXX",
+
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
   
@@ -511,6 +514,7 @@ $ npm run test
 
 * exports have changed
 * `emit` messages via `Loco` instance method   
+* `authorizationHeader` is a new `init` function param
 
 ### 5.0  _(2020-12-22)_
 
