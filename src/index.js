@@ -19,6 +19,9 @@ const processModels = (opts) => {
     if (opts.authorizationHeader != null) {
       Models[i].authorizationHeader = opts.authorizationHeader;
     }
+    if (opts.cookiesByCORS != null) {
+      Models[i].cookiesByCORS = opts.cookiesByCORS;
+    }
   }
   return models;
 };
@@ -27,8 +30,8 @@ const getLocale = () => Config.locale;
 const setLocale = (locale) => (Config.locale = locale);
 
 const init = (opts) => {
-  Config.locale = opts.locale || "en";
   Config.cookiesByCORS = opts.cookiesByCORS || false;
+  Config.locale = opts.locale || "en";
   for (const i of Object.keys(opts.controllers || {})) {
     Controllers[i] = opts.controllers[i];
   }
