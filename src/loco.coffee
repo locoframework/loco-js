@@ -20,7 +20,7 @@ class Loco
 
   init: (opts) ->
     notificationsParams = this._genNotificationsParams(opts)
-    this._initWire(notificationsParams) if notificationsParams?.enable isnt false
+    this._initWire(notificationsParams, opts.notificationCenter) if notificationsParams?.enable isnt false
     this._initLine(opts.cable, opts.notificationCenter) if opts.cable?
     this.wire.setLine(this.line);
     this._ready =>
@@ -46,8 +46,8 @@ class Loco
     else
       document.addEventListener 'DOMContentLoaded', fn
 
-  _initWire: (notificationsParams) ->
-    this.wire = new Wire(notificationsParams)
+  _initWire: (notificationsParams, notificationCenter) ->
+    this.wire = new Wire(notificationsParams, notificationCenter)
     this.wire.fetchSyncTime({ after: 'connect' })
 
   _initLine:(cable, notificationCenter) ->

@@ -3,7 +3,7 @@ import ObjectUtils from './utils/object.coffee'
 import processNotification from "./wire/processNotification"
 
 class Wire
-  constructor: (opts = {}) ->
+  constructor: (opts, notificationCenter) ->
     this.env = opts.env
     this.pollingTime = opts.pollingTime ? 3000
     this.log = if opts.log? and opts.log then true else false
@@ -12,6 +12,7 @@ class Wire
     this.size = opts.size ? 100
     this.protocolWithHost = opts.protocolWithHost
     this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
+    this.notificationCenter = notificationCenter
     this.syncTime = null
     this.token = null
     this.pollingInterval = null
@@ -50,7 +51,7 @@ class Wire
         this.syncTime = data[1]
         notifications = data[0]
         return if notifications.length is 0
-        processNotification(notification, { log: this.log }) for notification in notifications
+        processNotification(notification, { log: this.log, notificationCenter: this.notificationCenter }) for notification in notifications
         this.check() if notifications.length is this.size
       else if e.target.status >= 500
         this._handleDisconnection()

@@ -512,6 +512,7 @@ $ npm run test
 
 ### 6.0  _(2022-01-XX)_
 
+* an ability to create more instances of `Loco` that can point to backends located on different domains
 * exports have changed
 * `emit` messages via `Loco` instance method   
 * `authorizationHeader` is a new `init` function param

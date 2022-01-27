@@ -9,7 +9,7 @@ class Article extends Models.Base {
 Models.Article = Article;
 
 test("setting token correctly", () => {
-  const wire = new Wire();
+  const wire = new Wire({});
   wire.token = "123qweasdzxc";
   expect(wire._requestParams()).toEqual({
     synced_at: null,
