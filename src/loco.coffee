@@ -19,8 +19,10 @@ class Loco
       model.authorizationHeader = val
 
   init: (opts) ->
-    notificationsParams = this._genNotificationsParams(opts)
-    this._initWire(notificationsParams, opts.notificationCenter) if notificationsParams?.enable isnt false
+    notificationsParams = opts.notifications ? {}
+    notificationsParams.protocolWithHost = opts.protocolWithHost
+    if notificationsParams?.enable isnt false
+      this._initWire(notificationsParams, opts.notificationCenter)
     this._initLine(opts.cable, opts.notificationCenter) if opts.cable?
     this.wire.setLine(this.line);
     this._ready =>
@@ -32,12 +34,6 @@ class Loco
       opts.postInit() if opts.postInit?
 
   emit: (payload) -> this.line.send(payload)
-
-  _genNotificationsParams: (opts) ->
-    notificationsParams = opts.notifications ? {}
-    notificationsParams.protocolWithHost = opts.protocolWithHost
-    notificationsParams.env = this.env
-    notificationsParams
 
   _ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"

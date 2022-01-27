@@ -135,10 +135,11 @@ const loco = init({
     // next batch of notifications will be fetched immediately after max size is reached
     size: 100,                           // (optional) 100 by default
 
-    // your current (namespace) controller instance method disconnectedForTooLong 
-    // will be called after a specified time with the "time since disconnection"
-    // passed as an argument
-    allowedDisconnectionTime: 10         // (optional) 10 by default [sec]
+    // the optional disconnectedForTooLong function will be called after a specified
+    // time with the "time since disconnection" passed as an argument
+    allowedDisconnectionTime: 10,        // (optional) 10 by default [sec]
+
+    disconnectedForTooLong: (disconnectedSinceTime) => {},
   },
 
   // (optional) if provided - Loco-JS uses an absolute path
@@ -515,7 +516,7 @@ $ npm run test
 * an ability to create more instances of `Loco` that can point to backends located on different domains
 * exports have changed
 * `emit` messages via `Loco` instance method   
-* `authorizationHeader` is a new `init` function param
+* `authorizationHeader` and `disconnectedForTooLong` are new `init` function params
 
 ### 5.0  _(2020-12-22)_
 

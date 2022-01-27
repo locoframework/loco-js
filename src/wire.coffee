@@ -4,7 +4,6 @@ import processNotification from "./wire/processNotification"
 
 class Wire
   constructor: (opts, notificationCenter) ->
-    this.env = opts.env
     this.pollingTime = opts.pollingTime ? 3000
     this.log = if opts.log? and opts.log then true else false
     this.ssl = opts.ssl
@@ -12,6 +11,7 @@ class Wire
     this.size = opts.size ? 100
     this.protocolWithHost = opts.protocolWithHost
     this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
+    this.disconnectedForTooLong = opts.disconnectedForTooLong
     this.notificationCenter = notificationCenter
     this.syncTime = null
     this.token = null
@@ -91,8 +91,7 @@ class Wire
     if not this.disconnectedSinceTime?
       this.disconnectedSinceTime = new Date()
     diffInSec = (new Date() - this.disconnectedSinceTime) / 1000
-    ctrl = this.env.namespaceController ? this.env.controller
-    if diffInSec > this.allowedDisconnectionTime and ctrl['disconnectedForTooLong']?
-      ctrl.disconnectedForTooLong(this.disconnectedSinceTime)
+    if diffInSec > this.allowedDisconnectionTime and this.disconnectedForTooLong?
+      this.disconnectedForTooLong(this.disconnectedSinceTime)
 
 export default Wire
