@@ -20,6 +20,8 @@ class Wire
     this.uuid = null
     this.line = null
 
+  setDisconnectedForTooLong: (fn) -> this.disconnectedForTooLong = fn
+
   setLine: (line) -> this.line = line
 
   setPollingTime: (val) ->

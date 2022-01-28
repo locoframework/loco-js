@@ -34,3 +34,10 @@ describe("#setAuthorizationHeader", () => {
     );
   });
 });
+
+describe("#setDisconnectedForTooLong", () => {
+  it("sets disconnectedForTooLong for the Wire", () => {
+    loco.setDisconnectedForTooLong(() => "foobar");
+    expect(loco.getWire().disconnectedForTooLong()).toEqual("foobar");
+  });
+});

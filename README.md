@@ -198,6 +198,7 @@ A brief explanation of each element:
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
     * **getWire** - returns the working instance of the **Wire** class responsible for fetching notifications from the server
     * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests 
+    * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
 * **I18n** - object holding localizations. Localizations are objects as well
@@ -514,6 +515,7 @@ $ npm run test
 ### 6.0  _(2022-01-XX)_
 
 * an ability to create more instances of `Loco` that can point to backends located on different domains
+* `init` function returns a `Loco` instance with new methods
 * exports have changed
 * `emit` messages via `Loco` instance method   
 * `authorizationHeader` and `disconnectedForTooLong` are new `init` function params

@@ -18,6 +18,9 @@ class Loco
     for key, model of this.env.models
       model.authorizationHeader = val
 
+  setDisconnectedForTooLong: (fn) ->
+    this.wire.setDisconnectedForTooLong(fn);
+
   init: (opts) ->
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = opts.protocolWithHost
