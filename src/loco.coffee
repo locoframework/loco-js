@@ -25,9 +25,14 @@ class Loco
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = opts.protocolWithHost
     if notificationsParams?.enable isnt false
-      this._initWire(notificationsParams, opts.notificationCenter)
-    this._initLine(opts.cable, opts.notificationCenter) if opts.cable?
-    this.wire.setLine(this.line);
+      wireOpts = { cookiesByCORS: opts.cookiesByCORS, authorizationHeader: opts.authorizationHeader }
+      this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts)
+      this.wire.fetchSyncTime({ after: 'connect' })
+    if opts.cable?
+      this.line = new Line
+      this.line.connect(opts.cable, opts.notificationCenter)
+    if this.wire?
+      this.wire.setLine(this.line);
     this._ready =>
       IdentityMap.clear()
       env = initCore(Controllers);
@@ -44,13 +49,5 @@ class Loco
       fn()
     else
       document.addEventListener 'DOMContentLoaded', fn
-
-  _initWire: (notificationsParams, notificationCenter) ->
-    this.wire = new Wire(notificationsParams, notificationCenter)
-    this.wire.fetchSyncTime({ after: 'connect' })
-
-  _initLine:(cable, notificationCenter) ->
-    this.line = new Line
-    this.line.connect(cable, notificationCenter, this.wire)
 
 export default Loco

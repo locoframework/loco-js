@@ -1,7 +1,16 @@
 import { init } from "index";
+import mockXHR from "../__mock__/xhr";
 import Wire from "wire.coffee";
 
-const loco = init({ models: { Article: { foo: "bar" } } });
+const oldXMLHttpRequest = window.XMLHttpRequest;
+
+afterEach(() => {
+  window.XMLHttpRequest = oldXMLHttpRequest;
+});
+
+const loco = init({
+  models: { Article: { foo: "bar" } },
+});
 
 describe("#getEnv", () => {
   it("returns env", () => {
@@ -39,5 +48,21 @@ describe("#setDisconnectedForTooLong", () => {
   it("sets disconnectedForTooLong for the Wire", () => {
     loco.setDisconnectedForTooLong(() => "foobar");
     expect(loco.getWire().disconnectedForTooLong()).toEqual("foobar");
+  });
+});
+
+describe("#init", () => {
+  it("sends Authorization header and sets withCredentials if passed", () => {
+    const mock = mockXHR();
+    init({
+      authorizationHeader: "Bearer XXX",
+      cookiesByCORS: true,
+      models: { Article: { foo: "bar" } },
+      notifications: {
+        enable: true,
+      },
+    });
+    expect(mock.withCredentials).toEqual(true);
+    expect(mock.setRequestHeader).toBeCalledWith("Authorization", "Bearer XXX");
   });
 });

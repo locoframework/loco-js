@@ -1,9 +1,10 @@
 import { IdentityMap } from './deps'
 import ObjectUtils from './utils/object.coffee'
+import openRequest from './wire/openRequest'
 import processNotification from "./wire/processNotification"
 
 class Wire
-  constructor: (opts, notificationCenter) ->
+  constructor: (opts, notificationCenter, reqOpts) ->
     this.pollingTime = opts.pollingTime ? 3000
     this.log = if opts.log? and opts.log then true else false
     this.ssl = opts.ssl
@@ -13,6 +14,7 @@ class Wire
     this.allowedDisconnectionTime = opts.allowedDisconnectionTime ? 10
     this.disconnectedForTooLong = opts.disconnectedForTooLong
     this.notificationCenter = notificationCenter
+    this.reqOpts = reqOpts
     this.syncTime = null
     this.token = null
     this.pollingInterval = null
@@ -33,7 +35,7 @@ class Wire
   connect: ->
     this.check();
     this.pollingInterval = setInterval =>
-      if this.line.connected
+      if this.line?.connected
         this.disconnect();
         return
       this.check();
@@ -44,8 +46,7 @@ class Wire
 
   check: ->
     return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
-    request = new XMLHttpRequest()
-    request.open 'GET', this._getURL() + '?' + ObjectUtils.toURIParams(this._requestParams())
+    request = openRequest('GET', this._getURL() + '?' + ObjectUtils.toURIParams(this._requestParams()), this.reqOpts)
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
@@ -62,8 +63,7 @@ class Wire
     request.send()
 
   fetchSyncTime: (opts = {}) ->
-    request = new XMLHttpRequest()
-    request.open 'GET', "#{this._getURL()}/sync-time"
+    request = openRequest('GET', "#{this._getURL()}/sync-time", this.reqOpts)
     request.onerror = =>
       this[opts.after]() if opts.after?
     request.onload = (e) =>
