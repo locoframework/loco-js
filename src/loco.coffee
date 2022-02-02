@@ -30,7 +30,7 @@ class Loco
       this.wire.fetchSyncTime({ after: 'connect' })
     if opts.cable?
       this.line = new Line
-      this.line.connect(opts.cable, opts.notificationCenter)
+      this.line.connect(opts.cable, opts.notificationCenter, this.wire)
     if this.wire?
       this.wire.setLine(this.line);
     this._ready =>
