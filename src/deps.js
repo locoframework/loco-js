@@ -14,19 +14,13 @@ class Base {
 
 const Controllers = { Base };
 
-const External = {
-  cable: null,
-  NotificationCenter: null
-};
-
 export {
   initCore,
   helpers,
   Config,
   Controllers,
-  External,
   I18n,
   IdentityMap,
   Models,
-  Validators
+  Validators,
 };

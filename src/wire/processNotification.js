@@ -1,6 +1,6 @@
-import Env from "../env";
-import { External, IdentityMap } from "../deps";
+import { IdentityMap } from "../deps";
 import receivedAlready from "../line/idempotencyKeys";
+import getModelForRemoteName from "../getModelForRemoteName.coffee";
 
 const emitMessageToMembers = (
   id,
@@ -26,12 +26,12 @@ export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
   if (receivedAlready(payload.loco.idempotency_key)) return false;
-  const model = Env.loco.getModelForRemoteName(className);
+  const model = getModelForRemoteName(className);
   const identity = model.getIdentity();
-  if (External.NotificationCenter != null) {
-    External.NotificationCenter({
+  if (opts.notificationCenter != null) {
+    opts.notificationCenter({
       type: `${identity} ${name}`,
-      payload: payload
+      payload: payload,
     });
   }
   if (IdentityMap.imap[identity] === undefined) return false;

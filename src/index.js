@@ -1,60 +1,59 @@
-import Env from "./env";
 import Loco from "./loco.coffee";
 import {
   helpers,
   Config,
   Controllers,
-  External,
   I18n,
   IdentityMap,
   Models,
-  Validators
+  Validators,
 } from "./deps";
 
+const processModels = (opts) => {
+  const models = opts.models || {};
+  for (const i of Object.keys(models)) {
+    Models[i] = models[i];
+    if (opts.protocolWithHost != null) {
+      Models[i].protocolWithHost = opts.protocolWithHost;
+    }
+    if (opts.authorizationHeader != null) {
+      Models[i].authorizationHeader = opts.authorizationHeader;
+    }
+    if (opts.cookiesByCORS != null) {
+      Models[i].cookiesByCORS = opts.cookiesByCORS;
+    }
+  }
+  return models;
+};
+
 const getLocale = () => Config.locale;
-const setLocale = locale => (Config.locale = locale);
+const setLocale = (locale) => (Config.locale = locale);
 
-const getWire = () => Env.loco.wire;
-
-const getLine = () => Env.loco.line.subscription;
-
-const emit = args => Env.loco.emit(args);
-
-const init = opts => {
+const init = (opts) => {
+  Config.cookiesByCORS = opts.cookiesByCORS || false;
+  Config.locale = opts.locale || "en";
   for (const i of Object.keys(opts.controllers || {})) {
     Controllers[i] = opts.controllers[i];
   }
-  for (const i of Object.keys(opts.models || {})) {
-    Models[i] = opts.models[i];
-  }
-  Config.locale = opts.locale || "en";
-  Config.protocolWithHost = opts.protocolWithHost;
-  Config.cookiesByCORS = opts.cookiesByCORS || false;
-  External.cable = opts.cable;
-  External.NotificationCenter = opts.notificationCenter;
-  new Loco(opts).init({
-    cable: External.cable,
-    protocolWithHost: Config.protocolWithHost
-  });
+  const models = processModels(opts);
+  const loco = new Loco(models);
+  loco.init(opts);
+  return loco;
 };
 
-const connector = { getLocale, Env, I18n };
+const createConnector = (loco) => ({ getLocale, loco, I18n });
 
 const subscribe = IdentityMap.subscribe;
 
 export {
-  getLine,
   getLocale,
   setLocale,
-  getWire,
-  connector,
-  emit,
+  createConnector,
   helpers,
   init,
   subscribe,
   Controllers,
-  Env,
   I18n,
   Models,
-  Validators
+  Validators,
 };

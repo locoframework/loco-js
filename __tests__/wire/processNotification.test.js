@@ -16,7 +16,7 @@ it("returns if imap is empty", () => {
     "Article",
     1,
     "created",
-    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771e" } }
+    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771e" } },
   ]);
   expect(result).toBe(false);
 });
@@ -28,14 +28,14 @@ it("returns false on a dubled idempotency key", () => {
     "Article",
     1,
     "created",
-    { id: 1, loco: { idempotency_key: idempotency_key } }
+    { id: 1, loco: { idempotency_key: idempotency_key } },
   ]);
   expect(result).toBe(true);
   result = processNotification([
     "Article",
     1,
     "created",
-    { id: 1, loco: { idempotency_key: idempotency_key } }
+    { id: 1, loco: { idempotency_key: idempotency_key } },
   ]);
   expect(result).toBe(false);
 });

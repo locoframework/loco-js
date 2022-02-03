@@ -14,26 +14,26 @@ module.exports = {
             loader: "coffee-loader",
             options: {
               transpile: {
-                presets: ["@babel/preset-env"]
-              }
-            }
-          }
-        ]
-      }
-    ]
+                presets: ["@babel/preset-env"],
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "loco.js",
     library: "Loco",
-    libraryTarget: "umd"
+    libraryTarget: "umd",
   },
   externals: {
     "loco-js-model": {
       commonjs: "loco-js-model",
       commonjs2: "loco-js-model",
       amd: "loco-js-model",
-      root: "LocoModel"
-    }
-  }
+      root: "LocoModel",
+    },
+  },
 };
