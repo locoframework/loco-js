@@ -1,6 +1,6 @@
 import { initCore, Controllers, IdentityMap } from './deps'
 import Wire from './wire.coffee'
-import Line from './line.coffee'
+import Line from './line'
 
 class Loco
   constructor: (models) ->
@@ -29,8 +29,8 @@ class Loco
       this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts)
       this.wire.fetchSyncTime({ after: 'connect' })
     if opts.cable?
-      this.line = new Line
-      this.line.connect(opts.cable, opts.notificationCenter, this.wire)
+      this.line = new Line(opts.cable, opts.notificationCenter, this.wire)
+      this.line.connect()
     if this.wire?
       this.wire.setLine(this.line);
     this._ready =>
