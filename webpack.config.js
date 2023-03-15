@@ -1,12 +1,19 @@
-/* eslint-env node */
-
 const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
+  mode: "production",
+  devtool: "source-map",
   entry: "./src/index.js",
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
       {
         test: /\.coffee$/,
         use: [
@@ -22,6 +29,9 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+  ],
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "loco.js",
