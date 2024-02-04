@@ -39,3 +39,51 @@ it("returns false on a dubled idempotency key", () => {
   ]);
   expect(result).toBe(false);
 });
+
+it("returns false if idempotency key has been received already", () => {
+  const notification = [
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771e" } },
+  ];
+  const result = processNotification(notification);
+  expect(result).toBe(false);
+});
+
+it("sends notification to notification center if model is undefined", () => {
+  const notification = [
+    "UnknownModel",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771f" } },
+  ];
+  const notificationCenter = jest.fn();
+  const result = processNotification(notification, { notificationCenter });
+  expect(result).toBe(false);
+  expect(notificationCenter).toHaveBeenCalledWith({
+    type: "UnknownModel created",
+    payload: {
+      id: 1,
+      loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771f" },
+    },
+  });
+});
+
+it("sends notification to notification center if model is defined", () => {
+  const notification = [
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771g" } },
+  ];
+  const notificationCenter = jest.fn();
+  processNotification(notification, { notificationCenter });
+  expect(notificationCenter).toHaveBeenCalledWith({
+    type: "Article created",
+    payload: {
+      id: 1,
+      loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771g" },
+    },
+  });
+});
