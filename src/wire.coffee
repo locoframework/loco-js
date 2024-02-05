@@ -45,7 +45,6 @@ class Wire
     window.clearInterval(this.pollingInterval);
 
   check: ->
-    return if Object.keys(IdentityMap.imap).length is 0 and not this.token? and this.syncTime?
     request = openRequest('GET', this._getURL() + '?' + ObjectUtils.toURIParams(this._requestParams()), this.reqOpts)
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
