@@ -22,18 +22,30 @@ const emitMessageToCollection = (name, payload, identity) => {
   }
 };
 
+const sendToNotificationCenter = (notificationCenter, type, payload) => {
+  if (notificationCenter == null) return;
+  notificationCenter({ type, payload });
+};
+
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
   if (receivedAlready(payload.loco.idempotency_key)) return false;
   const model = getModelForRemoteName(className);
-  const identity = model.getIdentity();
-  if (opts.notificationCenter != null) {
-    opts.notificationCenter({
-      type: `${identity} ${name}`,
-      payload: payload,
-    });
+  if (model === undefined) {
+    sendToNotificationCenter(
+      opts.notificationCenter,
+      `${className} ${name}`,
+      payload
+    );
+    return false;
   }
+  const identity = model.getIdentity();
+  sendToNotificationCenter(
+    opts.notificationCenter,
+    `${identity} ${name}`,
+    payload
+  );
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
     emitMessageToMembers(id, name, payload, model, identity);
