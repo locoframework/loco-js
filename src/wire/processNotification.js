@@ -31,6 +31,7 @@ export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
   if (receivedAlready(payload.loco.idempotency_key)) return false;
+  delete payload.loco;
   const model = getModelForRemoteName(className);
   if (model === undefined) {
     sendToNotificationCenter(

@@ -64,8 +64,7 @@ it("sends notification to notification center if model is undefined", () => {
   expect(notificationCenter).toHaveBeenCalledWith({
     type: "UnknownModel created",
     payload: {
-      id: 1,
-      loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771f" },
+      id: 1
     },
   });
 });
@@ -82,8 +81,7 @@ it("sends notification to notification center if model is defined", () => {
   expect(notificationCenter).toHaveBeenCalledWith({
     type: "Article created",
     payload: {
-      id: 1,
-      loco: { idempotency_key: "aea41272f11ea5c75db8ba589156771g" },
+      id: 1
     },
   });
 });

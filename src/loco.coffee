@@ -24,7 +24,7 @@ class Loco
   init: (opts) ->
     notificationsParams = opts.notifications ? {}
     notificationsParams.protocolWithHost = opts.protocolWithHost
-    if notificationsParams?.enable isnt false
+    if notificationsParams.enable isnt false
       wireOpts = { cookiesByCORS: opts.cookiesByCORS, authorizationHeader: opts.authorizationHeader }
       this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts)
       this.wire.fetchSyncTime({ after: 'connect' })
