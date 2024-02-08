@@ -53,7 +53,8 @@ class Wire
         this.syncTime = data[1]
         notifications = data[0]
         return if notifications.length is 0
-        processNotification(notification, { log: this.log, notificationCenter: this.notificationCenter }) for notification in notifications
+        for notification in notifications
+          processNotification(notification, { log: this.log, notificationCenter: this.notificationCenter, emit: this.line.send })
         this.check() if notifications.length is this.size
       else if e.target.status >= 500
         this._handleDisconnection()

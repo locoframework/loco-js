@@ -22,9 +22,9 @@ const emitMessageToCollection = (name, payload, identity) => {
   }
 };
 
-const sendToNotificationCenter = (notificationCenter, type, payload) => {
+const sendToNotificationCenter = (notificationCenter, type, payload, emit) => {
   if (notificationCenter == null) return;
-  notificationCenter({ type, payload });
+  notificationCenter({ type, payload }, emit);
 };
 
 export default (notification, opts = {}) => {
@@ -37,7 +37,8 @@ export default (notification, opts = {}) => {
     sendToNotificationCenter(
       opts.notificationCenter,
       `${className} ${name}`,
-      payload
+      payload,
+      opts.emit
     );
     return false;
   }
@@ -45,7 +46,8 @@ export default (notification, opts = {}) => {
   sendToNotificationCenter(
     opts.notificationCenter,
     `${identity} ${name}`,
-    payload
+    payload,
+    opts.emit
   );
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
