@@ -1,6 +1,5 @@
 import Loco from "./loco.coffee";
 import {
-  helpers,
   Config,
   Controllers,
   I18n,
@@ -49,7 +48,6 @@ export {
   getLocale,
   setLocale,
   createConnector,
-  helpers,
   init,
   subscribe,
   Controllers,

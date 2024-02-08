@@ -1,21 +1,21 @@
-import { initCore, Controllers, IdentityMap } from './deps'
+import { Controllers, IdentityMap } from './deps'
 import Wire from './wire.coffee'
 import Line from './line'
 
 class Loco
   constructor: (models) ->
-    this.env = {namespaceController: null, controller: null, action: null, models: models}
+    this.models = models
     this.wire = null
     this.line = null
 
-  getEnv: -> this.env
+  getModels: -> this.models
 
   getLine: -> this.line?.subscription
 
   getWire: -> this.wire
 
   setAuthorizationHeader: (val) ->
-    for key, model of this.env.models
+    for key, model of this.models
       model.authorizationHeader = val
 
   setDisconnectedForTooLong: (fn) ->
@@ -35,10 +35,6 @@ class Loco
       this.wire.setLine(this.line);
     this._ready =>
       IdentityMap.clear()
-      env = initCore(Controllers);
-      this.env.namespaceController = env.namespaceController
-      this.env.controller = env.controller
-      this.env.action = env.action
       opts.postInit() if opts.postInit?
 
   emit: (payload) -> this.line.send(payload)

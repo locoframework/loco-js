@@ -12,17 +12,6 @@ const loco = init({
   models: { Article: { foo: "bar" } },
 });
 
-describe("#getEnv", () => {
-  it("returns env", () => {
-    expect(loco.getEnv()).toEqual({
-      namespaceController: null,
-      controller: null,
-      action: null,
-      models: { Article: { foo: "bar" } },
-    });
-  });
-});
-
 describe("#getLine", () => {
   it("returns the current AC subscription", () => {
     expect(loco.getLine()).toBe(undefined);
@@ -38,7 +27,7 @@ describe("#getWire", () => {
 describe("#setAuthorizationHeader", () => {
   it("sets authorizationHeader for all models", () => {
     loco.setAuthorizationHeader("Bearer XXX");
-    expect(loco.getEnv().models.Article.authorizationHeader).toEqual(
+    expect(loco.getModels().Article.authorizationHeader).toEqual(
       "Bearer XXX"
     );
   });

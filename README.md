@@ -46,8 +46,8 @@ Loco Framework
 
 🎊 Loco-JS has no external dependencies. 🎉
 
-It depends only on [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/) and [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/), which are internal parts of Loco-JS but can be used separately. They don't have external dependencies too.  
-Although [@babel/plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties) may be helpful to support static class properties, which are useful in defining models.  
+It depends only on [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/), which is an internal part of Loco-JS but it can be used separately as well. Loco-JS-Model does not have external dependencies too.
+Although [@babel/plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties) may be helpful to support static class properties, which are useful in defining models.
 Additionally, if you want to send or receive messages over a WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
 
 # 📥 Installation
@@ -95,23 +95,23 @@ const loco = init({
 
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
-  
+
   controllers: {
     Admin: AdminController,
     Users
   },
-  
+
   locale: "en",                          // (optional) "en" by default
 
-  models: {                              // specifying models here is required 
-    Admin,                               // to receive messages sent from the server 
+  models: {                              // specifying models here is required
+    Admin,                               // to receive messages sent from the server
     Coupon                               // and related to given models
-  },  
+  },
 
-  // (optional) assign a custom function to this property that will receive 
+  // (optional) assign a custom function to this property that will receive
   // notifications sent from the server
   notificationCenter: NotificationCenter,
-  
+
   // the browser's app will start to receive notifications from
   // the server either via WebSockets or AJAX polling if a WebSocket connection
   // can't be established. Loco-JS can even switch between WebSockets and AJAX
@@ -119,7 +119,7 @@ const loco = init({
   // Loco-JS with Loco-Rails.
   notifications: {
     enable: true,                        // (optional) true by default
-    
+
     pollingTime: 3000,                   // (optional) 3000 ms by default (for AJAX polling)
 
     // display upcoming notifications in browser's console e.g. for debugging
@@ -145,8 +145,8 @@ const loco = init({
   // (optional) if provided - Loco-JS uses an absolute path
   // instead of a site-root-relative path in all XHR requests
   protocolWithHost: "https://example.com",
-  
-  // send and receive cookies by a CORS request 
+
+  // send and receive cookies by a CORS request
   cookiesByCORS: false  // (optional) false by default
 
   // (optional) this method is called at the end, after a given controller's
@@ -188,16 +188,11 @@ A brief explanation of each element:
 * **getLocale** - function returns configured locale
 * **setLocale** - function allows setting a locale
 * **createConnector** - a function that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
-* **helpers** - object containing helper functions. It is imported from [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core). Read its README for more information.
 * **init** - a function used to initialize Loco-JS. It returns a Loco-JS instance which main methods are:
     * **emit** - sends messages over a WebSocket connection to the server
-    * **getEnv** - returns an object with information about the environment. Its properties:
-        * **action** - the value of the `data-action` attribute of `<body>`. This is also the name of the method that is called on the current controller
-        * **controller** - the instance of the current controller
-        * **namespaceController** - the instance of the current namespace controller
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
     * **getWire** - returns the working instance of the **Wire** class responsible for fetching notifications from the server
-    * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests 
+    * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests
     * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
@@ -237,7 +232,7 @@ class Unit extends Models.Base {
 export default Unit;
 ```
 
-Revisit *Initialization* to see how to connect both models and pass to `init()` function.  
+Revisit *Initialization* to see how to connect both models and pass to `init()` function.
 Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
 
 # 🕹 Controllers
@@ -337,11 +332,11 @@ On the front-end side:
 
 The example above shows subscribing to all instances of the given class by passing a model class name (`Room`). It may be useful, for example, if you want to be notified when an object is created on the server-side. The front-end equivalent (Loco-JS-Model) does not exist yet, so you have to subscribe to the whole model class.
 
-A function that receives notifications (`receivedMessage` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.  
+A function that receives notifications (`receivedMessage` in this case) gets the first argument in the form of `"${model class name} ${notification name}"` if you subscribe to the whole class of objects. This function receives the first argument in the form of only the `"${notification name}"` if you subscribe to a model instance.
 
 It is possible to subscribe to more than one object by passing an array `subscribe({ to: [Room, User, comment1, post2], with: customFunc })`
 
-From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedMessage })` if you want to subscribe to the instance of User with a given ID. 
+From the internal point of view, the `subscribe` function cares about an instance class name and its **ID**. So it does not have to be a "real" model instance, you can pass a shallow object like `subscribe({ to: new User({ id: data.id }), with: receivedMessage })` if you want to subscribe to the instance of User with a given ID.
 
 All notifications are also sent to the `notificationCenter` (see *Receiving messages* section).
 
@@ -361,7 +356,7 @@ emit_to Hub.get('chat_room_1'),
         author: 'Mr. Admin'
 ```
 
-a custom function is called that must be assigned to the `notificationCenter` property during initialization if you want to receive messages from the server. 
+a custom function is called that must be assigned to the `notificationCenter` property during initialization if you want to receive messages from the server.
 
 ```javascript
 import { init } from "loco-js";
@@ -390,6 +385,7 @@ import Article from "models/Article";
 import RoomsController from "controllers/user/Rooms";
 import UserController from "controllers/User";
 
+// TODO: replace getEnv()
 const getCallbackForReceivedMessage = () => {
   const nullCallback = () => {};
   // break if current namespace controller is not UserController
@@ -419,10 +415,10 @@ export default data => {
 };
 ```
 
-Sending and receiving messages over a WebSocket connection only works if you use Loco-Rails on the back-end, and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency. It can be skipped if you are not interested in WebSocket communication.  
+Sending and receiving messages over a WebSocket connection only works if you use Loco-Rails on the back-end, and it requires [Action Cable](https://www.npmjs.com/package/actioncable) as a front-end dependency. It can be skipped if you are not interested in WebSocket communication.
 Internally, Loco-JS uses an instance of a class called `Line` for sending and receiving messages over a WebSocket connection. You can fetch this instance using the `getLine` function. But there is rarely a need for this.
 
-Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` property of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method. 
+Loco-Rails can also send notifications assigned to a given model instance. These notifications are typically delivered to Loco-JS via Ajax Polling or a WebSocket connection if it's established. They end up in the `notificationCenter` too. The `type` property of these notification consists of the name of the model and a notification's name _(e.g. "Article created")_. The class responsible for fetching this type of notifications is called `Wire`. On the back-end side, notifications assigned to a model instance can be sent using the `emit` method.
 
 ```ruby
 include Loco::Emitter
@@ -517,7 +513,7 @@ $ npm run test
 * an ability to create more instances of `Loco` that can point to backends located on different domains
 * `init` function returns a `Loco` instance with new methods
 * exports have changed
-* `emit` messages via `Loco` instance method   
+* `emit` messages via `Loco` instance method
 * `authorizationHeader` and `disconnectedForTooLong` are new `init` function params
 
 ### 5.0  _(2020-12-22)_

@@ -1,5 +1,3 @@
-import { init as initCore, helpers } from "loco-js-core";
-
 import { Config, I18n, IdentityMap, Models, Validators } from "loco-js-model";
 
 class Base {
@@ -15,8 +13,6 @@ class Base {
 const Controllers = { Base };
 
 export {
-  initCore,
-  helpers,
   Config,
   Controllers,
   I18n,
