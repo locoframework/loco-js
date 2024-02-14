@@ -1,4 +1,3 @@
-import { IdentityMap } from './deps'
 import ObjectUtils from './utils/object.coffee'
 import openRequest from './wire/openRequest'
 import processNotification from "./wire/processNotification"
