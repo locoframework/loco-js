@@ -8,9 +8,6 @@ const processModels = (opts) => {
   const models = opts.models || {};
   for (const i of Object.keys(models)) {
     Models[i] = models[i];
-    if (opts.authorizationHeader != null) {
-      Models[i].authorizationHeader = opts.authorizationHeader;
-    }
   }
   return models;
 };
