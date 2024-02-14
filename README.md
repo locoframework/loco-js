@@ -87,8 +87,6 @@ const loco = init({
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
 
-  locale: "en",                          // (optional) "en" by default
-
   models: {                              // specifying models here is required
     Admin,                               // to receive messages sent from the server
     Coupon                               // and related to given models
@@ -156,8 +154,6 @@ Loco-JS exports the following structure:
 
 ```javascript
 export {
-  getLocale,
-  setLocale,
   helpers,         // object
   init,
   subscribe,
@@ -167,8 +163,6 @@ export {
 
 A brief explanation of each element:
 
-* **getLocale** - function returns configured locale
-* **setLocale** - function allows setting a locale
 * **init** - a function used to initialize Loco-JS. It returns a Loco-JS instance which main methods are:
     * **emit** - sends messages over a WebSocket connection to the server
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection

@@ -2,20 +2,8 @@ import {
   init,
   Models,
 } from "index";
-import { Config } from "deps";
 
 describe("init", () => {
-  it("does not set protocol with host", () => {
-    init({ protocolWithHost: "https://localhost:3000/" });
-    expect(Config.protocolWithHost).toEqual(null);
-  });
-
-  it("sets cookiesByCORS on LocoJSModel", () => {
-    expect(Config.cookiesByCORS).toEqual(false);
-    init({ cookiesByCORS: true });
-    expect(Config.cookiesByCORS).toEqual(true);
-  });
-
   it("sets models", () => {
     init({ models: { Article: { foo: "bar" } } });
     expect(Models.Article).toEqual({ foo: "bar" });
