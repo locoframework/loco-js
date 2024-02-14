@@ -1,4 +1,4 @@
-import { Config, IdentityMap, Models, Validators } from "loco-js-model";
+import { Config, IdentityMap, Models } from "loco-js-model";
 
 class Base {
   setScope(name) {
@@ -17,5 +17,4 @@ export {
   Controllers,
   IdentityMap,
   Models,
-  Validators,
 };

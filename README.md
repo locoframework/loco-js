@@ -177,7 +177,6 @@ export {
   subscribe,
   Controllers,     // object
   Models,          // object
-  Validators,      // object
 };
 ```
 
@@ -194,7 +193,6 @@ A brief explanation of each element:
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
 * **Models** - object that contains the `Base` class for custom models
-* **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
 
 # 📡 Models

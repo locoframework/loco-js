@@ -4,7 +4,6 @@ import {
   Controllers,
   IdentityMap,
   Models,
-  Validators,
 } from "./deps";
 
 const processModels = (opts) => {
@@ -48,5 +47,4 @@ export {
   subscribe,
   Controllers,
   Models,
-  Validators,
 };
