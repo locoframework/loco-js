@@ -1,4 +1,4 @@
-import { Controllers, IdentityMap } from './deps'
+import { IdentityMap } from './deps'
 import Wire from './wire.coffee'
 import Line from './line'
 
