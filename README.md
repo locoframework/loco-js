@@ -172,7 +172,6 @@ Loco-JS exports the following structure:
 export {
   getLocale,
   setLocale,
-  createConnector, // function
   helpers,         // object
   init,
   subscribe,
@@ -187,7 +186,6 @@ A brief explanation of each element:
 
 * **getLocale** - function returns configured locale
 * **setLocale** - function allows setting a locale
-* **createConnector** - a function that connects Loco-JS with its inner parts that work independently and plug-ins like Loco-JS-Core, Loco-JS-Model, Loco-JS-UI
 * **init** - a function used to initialize Loco-JS. It returns a Loco-JS instance which main methods are:
     * **emit** - sends messages over a WebSocket connection to the server
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection

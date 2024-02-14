@@ -46,13 +46,3 @@ describe("init", () => {
     expect(Controllers.ArticleController).toEqual({ foo: "bar" });
   });
 });
-
-describe("createConnector", () => {
-  it("return correct object", () => {
-    const loco = init({});
-    const connector = createConnector(loco);
-    expect(connector.getLocale).toEqual(getLocale);
-    expect(connector.loco).toEqual(loco);
-    expect(connector.I18n).toEqual(I18n);
-  });
-});

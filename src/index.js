@@ -40,14 +40,11 @@ const init = (opts) => {
   return loco;
 };
 
-const createConnector = (loco) => ({ getLocale, loco, I18n });
-
 const subscribe = IdentityMap.subscribe;
 
 export {
   getLocale,
   setLocale,
-  createConnector,
   init,
   subscribe,
   Controllers,
