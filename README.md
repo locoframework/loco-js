@@ -176,7 +176,6 @@ export {
   init,
   subscribe,
   Controllers,     // object
-  I18n,            // object
   Models,          // object
   Validators,      // object
 };
@@ -194,7 +193,6 @@ A brief explanation of each element:
     * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 * **Controllers** - object that contains the `Base` class for custom controllers
-* **I18n** - object holding localizations. Localizations are objects as well
 * **Models** - object that contains the `Base` class for custom models
 * **Validators** - object containing all validators and the `Base` class for custom ones. All custom validators should be merged with this object
 
@@ -468,33 +466,6 @@ loco.emit({ type: "PING", user_id: 123 });
 
 To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
 
-# 🇵🇱 i18n
-
-Loco-JS supports internationalization. The following example shows how to set up a different default language.
-
-First of all, create a translation in a given language. Loco-JS consists internally of a few parts (see _What is Loco-JS?_ section). Each lib can contain its localization file, which exports a simple JavaScript object. Their properties are not conflicting. So it is possible to create a one localization file that combines several files from different Loco-JS' parts ([example translation to the Polish language](https://github.com/locoframework/loco-rails/blob/master/test/dummy/frontend/js/locales/base/pl.js)).
-
-Loco-JS must have all translations assigned to the `I18n` object. You can add your custom locales to the `I18n` object too.
-
-```javascript
-// locales/base/pl.js
-
-import { I18n } from "loco-js";
-
-I18n.pl = {
-  // ...
-  errors: {
-    messages: {
-      accepted: "musi zostać zaakceptowane",
-      blank: "nie może być puste",
-      confirmation: "nie zgadza się z polem %{attribute}",
-      empty: "nie może być puste",
-      // ...
-    }
-  }
-};
-```
-You can specify a default locale during initialization (see _Initialization_ section) or by using `setLocale` function.
 
 # 👩🏽‍🔬 Tests
 

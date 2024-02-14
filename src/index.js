@@ -2,7 +2,6 @@ import Loco from "./loco.coffee";
 import {
   Config,
   Controllers,
-  I18n,
   IdentityMap,
   Models,
   Validators,
@@ -48,7 +47,6 @@ export {
   init,
   subscribe,
   Controllers,
-  I18n,
   Models,
   Validators,
 };
