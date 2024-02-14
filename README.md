@@ -154,7 +154,6 @@ Loco-JS exports the following structure:
 
 ```javascript
 export {
-  helpers,         // object
   init,
   subscribe,
   Models,          // object
