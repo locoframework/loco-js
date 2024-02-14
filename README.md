@@ -70,16 +70,7 @@ import Coupon from "./models/Coupon";
 import Unit from "./models/Coupon/Unit";           // nested model
 import Admin from "./models/Admin";
 
-import AdminController from "./controllers/admin"; // namespace controller
-import Users from "./controllers/users";
-
-import Coupons from "./controllers/admin/coupons"; // Coupons controller
-import Plans from "./controllers/admin/plans";     // Plans controller
-
 Coupon.Unit = Unit;
-
-AdminController.Coupons = Coupons;
-AdminController.Plans = Plans;
 
 const NotificationCenter = data => {
   switch (data.type) {
@@ -95,11 +86,6 @@ const loco = init({
 
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
-
-  controllers: {
-    Admin: AdminController,
-    Users
-  },
 
   locale: "en",                          // (optional) "en" by default
 
@@ -175,7 +161,6 @@ export {
   helpers,         // object
   init,
   subscribe,
-  Controllers,     // object
   Models,          // object
 };
 ```
@@ -191,7 +176,6 @@ A brief explanation of each element:
     * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests
     * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
-* **Controllers** - object that contains the `Base` class for custom controllers
 * **Models** - object that contains the `Base` class for custom models
 
 
@@ -228,24 +212,6 @@ export default Unit;
 
 Revisit *Initialization* to see how to connect both models and pass to `init()` function.
 Loco-JS will be able to find the correct model in this situation when you send a notification for the given model on the server-side.
-
-# 🕹 Controllers
-
-The concept of controllers is described in [**Loco-JS-Core**](https://github.com/locoframework/loco-js-core) project that can be used standalone and is a Loco-JS dependency.
-
-Optionally, you can use a custom namespace controller to set the default scope for models using `setResource` / `setScope` methods. These methods are implemented in the base class `Controllers.Base`.
-
-```javascript
-// controllers/Admin.js
-
-import { Controllers } from "loco-js";
-
-class Admin extends Controllers.Base {
-  initialize() {
-    this.setScope("admin");
-  }
-}
-```
 
 # 🔌 The subscribe function
 
@@ -376,10 +342,7 @@ import store from "store";
 
 import Article from "models/Article";
 
-import RoomsController from "controllers/user/Rooms";
-import UserController from "controllers/User";
-
-// TODO: replace getEnv()
+// TODO: replace getEnv() and controllers
 const getCallbackForReceivedMessage = () => {
   const nullCallback = () => {};
   // break if current namespace controller is not UserController

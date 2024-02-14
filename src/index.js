@@ -1,7 +1,6 @@
 import Loco from "./loco.coffee";
 import {
   Config,
-  Controllers,
   IdentityMap,
   Models,
 } from "./deps";
@@ -29,9 +28,6 @@ const setLocale = (locale) => (Config.locale = locale);
 const init = (opts) => {
   Config.cookiesByCORS = opts.cookiesByCORS || false;
   Config.locale = opts.locale || "en";
-  for (const i of Object.keys(opts.controllers || {})) {
-    Controllers[i] = opts.controllers[i];
-  }
   const models = processModels(opts);
   const loco = new Loco(models);
   loco.init(opts);
@@ -45,6 +41,5 @@ export {
   setLocale,
   init,
   subscribe,
-  Controllers,
   Models,
 };

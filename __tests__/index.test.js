@@ -1,9 +1,5 @@
 import {
-  getLocale,
   init,
-  createConnector,
-  Controllers,
-  I18n,
   Models,
 } from "index";
 import { Config } from "deps";
@@ -39,10 +35,5 @@ describe("init", () => {
       authorizationHeader: "Bearer XXX",
     });
     expect(Models.Article.authorizationHeader).toEqual("Bearer XXX");
-  });
-
-  it("sets controllers", () => {
-    init({ controllers: { ArticleController: { foo: "bar" } } });
-    expect(Controllers.ArticleController).toEqual({ foo: "bar" });
   });
 });
