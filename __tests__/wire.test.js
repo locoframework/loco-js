@@ -1,6 +1,6 @@
 import Loco from "loco.coffee";
 import Wire from "wire.coffee";
-import { Models } from "index";
+import { Models } from "loco-js-model";
 
 class Article extends Models.Base {
   static identity = "Article";

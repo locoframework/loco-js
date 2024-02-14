@@ -24,5 +24,4 @@ const subscribe = IdentityMap.subscribe;
 export {
   init,
   subscribe,
-  Models,
 };

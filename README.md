@@ -156,7 +156,6 @@ Loco-JS exports the following structure:
 export {
   init,
   subscribe,
-  Models,          // object
 };
 ```
 
@@ -169,7 +168,6 @@ A brief explanation of each element:
     * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests
     * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
-* **Models** - object that contains the `Base` class for custom models
 
 
 # 📡 Models

@@ -1,7 +1,5 @@
-import {
-  init,
-  Models,
-} from "index";
+import { init } from "index";
+import { Models } from "loco-js-model";
 
 describe("init", () => {
   it("sets models", () => {

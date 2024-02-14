@@ -1,5 +1,6 @@
 import Loco from "loco.coffee";
-import { subscribe, Models } from "index";
+import { Models } from "loco-js-model";
+import { subscribe } from "index";
 import processNotification from "wire/processNotification";
 
 class Article extends Models.Base {
