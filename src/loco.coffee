@@ -34,7 +34,7 @@ class Loco
     if this.wire?
       this.wire.setLine(this.line);
     this._ready =>
-      IdentityMap.clear()
+      IdentityMap.clear() if IdentityMap isnt null
       opts.postInit() if opts.postInit?
 
   emit: (payload) -> this.line.send(payload)

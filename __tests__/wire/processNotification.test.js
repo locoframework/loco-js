@@ -1,6 +1,6 @@
 import Loco from "loco.coffee";
-import { Models } from "loco-js-model";
-import { subscribe } from "index";
+import { Models, connector } from "loco-js-model";
+import { connectWithModel, subscribe } from "index";
 import processNotification from "wire/processNotification";
 
 class Article extends Models.Base {
@@ -22,7 +22,20 @@ it("returns if imap is empty", () => {
   expect(result).toBe(false);
 });
 
-it("returns false on a dubled idempotency key", () => {
+it("returns false if not connected with LocoJSModel", () => {
+  const idempotency_key = "4ea41272f11ea5c75db8ba5891567712";
+  subscribe({ to: Article, with: () => {} });
+  let result = processNotification([
+    "Article",
+    1,
+    "created",
+    { id: 1, loco: { idempotency_key: idempotency_key } },
+  ]);
+  expect(result).toBe(false);
+});
+
+it("returns false on a dubled idempotency key if connected with LocoJSModel", () => {
+  connectWithModel(connector);
   const idempotency_key = "4ea41272f11ea5c75db8ba5891567713";
   subscribe({ to: Article, with: () => {} });
   let result = processNotification([

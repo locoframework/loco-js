@@ -18,18 +18,16 @@ This is how it can be visualized:
 Loco Framework
 |
 |--- Loco-Rails (back-end part)
-|       |
-|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS-Core)
+|
+|       Loco-Rails-Core (logical structure for JS to use with Loco-JS-Core)
 |
 |--- Loco-JS (front-end part)
-        |
-        |--- Loco-JS-Core (logical structure for JS / can be used separately)
-        |
-        |--- Loco-JS-Model (model part / can be used separately)
-        |
-        |--- other built-in parts of Loco-JS
 
-        Loco-JS-UI - connects models with UI elements (a separate library)
+        Loco-JS-Core (logical structure for JS)
+
+        Loco-JS-Model (model part)
+
+        Loco-JS-UI - connects models with UI elements
 ```
 
 
@@ -44,11 +42,9 @@ Loco Framework
 
 # 🤝 Dependencies
 
-🎊 Loco-JS has no external dependencies. 🎉
+🎊 Loco-JS has no dependencies. 🎉
 
-It depends only on [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/), which is an internal part of Loco-JS but it can be used separately as well. Loco-JS-Model does not have external dependencies too.
-Although [@babel/plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties) may be helpful to support static class properties, which are useful in defining models.
-Additionally, if you want to send or receive messages over a WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
+If you want to send or receive messages over a WebSocket connection, you have to pair up Loco-JS with [Action Cable](https://www.npmjs.com/package/actioncable).
 
 # 📥 Installation
 
