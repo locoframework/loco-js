@@ -1,9 +1,5 @@
 import Loco from "./loco.coffee";
-import {
-  setIdentityMap,
-  setModels,
-  Models,
-} from "./deps";
+import { setIdentityMap, setModels, Models } from "./deps";
 
 const processModels = (opts) => {
   const models = opts.models || {};
@@ -21,7 +17,7 @@ const init = (opts) => {
   return loco;
 };
 
-let subscribe = () => {};
+let subscribe = () => { };
 
 const connectWithModel = (connector) => {
   setIdentityMap(connector.IdentityMap);
@@ -29,8 +25,4 @@ const connectWithModel = (connector) => {
   subscribe = connector.IdentityMap.subscribe;
 };
 
-export {
-  init,
-  subscribe,
-  connectWithModel,
-};
+export { init, subscribe, connectWithModel };

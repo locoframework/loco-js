@@ -22,7 +22,7 @@ export default (
     processNotification(data.notification, {
       log: wire.log,
       notificationCenter,
-      emit: this.line.send
+      emit: line.send
     });
   }
   if (typeof data.idempotency_key === "string") {
