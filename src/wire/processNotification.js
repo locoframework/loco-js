@@ -17,7 +17,9 @@ const emitMessageToMembers = (
 };
 
 const emitMessageToCollection = (name, payload, identity) => {
-  for (const obj of IdentityMap.imap[identity]["collection"]) {
+  for (const obj of IdentityMap.imap[identity]["collection"].filter(
+    (element) => element !== null
+  )) {
     obj(`${identity} ${name}`, payload);
   }
 };
