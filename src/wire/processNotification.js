@@ -60,7 +60,7 @@ export default (notification, opts = {}) => {
       payload,
       opts.emit
     );
-    return false;
+    return true;
   }
   const model = getModelForRemoteName(className);
   if (model === undefined) {
