@@ -29,16 +29,25 @@ const sendToNotificationCenter = (notificationCenter, type, payload, emit) => {
   notificationCenter({ type, payload }, emit);
 };
 
+const calcType = (className, name, type) => {
+  if (className != null && name != null) {
+    return `${className} ${name}`;
+  }
+  return type;
+};
+
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
+  const type = calcType(className, name, payload.type);
   if (receivedAlready(payload.loco.idempotency_key)) return false;
   delete payload.loco;
+  delete payload.type;
   const model = getModelForRemoteName(className);
   if (model === undefined) {
     sendToNotificationCenter(
       opts.notificationCenter,
-      `${className} ${name}`,
+      type,
       payload,
       opts.emit
     );
