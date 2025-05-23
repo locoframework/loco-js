@@ -33,6 +33,22 @@ const sendToNotificationCenter = (notificationCenter, payload, emit, type = null
   }
 };
 
+const supportLocoJsModel = (model, id, name, payload, notificationCenter, emit) => {
+  const identity = model.getIdentity();
+  sendToNotificationCenter(
+    notificationCenter,
+    payload,
+    emit,
+    `${identity} ${name}`
+  );
+  if (IdentityMap.imap[identity] === undefined) return false;
+  if (IdentityMap.imap[identity][id] !== undefined)
+    emitMessageToMembers(id, name, payload, model, identity);
+  if (IdentityMap.imap[identity]["collection"] === undefined) return false;
+  if (IdentityMap.imap[identity]["collection"].length === 0) return false;
+  emitMessageToCollection(name, payload, identity);
+};
+
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
@@ -44,9 +60,10 @@ export default (notification, opts = {}) => {
       payload,
       opts.emit
     );
+    return false;
   }
   const model = getModelForRemoteName(className);
-  if (model === undefined && className != null && name != null) {
+  if (model === undefined) {
     sendToNotificationCenter(
       opts.notificationCenter,
       payload,
@@ -55,18 +72,6 @@ export default (notification, opts = {}) => {
     );
     return false;
   }
-  const identity = model.getIdentity();
-  sendToNotificationCenter(
-    opts.notificationCenter,
-    payload,
-    opts.emit,
-    `${identity} ${name}`
-  );
-  if (IdentityMap.imap[identity] === undefined) return false;
-  if (IdentityMap.imap[identity][id] !== undefined)
-    emitMessageToMembers(id, name, payload, model, identity);
-  if (IdentityMap.imap[identity]["collection"] === undefined) return false;
-  if (IdentityMap.imap[identity]["collection"].length === 0) return false;
-  emitMessageToCollection(name, payload, identity);
+  supportLocoJsModel(model, id, name, payload, opts.notificationCenter, opts.emit);
   return true;
 };
