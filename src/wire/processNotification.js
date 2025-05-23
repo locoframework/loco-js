@@ -46,7 +46,7 @@ export default (notification, opts = {}) => {
     );
   }
   const model = getModelForRemoteName(className);
-  if (model === undefined) {
+  if (model === undefined && className != null && name != null) {
     sendToNotificationCenter(
       opts.notificationCenter,
       payload,
