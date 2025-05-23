@@ -1,4 +1,3 @@
-import processNotification from "./wire/processNotification";
 import processSystemNotification from "./line/processSystemNotification";
 
 class Line {
@@ -40,7 +39,6 @@ class Line {
             const res = processSystemNotification(data.loco, {
               line: this,
               wire: this.wire,
-              processNotification,
               notificationCenter: this.notificationCenter,
             });
             if (res !== true) return;

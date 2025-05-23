@@ -24,42 +24,43 @@ const emitMessageToCollection = (name, payload, identity) => {
   }
 };
 
-const sendToNotificationCenter = (notificationCenter, type, payload, emit) => {
+const sendToNotificationCenter = (notificationCenter, payload, emit, type = null) => {
   if (notificationCenter == null) return;
-  notificationCenter({ type, payload }, emit);
-};
-
-const calcType = (className, name, type) => {
-  if (className != null && name != null) {
-    return `${className} ${name}`;
+  if (type == null) {
+    notificationCenter(payload, emit);
+  } else {
+    notificationCenter({ type, payload }, emit);
   }
-  return type;
 };
 
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
   const [className, id, name, payload] = notification;
-  // TODO: use payment.type if present and ignore model existence?
-  const type = calcType(className, name, payload.type);
   if (receivedAlready(payload.loco.idempotency_key)) return false;
   delete payload.loco;
-  delete payload.type;
+  if (className == null && name == null) {
+    sendToNotificationCenter(
+      opts.notificationCenter,
+      payload,
+      opts.emit
+    );
+  }
   const model = getModelForRemoteName(className);
   if (model === undefined) {
     sendToNotificationCenter(
       opts.notificationCenter,
-      type,
       payload,
-      opts.emit
+      opts.emit,
+      `${className} ${name}`
     );
     return false;
   }
   const identity = model.getIdentity();
   sendToNotificationCenter(
     opts.notificationCenter,
-    `${identity} ${name}`,
     payload,
-    opts.emit
+    opts.emit,
+    `${identity} ${name}`
   );
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
