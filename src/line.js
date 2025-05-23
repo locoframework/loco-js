@@ -36,11 +36,7 @@ class Line {
         },
         received: (data) => {
           if (data.loco != null) {
-            const res = processSystemNotification(data.loco, {
-              line: this,
-              wire: this.wire,
-              notificationCenter: this.notificationCenter,
-            });
+            const res = processSystemNotification(data.loco, this);
             if (res !== true) return;
             delete data.loco;
           }
