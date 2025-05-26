@@ -13,7 +13,7 @@ class Line {
   }
 
   send(payload) {
-    this.client.send(payload);
+    return this.client.send(payload);
   }
 
   pong() {
