@@ -13,7 +13,7 @@ class Line {
   }
 
   send(payload) {
-    return this.client.send(payload);
+    return (this.isConnected) ? this.client.send(payload) : false;
   }
 
   pong() {
