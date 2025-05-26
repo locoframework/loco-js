@@ -27,14 +27,14 @@ class Wire
 
   setPollingTime: (val) ->
     this.pollingTime = val
-    return if this.line?.connected
+    return if this.line?.isConnected
     this.disconnect()
     this.connect()
 
   connect: ->
     this.check();
     this.pollingInterval = setInterval =>
-      if this.line?.connected
+      if this.line?.isConnected
         this.disconnect();
         return
       this.check();

@@ -1,46 +1,36 @@
 import processSystemNotification from "./line/processSystemNotification";
+import Cable from "./line/cable";
 
 class Line {
-  constructor(cable, notificationCenter, wire) {
-    this.cable = cable;
+  constructor(consumer, notificationCenter, wire) {
+    this.client = new Cable(consumer);
     this.notificationCenter = notificationCenter;
     this.wire = wire;
-    this.connected = false;
-    this.subscription = null;
+    this.isConnected = false;
   }
 
   connect() {
-    this.subscription = this.cable.subscriptions.create(
-      {
-        channel: "Loco::NotificationCenterChannel",
-      },
-      {
-        connected: () => { this.#connected() },
-        disconnected: () => { this.#disconnected() },
-        rejected: () => { this.#rejected() },
-        received: (data) => { this.#received(data) },
-      }
-    );
+    this.client.connect(this);
   }
 
   send(payload) {
-    this.subscription.send(payload);
+    this.client.send(payload);
   }
 
   pong() {
     setTimeout(() => this.send({ loco: { pong: true } }), 3000);
   }
 
-  #connected() {
+  connected() {
     console.log("WS connected");
-    this.connected = true;
+    this.isConnected = true;
     this.notificationCenter({ loco: "connected" });
     this.pong();
   }
 
-  #disconnected() {
+  disconnected() {
     console.log("WS disconnected");
-    this.connected = false;
+    this.isConnected = false;
     if (this.wire !== null) {
       this.wire.uuid = null;
       this.wire.fetchSyncTime({ after: "connect" });
@@ -48,12 +38,12 @@ class Line {
     this.notificationCenter({ loco: "disconnected" });
   }
 
-  #rejected() {
+  rejected() {
     console.log("WS rejected");
     this.notificationCenter({ loco: "rejected" });
   }
 
-  #received(data) {
+  received(data) {
     if (data.loco != null) {
       const res = processSystemNotification(data.loco, this);
       if (res !== true) return;
