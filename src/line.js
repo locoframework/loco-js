@@ -15,34 +15,10 @@ class Line {
         channel: "Loco::NotificationCenterChannel",
       },
       {
-        connected: () => {
-          console.log("WS connected");
-          this.connected = true;
-          this.notificationCenter({ loco: "connected" });
-          this.pong();
-        },
-        disconnected: () => {
-          console.log("WS disconnected");
-          this.connected = false;
-          if (this.wire !== null) {
-            this.wire.uuid = null;
-            this.wire.fetchSyncTime({ after: "connect" });
-          }
-          this.notificationCenter({ loco: "disconnected" });
-        },
-        rejected: () => {
-          console.log("WS rejected");
-          this.notificationCenter({ loco: "rejected" });
-        },
-        received: (data) => {
-          if (data.loco != null) {
-            const res = processSystemNotification(data.loco, this);
-            if (res !== true) return;
-            delete data.loco;
-          }
-          if (Object.keys(data).length === 0) return;
-          this.notificationCenter(data);
-        },
+        connected: () => { this.#connected() },
+        disconnected: () => { this.#disconnected() },
+        rejected: () => { this.#rejected() },
+        received: (data) => { this.#received(data) },
       }
     );
   }
@@ -53,6 +29,38 @@ class Line {
 
   pong() {
     setTimeout(() => this.send({ loco: { pong: true } }), 3000);
+  }
+
+  #connected() {
+    console.log("WS connected");
+    this.connected = true;
+    this.notificationCenter({ loco: "connected" });
+    this.pong();
+  }
+
+  #disconnected() {
+    console.log("WS disconnected");
+    this.connected = false;
+    if (this.wire !== null) {
+      this.wire.uuid = null;
+      this.wire.fetchSyncTime({ after: "connect" });
+    }
+    this.notificationCenter({ loco: "disconnected" });
+  }
+
+  #rejected() {
+    console.log("WS rejected");
+    this.notificationCenter({ loco: "rejected" });
+  }
+
+  #received(data) {
+    if (data.loco != null) {
+      const res = processSystemNotification(data.loco, this);
+      if (res !== true) return;
+      delete data.loco;
+    }
+    if (Object.keys(data).length === 0) return;
+    this.notificationCenter(data);
   }
 }
 
