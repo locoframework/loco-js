@@ -14,7 +14,7 @@ const loco = init({
 
 describe("#getLine", () => {
   it("returns the current AC subscription", () => {
-    expect(loco.getLine()).toBe(undefined);
+    expect(loco.getLine()).toBe(null);
   });
 });
 
