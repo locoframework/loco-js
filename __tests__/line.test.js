@@ -5,6 +5,10 @@ class WsClient {
     line.connected();
   }
 
+  disconnect() {
+    return "disconnected";
+  }
+
   send(payload) {
     return payload;
   }
@@ -16,6 +20,12 @@ const getLine = () => {
     notificationCenter: () => {},
   }).getLine();
 }
+
+describe("#disconnect", () => {
+  it("calls disconnect on the client", () => {
+    expect(getLine().disconnect()).toEqual("disconnected");
+  });
+});
 
 describe("#send", () => {
   it("returns false if disconnected", () => {

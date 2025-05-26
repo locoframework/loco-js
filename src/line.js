@@ -12,6 +12,10 @@ class Line {
     this.client.connect(this);
   }
 
+  disconnect() {
+    return this.client.disconnect();
+  }
+
   send(payload) {
     return (this.isConnected) ? this.client.send(payload) : false;
   }

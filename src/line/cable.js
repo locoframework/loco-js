@@ -11,11 +11,18 @@ class Cable {
       },
       {
         connected: () => { line.connected() },
-        disconnected: () => { line.disconnected() },
+        disconnected: () => {
+          this.subscription.unsubscribe();
+          line.disconnected();
+        },
         rejected: () => { line.rejected() },
         received: (data) => { line.received(data) },
       }
     );
+  }
+
+  disconnect() {
+    this.consumer.disconnect();
   }
 
   send(payload) {
