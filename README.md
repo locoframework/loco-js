@@ -425,6 +425,10 @@ $ npm run test
 
 ## Major releases 🎙
 
+### 7.0 _(2025-04-XX)_
+
+* [fix] `getLine` returns the working instance of the Line class
+
 ### 6.0  _(2022-02-03)_
 
 * an ability to create more instances of `Loco` that can point to backends located on different domains

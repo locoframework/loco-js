@@ -10,7 +10,7 @@ class Loco
 
   getModels: -> this.models
 
-  getLine: -> this.line?.subscription
+  getLine: -> this.line
 
   getWire: -> this.wire
 
