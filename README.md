@@ -428,6 +428,7 @@ $ npm run test
 ### 7.0 _(2025-04-XX)_
 
 * [fix] `getLine` returns the working instance of the Line class
+* [feature] ability to specify custom `wsClient` instead of consumer (`cable`) during initialization
 
 ### 6.0  _(2022-02-03)_
 

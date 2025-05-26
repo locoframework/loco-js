@@ -1,9 +1,8 @@
 import processSystemNotification from "./line/processSystemNotification";
-import Cable from "./line/cable";
 
 class Line {
-  constructor(consumer, notificationCenter, wire) {
-    this.client = new Cable(consumer);
+  constructor(client, notificationCenter, wire) {
+    this.client = client
     this.notificationCenter = notificationCenter;
     this.wire = wire;
     this.isConnected = false;

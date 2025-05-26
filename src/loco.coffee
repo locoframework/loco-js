@@ -1,6 +1,7 @@
 import { IdentityMap } from './deps'
 import Wire from './wire.coffee'
 import Line from './line'
+import Cable from "./line/cable";
 
 class Loco
   constructor: (models) ->
@@ -28,16 +29,24 @@ class Loco
       wireOpts = { cookiesByCORS: opts.cookiesByCORS, authorizationHeader: opts.authorizationHeader }
       this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts)
       this.wire.fetchSyncTime({ after: 'connect' })
-    if opts.cable?
-      this.line = new Line(opts.cable, opts.notificationCenter, this.wire)
+    wsClient = this._initWsClient(opts)
+    if wsClient?
+      this.line = new Line(wsClient, opts.notificationCenter, this.wire)
       this.line.connect()
-    if this.wire?
-      this.wire.setLine(this.line);
+      this.wire.setLine(this.line) if this.wire?
     this._ready =>
       IdentityMap.clear() if IdentityMap isnt null
       opts.postInit() if opts.postInit?
 
   emit: (payload) -> this.line.send(payload)
+
+  _initWsClient: (opts) ->
+    if opts.wsClient?
+      opts.wsClient
+    else if opts.cable?
+      new Cable(opts.cable)
+    else
+      null
 
   _ready: (fn) ->
     cond = if document.attachEvent then document.readyState is "complete" else document.readyState isnt "loading"
