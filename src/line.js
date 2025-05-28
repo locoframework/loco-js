@@ -27,6 +27,9 @@ class Line {
   connected() {
     console.log("WS connected");
     this.isConnected = true;
+    if (this.wire !== null) {
+      this.wire.check();
+    }
     this.notificationCenter({ loco: "connected" });
     this.pong();
   }

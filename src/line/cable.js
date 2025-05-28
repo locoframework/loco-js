@@ -11,7 +11,10 @@ class Cable {
       },
       {
         connected: () => { line.connected() },
-        disconnected: () => { line.disconnected(); },
+        disconnected: () => {
+          this.subscription.unsubscribe();
+          line.disconnected();
+        },
         rejected: () => { line.rejected() },
         received: (data) => { line.received(data) },
       }
@@ -19,7 +22,7 @@ class Cable {
   }
 
   disconnect() {
-    this.subscription.disconnected();
+    this.consumer.disconnect();
   }
 
   send(payload) {

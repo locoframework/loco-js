@@ -1,4 +1,3 @@
-import { IdentityMap } from './deps'
 import Wire from './wire.coffee'
 import Line from './line'
 import Cable from "./line/cable";
@@ -35,7 +34,6 @@ class Loco
       this.line.connect()
       this.wire.setLine(this.line) if this.wire?
     this._ready =>
-      IdentityMap.clear() if IdentityMap isnt null
       opts.postInit() if opts.postInit?
 
   emit: (payload) -> this.line.send(payload)
