@@ -11,10 +11,7 @@ class Cable {
       },
       {
         connected: () => { line.connected() },
-        disconnected: () => {
-          this.subscription.unsubscribe();
-          line.disconnected();
-        },
+        disconnected: () => { line.disconnected() },
         rejected: () => { line.rejected() },
         received: (data) => { line.received(data) },
       }
