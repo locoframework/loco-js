@@ -39,7 +39,7 @@ class Line {
     this.isConnected = false;
     if (this.wire !== null) {
       this.wire.uuid = null;
-      this.wire.fetchSyncTime({ after: "connect" });
+      this.wire.fetchSyncTime(); // TODO: calc sync time on frontend
     }
     this.notificationCenter({ loco: "disconnected" });
   }

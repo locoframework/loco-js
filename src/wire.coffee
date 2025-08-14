@@ -61,17 +61,17 @@ class Wire
       this._handleDisconnection()
     request.send()
 
-  fetchSyncTime: (opts = {}) ->
+  fetchSyncTime: ->
     request = openRequest('GET', "#{this._getURL()}/sync-time", this.reqOpts)
     request.onerror = =>
-      this[opts.after]() if opts.after?
+      this.connect()
     request.onload = (e) =>
       if e.target.status >= 200 and e.target.status < 400
         data = JSON.parse e.target.response
         this.syncTime = data.sync_time
-        this[opts.after]() if opts.after?
+        this.connect()
       else if e.target.status >= 500
-        this[opts.after]() if opts.after?
+        this.connect()
     request.send()
 
   _requestParams: ->

@@ -27,7 +27,7 @@ class Loco
     if notificationsParams.enable isnt false
       wireOpts = { cookiesByCORS: opts.cookiesByCORS, authorizationHeader: opts.authorizationHeader }
       this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts)
-      this.wire.fetchSyncTime({ after: 'connect' })
+      this.wire.fetchSyncTime()
     wsClient = this._initWsClient(opts)
     if wsClient?
       this.line = new Line(wsClient, opts.notificationCenter, this.wire)
