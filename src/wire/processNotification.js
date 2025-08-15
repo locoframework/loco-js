@@ -1,6 +1,6 @@
 import { IdentityMap } from "../deps";
 import receivedAlready from "../line/idempotencyKeys";
-import getModelForRemoteName from "../getModelForRemoteName.coffee";
+import getModelForRemoteName from "../getModelForRemoteName";
 
 const emitMessageToMembers = (
   id,
