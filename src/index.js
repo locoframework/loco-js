@@ -1,4 +1,4 @@
-import Loco from "./loco.coffee";
+import Loco from "./loco";
 import { setIdentityMap, setModels, Models } from "./deps";
 
 const processModels = (opts) => {

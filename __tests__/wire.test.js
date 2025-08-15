@@ -1,4 +1,4 @@
-import Loco from "loco.coffee";
+import Loco from "loco";
 import Wire from "wire.coffee";
 import { Models } from "loco-js-model";
 
