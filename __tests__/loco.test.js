@@ -1,6 +1,6 @@
 import { init } from "index";
 import mockXHR from "../__mock__/xhr";
-import Wire from "wire.coffee";
+import Wire from "wire";
 
 const oldXMLHttpRequest = window.XMLHttpRequest;
 

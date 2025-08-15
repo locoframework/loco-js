@@ -1,5 +1,5 @@
 import Loco from "loco";
-import Wire from "wire.coffee";
+import Wire from "wire";
 import { Models } from "loco-js-model";
 
 class Article extends Models.Base {

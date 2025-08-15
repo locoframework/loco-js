@@ -1,4 +1,4 @@
-import Wire from "./wire.coffee";
+import Wire from "./wire";
 import Line from "./line";
 import Cable from "./line/cable";
 
