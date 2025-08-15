@@ -1,4 +1,4 @@
-import ObjectUtils from "./utils/object.coffee";
+import ObjectUtils from "./utils/object";
 import openRequest from "./wire/openRequest";
 import processNotification from "./wire/processNotification";
 

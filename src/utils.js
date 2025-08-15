@@ -1,4 +1,4 @@
-import ObjectUtils from "./utils/object.coffee";
+import ObjectUtils from "./utils/object";
 
 const Utils = {
   Object: ObjectUtils,
