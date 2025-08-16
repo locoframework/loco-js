@@ -1,9 +1,8 @@
 module.exports = {
   modulePaths: ["src"],
-  moduleFileExtensions: ["js", "coffee"],
+  moduleFileExtensions: ["js"],
   testEnvironment: "jsdom",
   transform: {
     "^.+\\.js$": "babel-jest",
-    "^.+\\.coffee$": "<rootDir>/jest.coffeescript.preprocessor.js",
   },
 };

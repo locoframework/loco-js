@@ -14,19 +14,6 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-      {
-        test: /\.coffee$/,
-        use: [
-          {
-            loader: "coffee-loader",
-            options: {
-              transpile: {
-                presets: ["@babel/preset-env"],
-              },
-            },
-          },
-        ],
-      },
     ],
   },
   plugins: [
