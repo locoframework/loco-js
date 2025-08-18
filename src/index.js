@@ -17,7 +17,7 @@ const init = (opts) => {
   return loco;
 };
 
-let subscribe = () => { };
+let subscribe = () => {};
 
 const connectWithModel = (connector) => {
   setIdentityMap(connector.IdentityMap);

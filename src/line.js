@@ -2,7 +2,7 @@ import processSystemNotification from "./line/processSystemNotification";
 
 class Line {
   constructor(client, notificationCenter, wire) {
-    this.client = client
+    this.client = client;
     this.notificationCenter = notificationCenter;
     this.wire = wire;
     this.isConnected = false;
@@ -17,7 +17,7 @@ class Line {
   }
 
   send(payload) {
-    return (this.isConnected) ? this.client.send(payload) : false;
+    return this.isConnected ? this.client.send(payload) : false;
   }
 
   pong() {

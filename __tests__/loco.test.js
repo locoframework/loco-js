@@ -37,9 +37,7 @@ describe("#getWire", () => {
 describe("#setAuthorizationHeader", () => {
   it("sets authorizationHeader for all models", () => {
     loco.setAuthorizationHeader("Bearer XXX");
-    expect(loco.getModels().Article.authorizationHeader).toEqual(
-      "Bearer XXX"
-    );
+    expect(loco.getModels().Article.authorizationHeader).toEqual("Bearer XXX");
   });
 });
 
@@ -62,14 +60,19 @@ describe("#init", () => {
       },
     });
     expect(mock.withCredentials).toEqual(true);
-    expect(mock.setRequestHeader).toBeCalledWith("Authorization", "Bearer XXX");
+    expect(mock.setRequestHeader).toHaveBeenCalledWith(
+      "Authorization",
+      "Bearer XXX",
+    );
   });
 
   it("initializes with wsClient", () => {
     const res = [];
     const loco = init({
       wsClient: new WsClient(),
-      notificationCenter: (obj) => { res.push(obj) },
+      notificationCenter: (obj) => {
+        res.push(obj);
+      },
     });
     expect(loco.getLine().client).toBeInstanceOf(WsClient);
     expect(res).toEqual([{ loco: "connected" }]);

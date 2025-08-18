@@ -70,7 +70,7 @@ class Wire {
           processNotification(notification, {
             log: this.log,
             notificationCenter: this.notificationCenter,
-            emit
+            emit,
           });
         }
 
@@ -88,7 +88,11 @@ class Wire {
   }
 
   fetchSyncTime() {
-    const request = openRequest("GET", `${this._getURL()}/sync-time`, this.reqOpts);
+    const request = openRequest(
+      "GET",
+      `${this._getURL()}/sync-time`,
+      this.reqOpts,
+    );
 
     request.onerror = () => {
       this.connect();
@@ -130,7 +134,10 @@ class Wire {
       this.disconnectedSinceTime = new Date();
     }
     const diffInSec = (new Date() - this.disconnectedSinceTime) / 1000;
-    if (diffInSec > this.allowedDisconnectionTime && this.disconnectedForTooLong) {
+    if (
+      diffInSec > this.allowedDisconnectionTime &&
+      this.disconnectedForTooLong
+    ) {
       this.disconnectedForTooLong(this.disconnectedSinceTime);
     }
   }

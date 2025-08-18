@@ -74,15 +74,19 @@ it("sends notification to notification center if model is undefined", () => {
   ];
   const notificationCenter = jest.fn();
   const emit = () => {};
-  const result = processNotification(notification, { notificationCenter, emit });
+  const result = processNotification(notification, {
+    notificationCenter,
+    emit,
+  });
   expect(result).toBe(false);
   expect(notificationCenter).toHaveBeenCalledWith(
-    { type: "UnknownModel created",
+    {
+      type: "UnknownModel created",
       payload: {
-        id: 1
+        id: 1,
       },
     },
-    emit
+    emit,
   );
 });
 
@@ -97,11 +101,12 @@ it("sends notification to notification center if model is defined", () => {
   const emit = () => {};
   processNotification(notification, { notificationCenter, emit });
   expect(notificationCenter).toHaveBeenCalledWith(
-    { type: "Article created",
+    {
+      type: "Article created",
       payload: {
-        id: 1
-      }
+        id: 1,
+      },
     },
-    emit
+    emit,
   );
 });

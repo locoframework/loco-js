@@ -10,11 +10,19 @@ class Cable {
         channel: "Loco::NotificationCenterChannel",
       },
       {
-        connected: () => { line.connected() },
-        disconnected: () => { line.disconnected() },
-        rejected: () => { line.rejected() },
-        received: (data) => { line.received(data) },
-      }
+        connected: () => {
+          line.connected();
+        },
+        disconnected: () => {
+          line.disconnected();
+        },
+        rejected: () => {
+          line.rejected();
+        },
+        received: (data) => {
+          line.received(data);
+        },
+      },
     );
   }
 

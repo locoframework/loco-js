@@ -19,7 +19,7 @@ const getLine = () => {
     wsClient: new WsClient(),
     notificationCenter: () => {},
   }).getLine();
-}
+};
 
 describe("#disconnect", () => {
   it("calls disconnect on the client", () => {

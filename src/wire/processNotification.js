@@ -8,7 +8,7 @@ const emitMessageToMembers = (
   payload,
   model,
   identity,
-  obj = null
+  obj = null,
 ) => {
   if (obj === null) obj = new model({ id: id });
   for (const connObj of IdentityMap.findConnected(identity, id)) {
@@ -18,13 +18,18 @@ const emitMessageToMembers = (
 
 const emitMessageToCollection = (name, payload, identity) => {
   for (const obj of IdentityMap.imap[identity]["collection"].filter(
-    (element) => element !== null
+    (element) => element !== null,
   )) {
     obj(`${identity} ${name}`, payload);
   }
 };
 
-const sendToNotificationCenter = (notificationCenter, payload, emit, type = null) => {
+const sendToNotificationCenter = (
+  notificationCenter,
+  payload,
+  emit,
+  type = null,
+) => {
   if (notificationCenter == null) return;
   if (type == null) {
     notificationCenter(payload, emit);
@@ -33,13 +38,20 @@ const sendToNotificationCenter = (notificationCenter, payload, emit, type = null
   }
 };
 
-const supportLocoJsModel = (model, id, name, payload, notificationCenter, emit) => {
+const supportLocoJsModel = (
+  model,
+  id,
+  name,
+  payload,
+  notificationCenter,
+  emit,
+) => {
   const identity = model.getIdentity();
   sendToNotificationCenter(
     notificationCenter,
     payload,
     emit,
-    `${identity} ${name}`
+    `${identity} ${name}`,
   );
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
@@ -55,11 +67,7 @@ export default (notification, opts = {}) => {
   if (receivedAlready(payload.loco.idempotency_key)) return false;
   delete payload.loco;
   if (className == null && name == null) {
-    sendToNotificationCenter(
-      opts.notificationCenter,
-      payload,
-      opts.emit
-    );
+    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit);
     return true;
   }
   const model = getModelForRemoteName(className);
@@ -68,10 +76,17 @@ export default (notification, opts = {}) => {
       opts.notificationCenter,
       payload,
       opts.emit,
-      `${className} ${name}`
+      `${className} ${name}`,
     );
     return false;
   }
-  supportLocoJsModel(model, id, name, payload, opts.notificationCenter, opts.emit);
+  supportLocoJsModel(
+    model,
+    id,
+    name,
+    payload,
+    opts.notificationCenter,
+    opts.emit,
+  );
   return true;
 };

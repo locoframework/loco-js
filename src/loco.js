@@ -42,7 +42,11 @@ class Loco {
         cookiesByCORS: opts.cookiesByCORS,
         authorizationHeader: opts.authorizationHeader,
       };
-      this.wire = new Wire(notificationsParams, opts.notificationCenter, wireOpts);
+      this.wire = new Wire(
+        notificationsParams,
+        opts.notificationCenter,
+        wireOpts,
+      );
       this.wire.fetchSyncTime();
     }
 

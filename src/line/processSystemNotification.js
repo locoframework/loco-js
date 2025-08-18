@@ -1,9 +1,7 @@
 import receivedAlready from "./idempotencyKeys";
 import processNotification from "./../wire/processNotification";
 
-export default (
-  data, line
-) => {
+export default (data, line) => {
   if (data.ping === true) {
     line.pong();
   }
@@ -22,7 +20,7 @@ export default (
     processNotification(data.notification, {
       log: line.wire.log,
       notificationCenter: line.notificationCenter,
-      emit: line.send
+      emit: line.send,
     });
   }
   if (typeof data.idempotency_key === "string") {

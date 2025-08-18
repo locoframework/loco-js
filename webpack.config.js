@@ -16,9 +16,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-  ],
+  plugins: [new CleanWebpackPlugin()],
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "loco.js",
