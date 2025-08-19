@@ -50,14 +50,14 @@ class Loco {
       this.wire.fetchSyncTime();
     }
 
-    const wsClient = this._initWsClient(opts);
+    const wsClient = this.#initWsClient(opts);
     if (wsClient != null) {
       this.line = new Line(wsClient, opts.notificationCenter, this.wire);
       this.line.connect();
       if (this.wire) this.wire.setLine(this.line);
     }
 
-    this._ready(() => {
+    this.#ready(() => {
       opts.postInit?.();
     });
   }
@@ -66,13 +66,13 @@ class Loco {
     return this.line.send(payload);
   }
 
-  _initWsClient(opts) {
+  #initWsClient(opts) {
     if (opts.wsClient != null) return opts.wsClient;
     if (opts.cable != null) return new Cable(opts.cable);
     return null;
   }
 
-  _ready(fn) {
+  #ready(fn) {
     const cond = document.attachEvent
       ? document.readyState === "complete"
       : document.readyState !== "loading";

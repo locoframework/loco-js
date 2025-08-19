@@ -76,12 +76,12 @@ class Wire {
 
         if (notifications.length === this.size) this.check();
       } else if (e.target.status >= 500) {
-        this._handleDisconnection();
+        this.#handleDisconnection();
       }
     };
 
     request.onerror = () => {
-      this._handleDisconnection();
+      this.#handleDisconnection();
     };
 
     request.send();
@@ -129,7 +129,7 @@ class Wire {
     return `${protocol}//${host}/${this.location}`;
   }
 
-  _handleDisconnection() {
+  #handleDisconnection() {
     if (this.disconnectedSinceTime == null) {
       this.disconnectedSinceTime = new Date();
     }
