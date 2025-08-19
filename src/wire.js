@@ -65,12 +65,11 @@ class Wire {
 
         if (notifications.length === 0) return;
 
-        const emit = this.line?.send?.bind(this.line);
         for (const notification of notifications) {
           processNotification(notification, {
             log: this.log,
             notificationCenter: this.notificationCenter,
-            emit,
+            emit: (payload) => this.line?.send(payload),
           });
         }
 
