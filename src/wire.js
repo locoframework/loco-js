@@ -86,30 +86,6 @@ class Wire {
     request.send();
   }
 
-  fetchSyncTime() {
-    const request = openRequest(
-      "GET",
-      `${this._getURL()}/sync-time`,
-      this.reqOpts,
-    );
-
-    request.onerror = () => {
-      this.connect();
-    };
-
-    request.onload = (e) => {
-      if (e.target.status >= 200 && e.target.status < 400) {
-        const data = JSON.parse(e.target.response);
-        this.syncTime = data.sync_time;
-        this.connect();
-      } else if (e.target.status >= 500) {
-        this.connect();
-      }
-    };
-
-    request.send();
-  }
-
   _requestParams() {
     const params = { synced_at: this.syncTime };
     if (this.token != null) params.token = this.token;

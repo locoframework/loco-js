@@ -47,7 +47,7 @@ class Loco {
         opts.notificationCenter,
         wireOpts,
       );
-      this.wire.fetchSyncTime();
+      this.wire.connect();
     }
 
     const wsClient = this.#initWsClient(opts);
