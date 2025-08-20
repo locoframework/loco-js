@@ -6,13 +6,15 @@ class Line {
     this.notificationCenter = notificationCenter;
     this.wire = wire;
     this.isConnected = false;
+    this.disconnectWire = false;
   }
 
   connect() {
     this.client.connect(this);
   }
 
-  disconnect() {
+  disconnect({ all = false } = {}) {
+    this.disconnectWire = all;
     return this.client.disconnect();
   }
 
@@ -39,8 +41,11 @@ class Line {
     this.isConnected = false;
     if (this.wire !== null) {
       this.wire.uuid = null;
-      this.wire.connect();
+      if (!this.disconnectWire) {
+        this.wire.connect();
+      }
     }
+    this.disconnectWire = false;
     this.notificationCenter({ loco: "disconnected" });
   }
 
