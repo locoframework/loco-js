@@ -114,12 +114,6 @@ const loco = init({
     // must be the same as notifications_size defined in initializers/loco.rb;
     // next batch of notifications will be fetched immediately after max size is reached
     size: 100,                           // (optional) 100 by default
-
-    // the optional disconnectedForTooLong function will be called after a specified
-    // time with the "time since disconnection" passed as an argument
-    allowedDisconnectionTime: 10,        // (optional) 10 by default [sec]
-
-    disconnectedForTooLong: (disconnectedSinceTime) => {},
   },
 
   // (optional) if provided - Loco-JS uses an absolute path
@@ -162,7 +156,6 @@ A brief explanation of each element:
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
     * **getWire** - returns the working instance of the **Wire** class responsible for fetching notifications from the server
     * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests
-    * **setDisconnectedForTooLong** - sets `disconnectedForTooLong` function that is called after a longer time without connection to the server
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 
 
@@ -429,6 +422,7 @@ $ npm run test
 
 * [fix] `getLine` returns the working instance of the Line class
 * [feature] ability to specify custom `wsClient` instead of consumer (`cable`) during initialization
+* TODO: disconnection removed
 
 ### 6.0  _(2022-02-03)_
 

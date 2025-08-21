@@ -10,20 +10,13 @@ class Wire {
     this.location = opts.location ?? "notification-center";
     this.size = opts.size ?? 100;
     this.protocolWithHost = opts.protocolWithHost;
-    this.allowedDisconnectionTime = opts.allowedDisconnectionTime ?? 10;
-    this.disconnectedForTooLong = opts.disconnectedForTooLong;
     this.notificationCenter = notificationCenter;
     this.reqOpts = reqOpts;
     this.syncTime = null;
     this.token = null;
     this.pollingInterval = null;
-    this.disconnectedSinceTime = null;
     this.uuid = null;
     this.line = null;
-  }
-
-  setDisconnectedForTooLong(fn) {
-    this.disconnectedForTooLong = fn;
   }
 
   setLine(line) {
@@ -55,14 +48,11 @@ class Wire {
   check() {
     const url = `${this._getURL()}?${ObjectUtils.toURIParams(this._requestParams())}`;
     const request = openRequest("GET", url, this.reqOpts);
-
     request.onload = (e) => {
       if (e.target.status >= 200 && e.target.status < 400) {
         const data = JSON.parse(e.target.response);
-        this.disconnectedSinceTime = null;
         this.syncTime = data[1];
         const notifications = data[0];
-
         if (notifications.length === 0) return;
 
         for (const notification of notifications) {
@@ -74,15 +64,8 @@ class Wire {
         }
 
         if (notifications.length === this.size) this.check();
-      } else if (e.target.status >= 500) {
-        this.#handleDisconnection();
       }
     };
-
-    request.onerror = () => {
-      this.#handleDisconnection();
-    };
-
     request.send();
   }
 
@@ -102,19 +85,6 @@ class Wire {
       protocol = this.ssl ? "https:" : "http:";
     }
     return `${protocol}//${host}/${this.location}`;
-  }
-
-  #handleDisconnection() {
-    if (this.disconnectedSinceTime == null) {
-      this.disconnectedSinceTime = new Date();
-    }
-    const diffInSec = (new Date() - this.disconnectedSinceTime) / 1000;
-    if (
-      diffInSec > this.allowedDisconnectionTime &&
-      this.disconnectedForTooLong
-    ) {
-      this.disconnectedForTooLong(this.disconnectedSinceTime);
-    }
   }
 }
 

@@ -29,10 +29,6 @@ class Loco {
     }
   }
 
-  setDisconnectedForTooLong(fn) {
-    this.wire.setDisconnectedForTooLong(fn);
-  }
-
   init(opts) {
     const notificationsParams = opts.notifications ?? {};
     notificationsParams.protocolWithHost = opts.protocolWithHost;

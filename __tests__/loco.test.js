@@ -41,13 +41,6 @@ describe("#setAuthorizationHeader", () => {
   });
 });
 
-describe("#setDisconnectedForTooLong", () => {
-  it("sets disconnectedForTooLong for the Wire", () => {
-    loco.setDisconnectedForTooLong(() => "foobar");
-    expect(loco.getWire().disconnectedForTooLong()).toEqual("foobar");
-  });
-});
-
 describe("#init", () => {
   it("sends Authorization header and sets withCredentials if passed", () => {
     const mock = mockXHR();
