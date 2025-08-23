@@ -1,6 +1,6 @@
 import js from "@eslint/js";
-import pluginPrettier from "eslint-plugin-prettier";
 import configPrettier from "eslint-config-prettier";
+import pluginPrettier from "eslint-plugin-prettier";
 import globals from "globals";
 
 export default [
