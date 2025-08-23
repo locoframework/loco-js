@@ -1,7 +1,7 @@
 import js from "@eslint/js";
-import globals from "globals";
 import pluginPrettier from "eslint-plugin-prettier";
-import prettier from "eslint-config-prettier";
+import configPrettier from "eslint-config-prettier";
+import globals from "globals";
 
 export default [
   {
@@ -25,5 +25,5 @@ export default [
       "prettier/prettier": "error",
     },
   },
-  prettier,
+  configPrettier,
 ];
