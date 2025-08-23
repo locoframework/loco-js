@@ -1,9 +1,9 @@
-const js = require("@eslint/js");
-const globals = require("globals");
-const pluginPrettier = require("eslint-plugin-prettier");
-const prettier = require("eslint-config-prettier");
+import js from "@eslint/js";
+import globals from "globals";
+import pluginPrettier from "eslint-plugin-prettier";
+import prettier from "eslint-config-prettier";
 
-module.exports = [
+export default [
   {
     ignores: ["dist/", "node_modules/"],
   },
