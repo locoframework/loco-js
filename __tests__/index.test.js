@@ -2,6 +2,7 @@ import { init, connectWithModel } from "index";
 import { Models, connector } from "loco-js-model";
 
 class Article {
+  static identity = "Article";
   static foo = "bar";
 }
 

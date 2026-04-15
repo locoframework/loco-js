@@ -19,6 +19,7 @@ afterEach(() => {
 });
 
 class Article {
+  static identity = "Article";
   static foo = "bar";
 }
 

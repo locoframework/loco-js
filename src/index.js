@@ -3,7 +3,7 @@ import { setIdentityMap, setModels, Models } from "./deps";
 
 const normalizeModels = (models) => {
   if (Array.isArray(models)) {
-    return Object.fromEntries(models.map((m) => [m.name, m]));
+    return Object.fromEntries(models.map((m) => [m.identity, m]));
   }
   return models || {};
 };
