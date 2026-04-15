@@ -83,10 +83,9 @@ const loco = init({
   // (optional) assign a consumer if you want to send and receive messages through WebSockets
   cable: createConsumer(),
 
-  models: {                              // specifying models here is required
-    Admin,                               // to receive messages sent from the server
-    Coupon                               // and related to given models
-  },
+  models: [Admin, Coupon],               // specifying models here is required
+                                         // to receive messages sent from the server
+                                         // and related to given models
 
   // (optional) assign a custom function to this property that will receive
   // notifications sent from the server
@@ -418,10 +417,11 @@ $ npm run test
 
 ## Major releases 🎙
 
-### 7.0 _(2025-04-XX)_
+### 7.0 _(2026-04-XX)_
 
 * [fix] `getLine` returns the working instance of the Line class
 * [feature] ability to specify custom `wsClient` instead of consumer (`cable`) during initialization
+* [feature] models can be specified as an array (e.g. `models: [Admin, Coupon]`) in addition to an object
 * TODO: disconnection removed
 
 ### 6.0  _(2022-02-03)_
