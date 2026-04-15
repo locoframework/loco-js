@@ -1,8 +1,15 @@
 import Loco from "./loco";
 import { setIdentityMap, setModels, Models } from "./deps";
 
+const normalizeModels = (models) => {
+  if (Array.isArray(models)) {
+    return Object.fromEntries(models.map((m) => [m.name, m]));
+  }
+  return models || {};
+};
+
 const processModels = (opts) => {
-  const models = opts.models || {};
+  const models = normalizeModels(opts.models);
   if (Models === null) return models;
   for (const i of Object.keys(models)) {
     Models[i] = models[i];

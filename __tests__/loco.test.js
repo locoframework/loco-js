@@ -18,8 +18,12 @@ afterEach(() => {
   window.XMLHttpRequest = oldXMLHttpRequest;
 });
 
+class Article {
+  static foo = "bar";
+}
+
 const loco = init({
-  models: { Article: { foo: "bar" } },
+  models: [Article],
 });
 
 describe("#getLine", () => {
@@ -47,7 +51,7 @@ describe("#init", () => {
     init({
       authorizationHeader: "Bearer XXX",
       cookiesByCORS: true,
-      models: { Article: { foo: "bar" } },
+      models: [Article],
       notifications: {
         enable: true,
       },
