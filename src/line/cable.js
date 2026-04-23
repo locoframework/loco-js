@@ -19,8 +19,8 @@ class Cable {
         rejected: () => {
           line.rejected();
         },
-        received: (data) => {
-          line.received(data);
+        received: (payload) => {
+          line.received(payload);
         },
       },
     );
