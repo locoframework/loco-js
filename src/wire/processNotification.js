@@ -63,21 +63,19 @@ const supportLocoJsModel = (
 
 export default (notification, opts = {}) => {
   if (opts.log) console.log(notification);
-  const [className, id, name, payload] = notification;
-  if (receivedAlready(payload.loco.idempotency_key)) return false;
-  delete payload.loco;
+  const [className, id, name, data] = notification;
+  if (receivedAlready(data.loco.idempotency_key)) return false;
+  delete data.loco;
+  const payload = data.payload ?? data;
+  const type =
+    className != null && name != null ? `${className} ${name}` : data.type;
   if (className == null && name == null) {
-    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit);
+    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit, type);
     return true;
   }
   const model = getModelForRemoteName(className);
   if (model === undefined) {
-    sendToNotificationCenter(
-      opts.notificationCenter,
-      payload,
-      opts.emit,
-      `${className} ${name}`,
-    );
+    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit, type);
     return false;
   }
   supportLocoJsModel(
