@@ -1,16 +1,8 @@
-import { IdentityMap } from "../deps";
-import receivedAlready from "../line/idempotencyKeys";
-import getModelForRemoteName from "../getModelForRemoteName";
+import { IdentityMap } from "../deps.js";
+import receivedAlready from "../line/idempotencyKeys.js";
+import getModelForRemoteName from "../getModelForRemoteName.js";
 
-const emitMessageToMembers = (
-  id,
-  name,
-  payload,
-  model,
-  identity,
-  obj = null,
-) => {
-  if (obj === null) obj = new model({ id: id });
+const emitMessageToMembers = (id, name, payload, identity) => {
   for (const connObj of IdentityMap.findConnected(identity, id)) {
     connObj(name, payload);
   }
@@ -55,7 +47,7 @@ const supportLocoJsModel = (
   );
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
-    emitMessageToMembers(id, name, payload, model, identity);
+    emitMessageToMembers(id, name, payload, identity);
   if (IdentityMap.imap[identity]["collection"] === undefined) return false;
   if (IdentityMap.imap[identity]["collection"].length === 0) return false;
   emitMessageToCollection(name, payload, identity);

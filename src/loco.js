@@ -1,6 +1,6 @@
-import Wire from "./wire";
-import Line from "./line";
-import Cable from "./line/cable";
+import Wire from "./wire.js";
+import Line from "./line.js";
+import Cable from "./line/cable.js";
 
 class Loco {
   constructor(models) {
@@ -69,10 +69,7 @@ class Loco {
   }
 
   #ready(fn) {
-    const cond = document.attachEvent
-      ? document.readyState === "complete"
-      : document.readyState !== "loading";
-    if (cond) {
+    if (document.readyState !== "loading") {
       fn();
     } else {
       document.addEventListener("DOMContentLoaded", fn);

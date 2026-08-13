@@ -1,33 +1,19 @@
-const path = require("path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   mode: "production",
   devtool: "source-map",
   entry: "./src/index.js",
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-    ],
-  },
+  experiments: { outputModule: true },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "loco.js",
-    library: { name: "Loco", type: "umd", umdNamedDefine: true },
-    globalObject: "window",
+    publicPath: "/",
+    filename: "loco.mjs",
+    library: { type: "module" },
     clean: true,
-  },
-  externals: {
-    "loco-js-model": {
-      commonjs: "loco-js-model",
-      commonjs2: "loco-js-model",
-      amd: "loco-js-model",
-      root: "LocoModel",
-    },
   },
 };

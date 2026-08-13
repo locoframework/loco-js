@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import Loco from "loco";
 import { Models, connector } from "loco-js-model";
 import { connectWithModel, subscribe } from "index";

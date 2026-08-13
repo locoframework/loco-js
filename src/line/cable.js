@@ -6,22 +6,12 @@ class Cable {
 
   connect(line) {
     this.subscription = this.consumer.subscriptions.create(
+      { channel: "Loco::NotificationCenterChannel" },
       {
-        channel: "Loco::NotificationCenterChannel",
-      },
-      {
-        connected: () => {
-          line.connected();
-        },
-        disconnected: () => {
-          line.disconnected();
-        },
-        rejected: () => {
-          line.rejected();
-        },
-        received: (payload) => {
-          line.received(payload);
-        },
+        connected: () => line.connected(),
+        disconnected: () => line.disconnected(),
+        rejected: () => line.rejected(),
+        received: (payload) => line.received(payload),
       },
     );
   }

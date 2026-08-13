@@ -1,6 +1,5 @@
-import ObjectUtils from "./utils/object";
-import openRequest from "./wire/openRequest";
-import processNotification from "./wire/processNotification";
+import openRequest from "./wire/openRequest.js";
+import processNotification from "./wire/processNotification.js";
 
 class Wire {
   constructor(opts, notificationCenter, reqOpts) {
@@ -46,7 +45,7 @@ class Wire {
   }
 
   check() {
-    const url = `${this._getURL()}?${ObjectUtils.toURIParams(this._requestParams())}`;
+    const url = `${this._getURL()}?${new URLSearchParams(this._requestParams())}`;
     const request = openRequest("GET", url, this.reqOpts);
     request.onload = (e) => {
       if (e.target.status >= 200 && e.target.status < 400) {

@@ -1,5 +1,5 @@
-import receivedAlready from "./idempotencyKeys";
-import processNotification from "./../wire/processNotification";
+import receivedAlready from "./idempotencyKeys.js";
+import processNotification from "./../wire/processNotification.js";
 
 export default (data, line) => {
   if (data.ping === true) {
@@ -13,10 +13,7 @@ export default (data, line) => {
     console.log(`uuid: ${data.uuid}`);
     line.wire.uuid = data.uuid;
   }
-  if (
-    typeof data.notification === "object" &&
-    data.notification.constructor.name === "Array"
-  ) {
+  if (Array.isArray(data.notification)) {
     processNotification(data.notification, {
       log: line.wire.log,
       notificationCenter: line.notificationCenter,

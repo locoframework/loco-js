@@ -1,4 +1,4 @@
-import processSystemNotification from "./line/processSystemNotification";
+import processSystemNotification from "./line/processSystemNotification.js";
 
 class Line {
   constructor(client, notificationCenter, wire) {

@@ -52,7 +52,13 @@ If you want to send or receive messages over a WebSocket connection, you have to
 $ npm install --save loco-js
 ```
 
-If you want to use Loco-JS with a `<script>` tag, without a module bundler, it's exposed as the `Loco` global variable.
+Loco-JS is an ES module. To use it with a `<script>` tag, without a module bundler, load it as a module:
+
+```html
+<script type="module">
+  import { init } from "/path/to/loco-js/dist/loco.mjs";
+</script>
+```
 
 # 🎬 Initialization
 

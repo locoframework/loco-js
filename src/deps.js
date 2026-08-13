@@ -1,11 +1,10 @@
 let IdentityMap = null;
 let Models = null;
 
-const setIdentityMap = (IM) => {
-  IdentityMap = IM;
+const setDeps = (connector) => {
+  IdentityMap = connector.IdentityMap;
+  Models = connector.Models;
   IdentityMap.clear();
 };
 
-const setModels = (Ms) => (Models = Ms);
-
-export { IdentityMap, Models, setIdentityMap, setModels };
+export { IdentityMap, Models, setDeps };

@@ -4,8 +4,54 @@
     <meta charset="UTF-8" />
     <title>loco-js</title>
   </head>
+
   <body>
-    <script type="text/javascript" src="loco-model.js"></script>
-    <script type="text/javascript" src="loco.js"></script>
+    <h1>Loco-JS</h1>
+
+    <p>
+      <button id="notify">Send a notification from the server</button>
+    </p>
+
+    <pre id="log"></pre>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "loco-js": "/loco.mjs",
+          "loco-js-model": "/loco-model.mjs"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import { init, connectWithModel, subscribe } from "loco-js";
+      import { Models, connector } from "loco-js-model";
+
+      class Article extends Models.Base {
+        static identity = "Article";
+      }
+
+      const log = (label, data) => {
+        document.getElementById("log").textContent +=
+          `${label} — ${JSON.stringify(data)}\n`;
+      };
+
+      connectWithModel(connector);
+
+      init({
+        models: [Article],
+        notifications: { pollingTime: 1000 },
+        notificationCenter: (data) => log("notificationCenter", data),
+      });
+
+      subscribe({ to: Article, with: (name, payload) => log(name, payload) });
+
+      document.getElementById("notify").onclick = () =>
+        fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: 1, name: "created" }),
+        });
+    </script>
   </body>
 </html>

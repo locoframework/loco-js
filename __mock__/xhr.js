@@ -1,14 +1,17 @@
-const createMockXHR = (responseJSON) => {
-  return {
+import { jest } from "@jest/globals";
+
+const mockXHR = () => {
+  const mock = {
     open: jest.fn(),
     send: jest.fn(),
-    responseText: JSON.stringify(responseJSON || {}),
+    responseText: "{}",
     setRequestHeader: jest.fn(),
   };
-};
-
-export default () => {
-  const mock = createMockXHR();
   window.XMLHttpRequest = jest.fn(() => mock);
   return mock;
 };
+
+// installed for every suite via setupFilesAfterEnv so no test hits the network
+mockXHR();
+
+export default mockXHR;
