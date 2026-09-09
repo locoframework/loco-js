@@ -43,7 +43,7 @@
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "lint-staged": "^16.1.5",
-    "loco-js-model": "^2.0.1",
+    "loco-js-model": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js-model",
     "prettier": "^3.6.2",
     "webpack": "^5.101.2",
     "webpack-cli": "^6.0.1",
