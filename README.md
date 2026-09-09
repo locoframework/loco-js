@@ -150,6 +150,7 @@ Loco-JS exports the following structure:
 ```javascript
 export {
   init,
+  emit,
   subscribe,
 };
 ```
@@ -157,10 +158,10 @@ export {
 A brief explanation of each element:
 
 * **init** - a function used to initialize Loco-JS. It returns a Loco-JS instance which main methods are:
-    * **emit** - sends messages over a WebSocket connection to the server
     * **getLine** - returns the working instance of the **Line** class responsible for sending and receiving messages over a WebSocket connection
     * **getWire** - returns the working instance of the **Wire** class responsible for fetching notifications from the server
     * **setAuthorizationHeader** - sets Authorization header which is sent over in all XHR requests
+* **emit** - sends messages over a WebSocket connection to the server. It routes through the instance created by the `init()` call and throws if called before `init()`
 * **subscribe** - a function used to receive notifications when a given object or all objects of a given class are changed on the server-side
 
 
@@ -405,9 +406,9 @@ emit Coupon.last, :updated, { data: { foo: 'bar' }, for: 'foobarbaz' }
 You can send messages over WebSocket connection after initializing Loco-JS properly (see _Initialization_ and _Receiving messages_ sections).
 
 ```javascript
-import loco from "initializers/loco.js";
+import { emit } from "loco-js";
 
-loco.emit({ type: "PING", user_id: 123 });
+emit({ type: "PING", user_id: 123 });
 ```
 
 To see how to receive messages on the back-end, look at the [Loco-Rails documentation](https://github.com/locoframework/loco-rails#notification-center).
@@ -428,6 +429,8 @@ $ npm run test
 * [fix] `getLine` returns the working instance of the Line class
 * [feature] ability to specify custom `wsClient` instead of consumer (`cable`) during initialization
 * [feature] models can be specified as an array (e.g. `models: [Admin, Coupon]`) in addition to an object
+* **Breaking changes**:
+    * `emit` is exported by the package - use `emit()` instead of the `Loco` instance method `loco.emit()`, which has been removed
 * TODO: disconnection removed
 
 ### 6.0  _(2022-02-03)_
