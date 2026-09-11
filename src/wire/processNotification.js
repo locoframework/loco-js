@@ -16,35 +16,45 @@ const emitMessageToCollection = (name, payload, identity) => {
   }
 };
 
-const sendToNotificationCenter = (
+// Passing `syncTime` marks this notification as record-scoped, and so
+// replayable after a snapshot replaces the collection it wrote to. The tail it
+// lands in belongs to one Loco instance, reached through `handled`.
+const sendToNotificationCenter = ({
   notificationCenter,
   payload,
   emit,
-  type = null,
-) => {
+  type,
+  handled,
+  syncTime,
+}) => {
   if (notificationCenter == null) return;
-  if (type == null) {
-    notificationCenter(payload, emit);
-  } else {
-    notificationCenter({ type, payload }, emit);
-  }
+  const deliver =
+    type == null
+      ? () => notificationCenter(payload, emit)
+      : () => notificationCenter({ type, payload }, emit);
+  deliver();
+  if (syncTime != null) handled?.record(syncTime, deliver);
 };
 
-const supportLocoJsModel = (
+const supportLocoJsModel = ({
   model,
   id,
   name,
   payload,
   notificationCenter,
   emit,
-) => {
+  handled,
+  syncTime,
+}) => {
   const identity = model.getIdentity();
-  sendToNotificationCenter(
+  sendToNotificationCenter({
     notificationCenter,
     payload,
     emit,
-    `${identity} ${name}`,
-  );
+    type: `${identity} ${name}`,
+    handled,
+    syncTime,
+  });
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
     emitMessageToMembers(id, name, payload, identity);
@@ -53,30 +63,52 @@ const supportLocoJsModel = (
   emitMessageToCollection(name, payload, identity);
 };
 
-export default (notification, opts = {}) => {
-  if (opts.log) console.log(notification);
+export default (
+  notification,
+  { log, notificationCenter, emit, handled } = {},
+) => {
+  if (log) console.log(notification);
   const [className, id, name, data] = notification;
   if (receivedAlready(data.loco.idempotency_key)) return false;
+
+  const syncTime = data.loco.sync_time;
   delete data.loco;
   const payload = data.payload ?? data;
   const type =
     className != null && name != null ? `${className} ${name}` : data.type;
   if (className == null && name == null) {
-    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit, type);
+    sendToNotificationCenter({
+      notificationCenter,
+      payload,
+      emit,
+      type,
+      handled,
+    });
     return true;
   }
+
   const model = getModelForRemoteName(className);
   if (model === undefined) {
-    sendToNotificationCenter(opts.notificationCenter, payload, opts.emit, type);
+    sendToNotificationCenter({
+      notificationCenter,
+      payload,
+      emit,
+      type,
+      handled,
+      syncTime,
+    });
     return false;
   }
-  supportLocoJsModel(
+
+  supportLocoJsModel({
     model,
     id,
     name,
     payload,
-    opts.notificationCenter,
-    opts.emit,
-  );
+    notificationCenter,
+    emit,
+    handled,
+    syncTime,
+  });
   return true;
 };

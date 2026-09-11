@@ -1,4 +1,4 @@
-import processSystemNotification from "./line/processSystemNotification.js";
+import processEnvelope from "./line/processEnvelope.js";
 
 class Line {
   constructor(client, notificationCenter, wire) {
@@ -56,7 +56,7 @@ class Line {
 
   received(data) {
     if (data.loco != null) {
-      const res = processSystemNotification(data.loco, this);
+      const res = processEnvelope(data.loco, this);
       if (res !== true) return;
       delete data.loco;
     }

@@ -21,6 +21,13 @@ class Loco {
     return this.wire;
   }
 
+  // Re-delivers record notifications this instance handled at or after `asOf`,
+  // for repairing a server-rendered snapshot that replaced them. Returns how
+  // many were replayed.
+  replaySince(asOf) {
+    return this.wire?.handled.replaySince(asOf) ?? 0;
+  }
+
   setAuthorizationHeader(val) {
     for (const key in this.models) {
       if (Object.prototype.hasOwnProperty.call(this.models, key)) {

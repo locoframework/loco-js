@@ -1,3 +1,4 @@
+import Handled from "./wire/handled.js";
 import openRequest from "./wire/openRequest.js";
 import processNotification from "./wire/processNotification.js";
 
@@ -11,6 +12,7 @@ class Wire {
     this.protocolWithHost = opts.protocolWithHost;
     this.notificationCenter = notificationCenter;
     this.reqOpts = reqOpts;
+    this.handled = new Handled();
     this.syncTime = null;
     this.token = null;
     this.pollingInterval = null;
@@ -59,6 +61,7 @@ class Wire {
             log: this.log,
             notificationCenter: this.notificationCenter,
             emit: (payload) => this.line?.send(payload),
+            handled: this.handled,
           });
         }
 

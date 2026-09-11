@@ -74,8 +74,8 @@ import Admin from "./models/Admin";
 
 Coupon.Unit = Unit;
 
-const NotificationCenter = data => {
-  switch (data.type) {
+const NotificationCenter = ({ type }) => {
+  switch (type) {
     case "PING":
       // do something
       break;
