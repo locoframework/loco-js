@@ -65,6 +65,10 @@ class Loco {
     });
   }
 
+  emit(payload) {
+    return this.line.send(payload);
+  }
+
   #initWsClient(opts) {
     if (opts.wsClient != null) return opts.wsClient;
     if (opts.cable != null) return new Cable(opts.cable);

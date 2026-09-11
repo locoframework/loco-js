@@ -1,4 +1,4 @@
-import { init, emit } from "index";
+import { init } from "index";
 import mockXHR from "../__mock__/xhr";
 import Wire from "wire";
 
@@ -74,10 +74,6 @@ describe("#init", () => {
     });
     expect(loco.getLine().client).toBeInstanceOf(WsClient);
     expect(res).toEqual([{ loco: "connected" }]);
-  });
-
-  it("routes the module-level emit through the initialized instance", () => {
-    init({ wsClient: new WsClient(), notificationCenter: () => {} });
-    expect(emit({ type: "test" })).toEqual("emitted: test");
+    expect(loco.emit({ type: "test" })).toEqual("emitted: test");
   });
 });
