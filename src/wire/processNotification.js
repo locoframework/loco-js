@@ -68,10 +68,9 @@ export default (
   { log, notificationCenter, emit, handled } = {},
 ) => {
   if (log) console.log(notification);
-  const [className, id, name, data] = notification;
+  const [className, id, name, data, syncTime] = notification;
   if (receivedAlready(data.loco.idempotency_key)) return false;
 
-  const syncTime = data.loco.sync_time;
   delete data.loco;
   const payload = data.payload ?? data;
   const type =

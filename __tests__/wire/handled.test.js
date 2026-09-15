@@ -22,13 +22,8 @@ const notification = (event, syncTime, id = 1) => [
   "Article",
   id,
   event,
-  {
-    payload: { id },
-    loco: {
-      idempotency_key: `${event}-${syncTime}-${id}`,
-      sync_time: syncTime,
-    },
-  },
+  { payload: { id }, loco: { idempotency_key: `${event}-${syncTime}-${id}` } },
+  syncTime,
 ];
 
 const transient = (syncTime) => [
@@ -38,8 +33,9 @@ const transient = (syncTime) => [
   {
     type: "NEW_MESSAGE",
     payload: { message: "hi" },
-    loco: { idempotency_key: `msg-${syncTime}`, sync_time: syncTime },
+    loco: { idempotency_key: `msg-${syncTime}` },
   },
+  syncTime,
 ];
 
 const locoWith = (received) =>
