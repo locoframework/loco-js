@@ -110,21 +110,23 @@ describe("#replaySince", () => {
     expect(received).toEqual([]);
   });
 
-  // `Loco.emit(..., ws_only: true)` writes no Notification row, so it has no
-  // created_at to be stamped with — and it reaches the client through
-  // Line#received rather than processNotification, never touching the tail.
+  // `Loco.emit(..., ws_only: true)` writes no Notification row, so its tuple
+  // has no subject, no event and no sync_time — it never touches the tail or
+  // the sync point.
   it("never re-delivers a ws_only notification", () => {
     const received = [];
     const loco = locoWith(received);
 
     loco.getLine().received({
-      type: "NEW_MESSAGE",
-      payload: { message: "hi", author: "jane" },
-      loco: { idempotency_key: "ws-only-1" },
+      loco: {
+        sync_time: null,
+        notification: transient(null),
+      },
     });
     expect(received).toEqual([
-      { type: "NEW_MESSAGE", payload: { message: "hi", author: "jane" } },
+      { type: "NEW_MESSAGE", payload: { message: "hi" } },
     ]);
+    expect(loco.getWire().syncTime).toBeNull();
     received.length = 0;
 
     expect(loco.replaySince("2026-09-10T12:00:00.000000Z")).toEqual(0);

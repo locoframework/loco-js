@@ -1,10 +1,6 @@
-import receivedAlready from "./idempotencyKeys.js";
 import processNotification from "./../wire/processNotification.js";
 
-export default (
-  { ping, sync_time, uuid, notification, idempotency_key },
-  line,
-) => {
+export default ({ ping, sync_time, uuid, notification }, line) => {
   if (ping === true) {
     line.pong();
   }
@@ -24,8 +20,4 @@ export default (
       handled: line.wire.handled,
     });
   }
-  if (typeof idempotency_key === "string") {
-    if (receivedAlready(idempotency_key)) return false;
-  }
-  return true;
 };

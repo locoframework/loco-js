@@ -429,6 +429,7 @@ $ npm run test
 * [feature] ability to specify custom `wsClient` instead of consumer (`cable`) during initialization
 * [feature] models can be specified as an array (e.g. `models: [Admin, Coupon]`) in addition to an object
 * TODO: disconnection removed
+* every server message is a `loco` envelope — `ws_only` messages arrive as a notification tuple (requires loco-rails >= 7.0); the bare `{ type, payload, loco: { idempotency_key } }` shape is no longer handled
 
 ### 6.0  _(2022-02-03)_
 
