@@ -28,10 +28,7 @@ const sendToNotificationCenter = ({
   syncTime,
 }) => {
   if (notificationCenter == null) return;
-  const deliver =
-    type == null
-      ? () => notificationCenter(payload, emit)
-      : () => notificationCenter({ type, payload }, emit);
+  const deliver = () => notificationCenter({ type, payload }, emit);
   deliver();
   if (syncTime != null) handled?.record(syncTime, deliver);
 };
@@ -68,14 +65,21 @@ export default (
   { log, notificationCenter, emit, handled } = {},
 ) => {
   if (log) console.log(notification);
-  const [className, id, name, data, syncTime] = notification;
-  if (receivedAlready(data.loco.idempotency_key)) return false;
+  const {
+    loco: { idempotency_key, sync_time: syncTime },
+    type: name,
+    payload: emitted,
+    obj_class: className,
+    obj_id: id,
+  } = notification;
+  if (receivedAlready(idempotency_key)) return false;
 
-  delete data.loco;
-  const payload = data.payload ?? data;
-  const type =
-    className != null && name != null ? `${className} ${name}` : data.type;
-  if (className == null && name == null) {
+  // handlers get the record subject's id inside the payload
+  const payload = id == null ? emitted : { ...emitted, id };
+
+  // with a subject `type` is the event, e.g. "Article" + "created"
+  const type = className == null ? name : `${className} ${name}`;
+  if (className == null) {
     sendToNotificationCenter({
       notificationCenter,
       payload,

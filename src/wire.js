@@ -51,9 +51,8 @@ class Wire {
     const request = openRequest("GET", url, this.reqOpts);
     request.onload = (e) => {
       if (e.target.status >= 200 && e.target.status < 400) {
-        const data = JSON.parse(e.target.response);
-        this.syncTime = data[1];
-        const notifications = data[0];
+        const { notifications, sync_time } = JSON.parse(e.target.response);
+        this.syncTime = sync_time;
         if (notifications.length === 0) return;
 
         for (const notification of notifications) {

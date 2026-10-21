@@ -54,9 +54,8 @@ class Line {
     this.notificationCenter({ loco: "rejected" });
   }
 
-  // every server message is a `loco` envelope; notifications ride inside it
   received(data) {
-    if (data.loco != null) processEnvelope(data.loco, this);
+    if (data.loco != null) processEnvelope(data, this);
   }
 }
 

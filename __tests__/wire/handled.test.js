@@ -18,25 +18,24 @@ class Article {
   }
 }
 
-const notification = (event, syncTime, id = 1) => [
-  "Article",
-  id,
-  event,
-  { payload: { id }, loco: { idempotency_key: `${event}-${syncTime}-${id}` } },
-  syncTime,
-];
-
-const transient = (syncTime) => [
-  null,
-  null,
-  null,
-  {
-    type: "NEW_MESSAGE",
-    payload: { message: "hi" },
-    loco: { idempotency_key: `msg-${syncTime}` },
+const notification = (event, syncTime, id = 1) => ({
+  loco: {
+    idempotency_key: `${event}-${syncTime}-${id}`,
+    sync_time: syncTime,
   },
-  syncTime,
-];
+  type: event,
+  payload: { id },
+  obj_class: "Article",
+  obj_id: id,
+});
+
+const transient = (syncTime) => ({
+  loco: { idempotency_key: `msg-${syncTime}`, sync_time: syncTime },
+  type: "NEW_MESSAGE",
+  payload: { message: "hi" },
+  obj_class: null,
+  obj_id: null,
+});
 
 const locoWith = (received) =>
   init({
@@ -110,19 +109,13 @@ describe("#replaySince", () => {
     expect(received).toEqual([]);
   });
 
-  // `Loco.emit(..., ws_only: true)` writes no Notification row, so its tuple
-  // has no subject, no event and no sync_time — it never touches the tail or
-  // the sync point.
+  // `Loco.emit(..., ws_only: true)` writes no Notification row, so it has no
+  // subject and no sync_time — it never touches the tail or the sync point.
   it("never re-delivers a ws_only notification", () => {
     const received = [];
     const loco = locoWith(received);
 
-    loco.getLine().received({
-      loco: {
-        sync_time: null,
-        notification: transient(null),
-      },
-    });
+    loco.getLine().received(transient(null));
     expect(received).toEqual([
       { type: "NEW_MESSAGE", payload: { message: "hi" } },
     ]);
@@ -130,6 +123,23 @@ describe("#replaySince", () => {
     received.length = 0;
 
     expect(loco.replaySince("2026-09-10T12:00:00.000000Z")).toEqual(0);
+    expect(received).toEqual([]);
+  });
+
+  it("takes the sync point from the server", () => {
+    const loco = locoWith([]);
+    const message = notification("created", "2026-09-10T15:00:00.000000Z", 5);
+    message.loco.sync_time = "2026-09-10T14:59:55.000000Z";
+    loco.getLine().received(message);
+    expect(loco.getWire().syncTime).toEqual("2026-09-10T14:59:55.000000Z");
+  });
+
+  // a `loco`-only message is control traffic, not a notification
+  it("keeps control messages away from the notification center", () => {
+    const received = [];
+    const loco = locoWith(received);
+    loco.getLine().received({ loco: { uuid: "conn-1" } });
+    expect(loco.getWire().uuid).toEqual("conn-1");
     expect(received).toEqual([]);
   });
 
