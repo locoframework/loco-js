@@ -3,7 +3,7 @@
 // as of the moment it was rendered, and anything newer that it replaced has to
 // be applied again.
 //
-// One tail per Loco instance, never module state: `sync_time` is a position on
+// One tail per Loco instance, never module state: `synced_at` is a position on
 // one backend's clock, so entries from two backends are not comparable.
 //
 // Only notifications tied to a record (obj_class + event) are kept. Transient
@@ -15,8 +15,8 @@ const MAX = 1000;
 class Handled {
   #entries = [];
 
-  record(syncTime, deliver) {
-    const at = Date.parse(syncTime);
+  record(syncedAt, deliver) {
+    const at = Date.parse(syncedAt);
     if (Number.isNaN(at)) return;
 
     this.#entries.push({ at, deliver });

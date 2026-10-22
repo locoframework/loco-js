@@ -18,10 +18,10 @@ class Article {
   }
 }
 
-const notification = (event, syncTime, id = 1) => ({
+const notification = (event, syncedAt, id = 1) => ({
   loco: {
-    idempotency_key: `${event}-${syncTime}-${id}`,
-    sync_time: syncTime,
+    idempotency_key: `${event}-${syncedAt}-${id}`,
+    synced_at: syncedAt,
   },
   type: event,
   payload: { id },
@@ -29,8 +29,8 @@ const notification = (event, syncTime, id = 1) => ({
   obj_id: id,
 });
 
-const transient = (syncTime) => ({
-  loco: { idempotency_key: `msg-${syncTime}`, sync_time: syncTime },
+const transient = (syncedAt) => ({
+  loco: { idempotency_key: `msg-${syncedAt}`, synced_at: syncedAt },
   type: "NEW_MESSAGE",
   payload: { message: "hi" },
   obj_class: null,
@@ -79,7 +79,7 @@ describe("#replaySince", () => {
   });
 
   // 6.0's multi-instance feature: two Locos can point at different backends,
-  // so `sync_time` values are positions on two unrelated clocks. A shared tail
+  // so `synced_at` values are positions on two unrelated clocks. A shared tail
   // would compare them, and replay one backend's notifications into the other.
   it("keeps a separate tail per instance", () => {
     const fromA = [];
@@ -110,7 +110,7 @@ describe("#replaySince", () => {
   });
 
   // `Loco.emit(..., ws_only: true)` writes no Notification row, so it has no
-  // subject and no sync_time — it never touches the tail or the sync point.
+  // subject and no synced_at — it never touches the tail or the sync point.
   it("never re-delivers a ws_only notification", () => {
     const received = [];
     const loco = locoWith(received);
@@ -119,7 +119,7 @@ describe("#replaySince", () => {
     expect(received).toEqual([
       { type: "NEW_MESSAGE", payload: { message: "hi" } },
     ]);
-    expect(loco.getWire().syncTime).toBeNull();
+    expect(loco.getWire().syncedAt).toBeNull();
     received.length = 0;
 
     expect(loco.replaySince("2026-09-10T12:00:00.000000Z")).toEqual(0);
@@ -129,9 +129,9 @@ describe("#replaySince", () => {
   it("takes the sync point from the server", () => {
     const loco = locoWith([]);
     const message = notification("created", "2026-09-10T15:00:00.000000Z", 5);
-    message.loco.sync_time = "2026-09-10T14:59:55.000000Z";
+    message.loco.synced_at = "2026-09-10T14:59:55.000000Z";
     loco.getLine().received(message);
-    expect(loco.getWire().syncTime).toEqual("2026-09-10T14:59:55.000000Z");
+    expect(loco.getWire().syncedAt).toEqual("2026-09-10T14:59:55.000000Z");
   });
 
   // a `loco`-only message is control traffic, not a notification

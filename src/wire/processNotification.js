@@ -16,7 +16,7 @@ const emitMessageToCollection = (name, payload, identity) => {
   }
 };
 
-// Passing `syncTime` marks this notification as record-scoped, and so
+// Passing `syncedAt` marks this notification as record-scoped, and so
 // replayable after a snapshot replaces the collection it wrote to. The tail it
 // lands in belongs to one Loco instance, reached through `handled`.
 const sendToNotificationCenter = ({
@@ -25,12 +25,12 @@ const sendToNotificationCenter = ({
   emit,
   type,
   handled,
-  syncTime,
+  syncedAt,
 }) => {
   if (notificationCenter == null) return;
   const deliver = () => notificationCenter({ type, payload }, emit);
   deliver();
-  if (syncTime != null) handled?.record(syncTime, deliver);
+  if (syncedAt != null) handled?.record(syncedAt, deliver);
 };
 
 const supportLocoJsModel = ({
@@ -41,7 +41,7 @@ const supportLocoJsModel = ({
   notificationCenter,
   emit,
   handled,
-  syncTime,
+  syncedAt,
 }) => {
   const identity = model.getIdentity();
   sendToNotificationCenter({
@@ -50,7 +50,7 @@ const supportLocoJsModel = ({
     emit,
     type: `${identity} ${name}`,
     handled,
-    syncTime,
+    syncedAt,
   });
   if (IdentityMap.imap[identity] === undefined) return false;
   if (IdentityMap.imap[identity][id] !== undefined)
@@ -66,7 +66,7 @@ export default (
 ) => {
   if (log) console.log(notification);
   const {
-    loco: { idempotency_key, sync_time: syncTime },
+    loco: { idempotency_key, synced_at: syncedAt },
     type: name,
     payload: emitted,
     obj_class: className,
@@ -98,7 +98,7 @@ export default (
       emit,
       type,
       handled,
-      syncTime,
+      syncedAt,
     });
     return false;
   }
@@ -111,7 +111,7 @@ export default (
     notificationCenter,
     emit,
     handled,
-    syncTime,
+    syncedAt,
   });
   return true;
 };

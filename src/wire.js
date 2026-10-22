@@ -13,7 +13,7 @@ class Wire {
     this.notificationCenter = notificationCenter;
     this.reqOpts = reqOpts;
     this.handled = new Handled();
-    this.syncTime = null;
+    this.syncedAt = null;
     this.token = null;
     this.pollingInterval = null;
     this.uuid = null;
@@ -51,8 +51,8 @@ class Wire {
     const request = openRequest("GET", url, this.reqOpts);
     request.onload = (e) => {
       if (e.target.status >= 200 && e.target.status < 400) {
-        const { notifications, sync_time } = JSON.parse(e.target.response);
-        this.syncTime = sync_time;
+        const { notifications, synced_at } = JSON.parse(e.target.response);
+        this.syncedAt = synced_at;
         if (notifications.length === 0) return;
 
         for (const notification of notifications) {
@@ -71,7 +71,7 @@ class Wire {
   }
 
   _requestParams() {
-    const params = { synced_at: this.syncTime };
+    const params = { synced_at: this.syncedAt };
     if (this.token != null) params.token = this.token;
     if (this.uuid != null) params.uuid = this.uuid;
     return params;

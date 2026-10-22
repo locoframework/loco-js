@@ -430,10 +430,10 @@ $ npm run test
 * [feature] models can be specified as an array (e.g. `models: [Admin, Coupon]`) in addition to an object
 * TODO: disconnection removed
 * a record subject's id is merged into the handler's `payload` on the client (`obj_id` → `payload.id`); loco-rails no longer sends it twice
-* a WebSocket notification moves the sync point to the server's `loco.sync_time`, which already trails the real moment by loco-rails' fetch overlap
-* `replaySince` compares `loco.sync_time` with the snapshot's `data-as-of`; loco-rails shifts both by the same overlap, so the client does no time arithmetic
+* a WebSocket notification moves the sync point to the server's `loco.synced_at`, which already trails the real moment by loco-rails' fetch overlap
+* `replaySince` compares `loco.synced_at` with the snapshot's `data-as-of`; loco-rails shifts both by the same overlap, so the client does no time arithmetic
 * the idempotency-key memory grows from 100 to 1000 to absorb the repeats the overlap re-sends
-* one wire format for every notification, over WebSocket and polling: `{ loco: { idempotency_key, sync_time }, type, payload, obj_class, obj_id }`; the polling response is `{ notifications, sync_time }`; `notificationCenter` always receives `{ type, payload }` — loco-rails requires every message to be named (requires loco-rails >= 7.0)
+* one wire format for every notification, over WebSocket and polling: `{ loco: { idempotency_key, synced_at }, type, payload, obj_class, obj_id }`; the polling response is `{ notifications, synced_at }`; `notificationCenter` always receives `{ type, payload }` — loco-rails requires every message to be named (requires loco-rails >= 7.0)
 
 ### 6.0  _(2022-02-03)_
 
